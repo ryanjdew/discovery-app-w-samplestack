@@ -30,9 +30,10 @@ import com.marklogic.samplestack.exception.SamplestackSecurityException;
  */
 public enum ClientRole {
 	
-	SAMPLESTACK_CONTRIBUTOR, SAMPLESTACK_GUEST;
+	SAMPLESTACK_ADMIN, SAMPLESTACK_CONTRIBUTOR, SAMPLESTACK_GUEST;
 	private String getPrefix() {
 		switch(this) {
+    	case SAMPLESTACK_ADMIN: return "marklogic.admin"; 
     	case SAMPLESTACK_CONTRIBUTOR: return "marklogic.writer"; 
     	case SAMPLESTACK_GUEST: return "marklogic.guest";
     	default: throw new SamplestackSecurityException();

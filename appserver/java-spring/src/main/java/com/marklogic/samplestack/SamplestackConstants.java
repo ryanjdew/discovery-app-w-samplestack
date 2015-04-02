@@ -26,19 +26,19 @@ public class SamplestackConstants {
 
 	
 	/**
-	 * QnADocuments are stored with url pattern "/questions/{id}";
+	 * Documents are stored with url pattern "/doucments/{id}";
 	 */
-	public static final String QUESTIONS_DIRECTORY = "/questions/";
+	public static final String DOCUMENTS_DIRECTORY = "/documents/";
 	
 	/**
 	 * The main search response uses the "questions" options name.
 	 */
-	public static final String QUESTIONS_OPTIONS = "questions";
+	public static final String DOCUMENTS_OPTIONS = "all";
 	
 	/**
 	 * The single question response page uses these search options:
 	 */
-	public static final String SINGLE_QUESTION_OPTIONS = "single-question";
+	public static final String SINGLE_DOCUMENT_OPTIONS = "all";
 
 	/**
 	 * Contributor queries use this options configuration.
@@ -59,7 +59,7 @@ public class SamplestackConstants {
 	/**
 	 * The single question response page uses these search options:
 	 */
-	public static final String SINGLE_QUESTION_TRANSFORM = "single-question";
+	public static final String SINGLE_DOCUMENT_TRANSFORM = "single-document";
 
 	
 	public static String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ";

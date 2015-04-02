@@ -1,5 +1,6 @@
 define([
-  './allTags',
   './contributor',
-  './login'
+  './login',
+  './editRangeIndex',
+  './newRangeIndex'
 ], function () {});

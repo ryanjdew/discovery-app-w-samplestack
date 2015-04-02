@@ -31,7 +31,7 @@ define([
           '/v1/search',
           {
             search: {
-              qtext: ['', 'sort:active'],
+              qtext: [''],
               query: {
                 'and-query': {
                   queries: [ {
@@ -65,7 +65,7 @@ define([
           '/v1/search',
           {
             search: {
-              qtext: ['', 'sort:active'],
+              qtext: [''],
               query: {
                 'and-query': {
                   queries: [ {

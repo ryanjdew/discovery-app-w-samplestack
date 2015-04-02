@@ -55,8 +55,7 @@ import com.marklogic.samplestack.service.ContributorService;
 public class MarkLogicContributorService extends MarkLogicBaseService implements
 		ContributorService {
 
-	private static Contributor joe;
-	private static Contributor mary;
+	private static Contributor admin;
 
 	private final Logger logger = LoggerFactory
 			.getLogger(MarkLogicContributorService.class);
@@ -96,39 +95,26 @@ public class MarkLogicContributorService extends MarkLogicBaseService implements
 	public void storeJoeAndMary() {
 		try {
 			// leave them alone if already in db.
-			Contributor storedMary = this
-					.read("9611450a-0663-45a5-8a08-f1c71320475e");
-			Contributor storedJoe = this
-					.read("cf99542d-f024-4478-a6dc-7e723a51b040");
-
-			if (storedJoe == null) {
-				ClassPathResource joeResource = new ClassPathResource(
-						"contributor/joe.json");
-				joe = mapper.readValue(joeResource.getInputStream(),
+			Contributor storedAdmin = this
+					.read("cf99542d-f024-4478-a6dc-7e723a51b053");
+			if (storedAdmin == null) {
+				ClassPathResource adminResource = new ClassPathResource(
+						"contributor/admin.json");
+				admin = mapper.readValue(adminResource.getInputStream(),
 						Contributor.class);
-				this.store(joe);
+				this.store(admin);
 			} else {
-				logger.info("joe already in the database");
-			}
-
-			if (storedMary == null) {
-				ClassPathResource maryResource = new ClassPathResource(
-						"contributor/mary.json");
-				mary = mapper.readValue(maryResource.getInputStream(),
-						Contributor.class);
-				this.store(mary);
-			} else {
-				logger.info("mary already in the database");
+				logger.info("admin already in the database");
 			}
 		} catch (JsonParseException e) {
 			throw new SamplestackIOException(
-					"Setup of Joe/Mary Failed.  Check/clean/clear db", e);
+					"Setup of Admin Failed.  Check/clean/clear db", e);
 		} catch (JsonMappingException e) {
 			throw new SamplestackIOException(
-					"Setup of Joe/Mary Failed.  Check/clean/clear db", e);
+					"Setup of Admin Failed.  Check/clean/clear db", e);
 		} catch (IOException e) {
 			throw new SamplestackIOException(
-					"Setup of Joe/Mary Failed.  Check/clean/clear db", e);
+					"Setup of Admin Failed.  Check/clean/clear db", e);
 		}
 	}
 

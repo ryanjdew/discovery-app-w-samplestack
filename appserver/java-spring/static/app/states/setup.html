@@ -1,0 +1,95 @@
+<div class="setup">
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <h2 class="col-sm-10">Setup Application</h2>
+  </div>
+  <div>
+    <ul class="nav nav-tabs">
+      <li role="presentation" ng-class="{'active': state === 'loadData'}"><a ng-click="state = 'loadData'">Load Data</a></li>
+      <li role="presentation" ng-class="{'active': state === 'indexes'}"><a ng-click="state = 'indexes'">Indexes</a></li>
+      <li role="presentation" ng-class="{'active': state === 'constraints'}"><a ng-click="state = 'constraints'">Constraints <span ng-if="model.isInErrorState" class="alert-danger" title="Constraints don't match indexes"><i class="glyphicon glyphicon-exclamation-sign"></i></span></a></li>
+      <li role="presentation" ng-class="{'active': state === 'appearance'}"><a ng-click="state = 'appearance'">Results</a></li>
+    </ul>
+    <div ng-show="state === 'loadData'">
+      <div class="form-group">
+        <label class="control-label">Directory</label>
+        <input class="form-control" name="directory" type="text" ng-model="loadDirectory">
+      </div>
+      <div class="clearfix">
+        <button ng-click="loadData()" class="clearfix btn btn-primary pull-right">Load</button>
+      </div>
+    </div>
+    <div ng-show="state === 'indexes'">
+      <div class="panel panel-default">
+        <div class="panel-heading">Range Indexes <a class="pull-right" ng-click="addIndex()"><i class="glyphicon glyphicon-plus-sign"></i> Add</a></div>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Type</th><th>Collation</th><th class="col-sm-1"></th></tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="index in model.rangeIndexes.rangeindexList track by $index">
+                <td><a ng-click="editIndex(index)">{{(index.rangeElementIndex || index.rangeElementAttributeIndex || index.rangeFieldIndex).localname || (index.rangeElementIndex || index.rangeElementAttributeIndex || index.rangeFieldIndex).name}}</a></td>
+                <td>{{(index.rangeElementIndex || index.rangeElementAttributeIndex || index.rangeFieldIndex).scalarType}}</td>
+                <td>{{(index.rangeElementIndex || index.rangeElementAttributeIndex || index.rangeFieldIndex).collation}}</td>
+                <td class="col-sm-1"><a class="pull-right" ng-click="removeIndex($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!--div class="panel panel-default">
+        <div class="panel-heading">Fields </div>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr><th>Name</th><th></th><th class="col-sm-1"></th></tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="field in model.fields.fieldList track by $index">
+                <td>{{field.field.fieldName}}</td>
+                <td><span ng-repeat="includedElement in field.field.includedElements.includedElement">{{includedElement.localname}} <span ng-if="!$last">, </span></span></td>
+                <td class="col-sm-1"><a class="pull-right" ng-click="removeField($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div-->
+    </div>
+    <div ng-show="state === 'constraints'">
+      <div class="panel panel-default">
+        <div class="clearfix panel-heading">Constraints <button ng-click="resampleConstraints()" class="btn btn-primary pull-right">Resample</button></div>
+        <div class="panel-body">
+          <table>
+          <thead>
+            <tr><th class="col-sm-3">Label</th><th class="col-sm-4">Source</th><th class="col-sm-1">Faceted</th></tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="constraint in model.constraints track by $index">
+            <td class="col-sm-3"><input type="text" ng-model="constraint.name"/></td>
+            <td class="col-sm-4" ng-init="details = (constraint.range || constraint.word)"><span ng-if="constraint.range">Range:</span><span ng-if="constraint.word">Word:</span> {{(constraint.range || constraint.word).field.name || (constraint.range || constraint.word).attribute.name || (constraint.range || constraint.word).element.name}} (<span ng-if="(constraint.range || constraint.word).attribute">attribute</span><span ng-if="(constraint.range || constraint.word).element && !(constraint.range || constraint.word).attribute">element</span><span ng-if="(constraint.range || constraint.word).field">field</span>)</td>
+            <td class="col-sm-1"><input type="checkbox" ng-model="(constraint.range || constraint.word).facet"/></td>
+            </tr>
+          </tbody>
+          </table>
+        </div>
+        <div class="clearfix panel-footer">
+          <button ng-click="submitConstraints()" class="clearfix btn btn-primary pull-right">Save</button>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div ng-show="state === 'appearance'">
+      <div class="panel panel-default">
+        <div class="panel-heading">Preview <a href="/">Explore</a></div>
+        <div class="panel-body">
+          <h3 ng-if="model.search.total === 0">No results to show</h3>
+          <ml-facets class="col-md-3" facets="model.search.facets" toggle="toggleFacet(facet, value)"></ml-facets>
+          <div class="col-md-9">
+            <ml-results results="model.search.results" template="/app/directives/ssSearchResults.html"></ml-results>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

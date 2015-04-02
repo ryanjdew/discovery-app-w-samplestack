@@ -7,7 +7,6 @@
   <span class="glyphicon glyphicon-user"></span>
   <span class="ss-user-info-display-name-reputation">
     {{store.session.userInfo.displayName}}
-    [{{store.session.userInfo.reputation}}]
   </span>
   <span class="caret"></span>
 </a>
@@ -17,12 +16,6 @@
   <div class="ss-account-info">
       <h4 class="ss-account-display-name list-group-item-heading"
       >{{store.session.userInfo.displayName}}</h4>
-      <p class="ss-account-votes-cast list-group-item-text"
-      ><strong>Votes cast:</strong>
-      {{store.session.userInfo.voteCount}}</p>
-      <p class="ss-account-reputation list-group-item-text"
-      ><strong>Reputation:</strong>
-      {{store.session.userInfo.reputation}}</p>
   </div>
   <div class="ss-account-actions">
     <a

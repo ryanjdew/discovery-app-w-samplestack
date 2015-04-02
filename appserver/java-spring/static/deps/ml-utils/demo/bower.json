@@ -1,0 +1,26 @@
+{
+  "name": "ml-utils",
+  "main": "ml-utils.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/withjam/ml-utils",
+  "authors": [
+    "Matt Pileggi <Matt.Pileggi@marklogic.com>"
+  ],
+  "description": "Angular utilities for MarkLogic apps",
+  "keywords": [
+    "marklogic",
+    "utils",
+    "angular"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-highlightjs": "~0.3.0"
+  }
+}

@@ -2,7 +2,7 @@
   "role-name": "samplestack-writer",
   "description": "role for contributing to samplestack corpus",
   "role": [
-      "rest-writer", "samplestack-guest"
+      "rest-writer", "samplestack-guest", "rest-admin", "admin"
   ],
   "permission": [
     {
@@ -15,6 +15,14 @@
     },
     {
       "role-name": "rest-writer",
+      "capability": "update"
+    },
+    {
+      "role-name": "rest-admin",
+      "capability": "read"
+    },
+    {
+      "role-name": "rest-admin",
       "capability": "update"
     }
   ]

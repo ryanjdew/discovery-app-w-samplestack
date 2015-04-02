@@ -50,16 +50,15 @@
             <li
               class="ss-ask-button"
               ng-class="store.session ? 'active' : 'inactive'"
-              title="{{store.session ? '': 'You must be logged in to ask a question' }}"
+              title="{{store.session ? '': 'You must be logged in to setup application' }}"
             >
               <a
                 href=""
                 class="navbar-ask-question"
-                ng-click="store.session ? ask() : ''"
+                ng-click="store.session ? setup() : ''"
                 ng-class="store.session ? 'active' : 'inactive'"
               >
-                <span class="glyphicon glyphicon-question-sign"></span>
-                Ask A Question
+                Setup
               </a>
             </li>
 

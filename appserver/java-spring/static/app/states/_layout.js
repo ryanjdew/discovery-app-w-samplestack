@@ -13,8 +13,8 @@ define(['app/module'], function (module) {
   module.controller('layoutCtlr', [
     '$scope', 'appRouting', 'appInitialized',
     function ($scope, appRouting, appInitialized) {
-      $scope.ask = function () {
-        appRouting.go('root.layout.ask');
+      $scope.setup = function () {
+        appRouting.go('root.layout.setup');
       };
     }
 

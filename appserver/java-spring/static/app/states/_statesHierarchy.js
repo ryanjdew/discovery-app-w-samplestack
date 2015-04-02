@@ -58,10 +58,16 @@ define(
         ]
       },
       {
-        name: 'root.layout.qnaDoc',
-        url: '/doc/:id?q&content-id',
-        controller: 'qnaDocCtlr',
-        templateUrl: '/app/states/qnaDoc.html'
+        name: 'root.layout.doc',
+        url: '/doc?uri',
+        controller: 'docCtlr',
+        templateUrl: '/app/states/doc.html'
+      },
+      {
+        name: 'root.layout.setup',
+        url: '/setup',
+        controller: 'setupCtlr',
+        templateUrl: '/app/states/setup.html'
       },
       {
         name: 'root.layout.ask',

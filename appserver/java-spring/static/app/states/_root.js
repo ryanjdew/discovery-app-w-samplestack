@@ -9,7 +9,6 @@ define(['app/module'], function (module) {
     'mlAuth',
     'loginDialog',
     'contributorDialog',
-    'allTagsDialog',
     function (
       $scope,
       $rootScope,
@@ -17,8 +16,7 @@ define(['app/module'], function (module) {
       $log,
       mlAuth,
       loginDialog,
-      contributorDialog,
-      allTagsDialog
+      contributorDialog
     ) {
       $rootScope.loading = false;
       $scope.setPageTitle = function (title) {

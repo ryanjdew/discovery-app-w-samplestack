@@ -1,85 +1,14 @@
-<div class="col-md-9 col-md-push-3">
-
-  <header class="row tab-wrapper">
-    <div class="col-md-12" >
-
-      <div ng-if="search.results.total > 0">
-        <!-- results summary in search mode -->
-        <div class="ss-search-results-mode" ng-if="searchMode()">
-          Search Results<span ng-if="filterMode()"> (filtered)</span>:
-          <span
-            class="ss-search-results-count"
-            ng-bind-template="{{search.results.total | number:0}}"
-          ></span>
-          Questions
-        </div>
-        <!-- results summary in browse mode -->
-        <div class="ss-search-results-mode" ng-if="!searchMode()">
-          Browsing
-          <span
-            class="ss-search-results-count"
-            ng-bind-template="{{search.results.total | number:0}}"
-          ></span>
-          Questions<span ng-if="filterMode()"> (filtered)</span>
-        </div>
-      </div>
-      <!-- no results -->
-      <div ng-if="search.results.total == 0">
-        <div class="ss-search-results-mode">
-          No Results
-        </div>
-      </div>
-
-      <!-- sort tabs -->
-      <ul class="ss-sort nav nav-tabs" role="tablist">
-        <li
-          ng-repeat="sort in sorts"
-          ng-click="sort.active ? setSort(sort.value) : angular.noop()"
-          ng-disabled="!sort.active"
-          ng-class="{
-            'ss-sort-active': sort.active,
-            'ss-sort-inactive': !sort.active
-          }"
-        >
-          <a
-            href=""
-            role="tab"
-            data-toggle="tab"
-            title="{{sort.active ? sort.tooltip : (sort.tooltipDisabled || '')}}"
-            ng-class="{
-              'ss-sort-selected': (
-                sort.value[0] === getSelectedSort()
-              )
-            }"
-          >
-            {{sort.label}}
-          </a>
-        </li>
-      </ul>
-
-    </div> <!-- col-md-12 -->
-  </header> <!-- header tab-wrapper -->
-
-  <div ng-if="search.$ml.waiting" class="spinner"></div>
-
-  <div ng-if="!search.$ml.waiting">
-    <section
-      class="ss-result row clearfix question-row"
-      ng-repeat="item in search.results.items"
-    >
-      <ss-search-result></ss-search-result>
-    </section>
-
-    <!-- paging -->
-    <pagination
-      total-items="search.$ml.pagingInfo.total"
-      ng-model="currPage"
-      ng-change="updatePage(currPage)"
-      max-size="maxSize"
-      boundary-links="true"
-      rotate="false"
-    ></pagination>
-
+<div ng-repeat="result in results">
+  <h4>
+    <a ng-href="{{ result.link }}">{{ result.metadata.title.values[0] || result.uri }}</a>
+  </h4>
+  <div class="matches">
+    <div class="match" ng-repeat="match in result.matches">
+      <em ng-repeat="text in match['match-text'] track by $index">
+        <span ng-class="{ highlight: !!text.highlight }">{{ text.highlight || text }}</span>
+      </em>
+    </div>
   </div>
+  <hr/>
+</div>
 
-</div> <!-- col-md-9 col-md-push-3 -->

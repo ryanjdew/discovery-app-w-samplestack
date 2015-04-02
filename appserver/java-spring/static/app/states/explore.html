@@ -7,92 +7,24 @@
   <div class="row">
 
     <section class="ss-results">
-      <ui-view></ui-view>
-    </section>
-
-    <div class="ss-filters col-md-3 col-md-pull-9">
-
-      <div>
-        <div class="list-group">
-
-          <div class="list-group-header">
-            <button
-              class="btn btn-default btn-xs pull-right"
-              ng-click="clearConstraints('all')"
-            >Clear All</button>
-            <h4>Filter Results</h4>
-          </div>
-
-          <!-- top checkboxes -->
-          <div class="list-group-item">
-            <div class="checkbox">
-              <label
-                ng-disabled="!store.session"
-                ng-class="{'ss-disabled': !store.session}"
-                title="Constrain results to entries containing my contributions"
-              >
-                <input
-                  type="checkbox"
-                  ng-model="showMineOnly"
-                  ng-change="onCriteriaChange()"
-                  ng-disabled="!store.session"
-                /> Show my contributions only</label>
-            </div>
-            <div class="checkbox">
-              <label
-                ng-class="{'ss-disabled': !store.session}"
-                title="Constrain results to entries with accepted answers"
-                ng-disabled="!store.session"
-              >
-                <!-- resolvedOnly checked when not logged in -->
-                <input
-                  type="checkbox"
-                  ng-disabled="!store.session"
-                  ng-model="resolvedOnly"
-                  ng-change="onCriteriaChange()"
-                  ng-checked="resolvedOnly || !store.session"
-                /> Show resolved only</label>
-            </div>
-          </div>
-
-          <!-- date filter -->
-          <div class="list-group-subheader">
-            <button
-              class="btn btn-default btn-xs pull-right"
-              ng-click="clearConstraints('dates')"
-            >Clear Dates</button>
-            <h4>Date</h4>
-          </div>
-          <div class="ss-filters-date list-group-section">
-            <ss-facet-date-range
-              constraints="search.criteria.constraints"
-              results="search.results.facets.dates"
-            ></ss-facet-date-range>
-          </div>
-
-          <!-- tags filter -->
-          <div class="list-group-subheader">
-            <button
-              class="btn btn-default btn-xs pull-right"
-              ng-click="clearConstraints('tags')"
-              >Clear Tags</button>
-            <h4>Tags</h4>
-          </div>
-          <ss-facet-tags
-            criteria="search.criteria.constraints.tags"
-            results="search.results.facets.tags"
-            totals="{ total: search.results.total, shadow: search.results.shadowTotals.tags }"
-            num-tags="10"
-            typeahead-search="tagsTypeaheadSearch"
-            typeahead-loading="tagsTypeaheadPromise"
-          ></ss-facet-tags>
-
-          </div> <!-- list-group-section (tags) -->
-
-        </div> <!-- list-group -->
+      <div class="ss-filters col-md-3">
+        <div>
+          <ml-facets facets="model.search.facets" toggle="toggleFacet(facet, value)"></ml-facets>
+        </div>
+      </div> <!-- ss-filters -->
+      <div class="col-md-9">
+      <h3 ng-if="model.search.total === 0">No results to show</h3>
+  
+      <div ng-if="model.search.total > 0" class="results">
+  
+        <pagination ng-model="model.page" ng-change="search()" max-size="10" boundary-links="true"
+                    total-items="model.search.total" items-per-page="model.search['page-length']"></pagination>
+  
+        <ml-metrics search="model.search"></ml-metrics>
+        <ml-results results="model.search.results" template="/app/directives/ssSearchResults.html"></ml-results>
       </div>
-    </div> <!-- ss-filters -->
-
+      </div>
+    </section>
   </div> <!-- row -->
 
 </div> <!-- ss-explore -->

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.client.pojo.PojoRepository;
+import com.marklogic.samplestack.MarkLogicUtilities;
 import com.marklogic.samplestack.domain.Contributor;
 import com.marklogic.samplestack.security.ClientRole;
 
@@ -70,5 +71,13 @@ public class DatabaseContext {
 	public ObjectMapper mapper() {
 		return new CustomObjectMapper();
 	}
-	
+
+	@Bean
+	/**
+	 * Initializes a singleton MarkLogicUtilities.
+	 * @return A utilities library
+	 */
+	public MarkLogicUtilities utilities() {
+		return new MarkLogicUtilities(clients());
+	}
 }

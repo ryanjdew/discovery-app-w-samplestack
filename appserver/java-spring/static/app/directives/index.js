@@ -1,11 +1,8 @@
 define([
+  './finder',
   './ssAccountDropdown',
-  './ssFacetDateRange',
-  './ssFacetTags',
   './ssMarkdown',
   './ssMarkdownEditor',
-  './ssQnaDocMetadata',
   './ssSearchBar',
-  './ssSearchResult',
-  './ssSearchResults'
+  './ssSearchResult'
 ], function () {});

@@ -1,0 +1,31 @@
+{
+  "name": "ml-utils",
+  "main": "ml-utils.js",
+  "homepage": "https://github.com/withjam/ml-utils",
+  "authors": [
+    "Matt Pileggi <Matt.Pileggi@marklogic.com>"
+  ],
+  "description": "Angular ml-utils module",
+  "keywords": [
+    "marklogic",
+    "angular",
+    "utils"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "7ad745f092",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "7ad745f092b8b6e1d3027835c6eef8e5ec0b8efd"
+  },
+  "_source": "git://github.com/withjam/ml-utils.git",
+  "_target": "*",
+  "_originalSource": "withjam/ml-utils"
+}

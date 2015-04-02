@@ -24,6 +24,10 @@ require.config({
     'json': 'deps/requirejs-plugins/src/json',
     'text': 'deps/requirejs-plugins/lib/text',
     'ng-tags-input': 'deps/ng-tags-input/ng-tags-input',
+    'ml-utils': 'deps/ml-utils/ml-utils.min',
+    'ml-common-ng': 'deps/ml-common-ng/dist/ml-common-ng.min',
+    'ml-search-ng': 'deps/ml-search-ng/dist/ml-search-ng',
+    'ml-search-ng-tpls': 'deps/ml-search-ng/dist/ml-search-ng-tpls.min',
     'stacktrace-js':'deps/stacktrace-js/dist/stacktrace',
     'jstzdetect': 'deps/jstzdetect/jstz'
     /* jshint ignore: end */
@@ -42,6 +46,10 @@ require.config({
     'angular-marked': { deps: ['angular'] },
     'highlightjs': { exports: 'hljs' },
     'ng-tags-input': { deps: ['angular'] },
+    'ml-utils': { deps: ['angular'] },
+    'ml-common-ng': { deps: ['angular','ml-utils'] },
+    'ml-search-ng': { deps: ['angular','ml-common-ng'] },
+    'ml-search-ng-tpls': { deps: ['angular','ml-search-ng'] },
     'jstzdetect': { exports: 'jstz' }
   }
 });
@@ -68,6 +76,10 @@ define(
     'angular-sanitize',
     'ng-markdown',
     'ng-tags-input',
+    'ml-utils',
+    'ml-common-ng',
+    'ml-search-ng',
+    'ml-search-ng-tpls',
 
     '_marklogic/marklogic'
   ],
@@ -96,6 +108,10 @@ define(
       'ngSanitize',
       'wiz.markdown',
       'ngTagsInput',
+      'ml.common',
+      'ml.search',
+      'ml.search.tpls',
+      'ml.utils',
 
       '_marklogic'
     ];

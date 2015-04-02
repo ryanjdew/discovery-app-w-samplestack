@@ -1,0 +1,71 @@
+{
+  "options": {
+    "return-query": true,
+    "search-option": ["unfiltered"],
+    "page-length": 10,
+    "additional-query": "<cts:directory-query xmlns:cts=\"http://marklogic.com/cts\">\n    <cts:uri>/documents/</cts:uri>\n  </cts:directory-query>",
+    "term": {
+      "apply": "term",
+      "empty": {
+        "apply": "all-results"
+      },
+      "term-option": ["punctuation-insensitive", "stemmed"]
+    },
+    "sort-order": [{
+      "direction": "descending",
+      "score": null
+    }],
+    "transform-results": {
+      "apply": "snippet",
+      "preferred-elements": {
+        "element": {
+          "ns": "",
+          "name": "body"
+        }
+      },
+      "max-matches": "1",
+      "max-snippet-chars": "150",
+      "per-match-tokens": "20"
+    },
+    "operator": [{
+      "name": "results",
+      "state": [{
+        "name": "compact",
+        "transform-results": {
+          "apply": "snippet",
+          "preferred-elements": {
+            "element": {
+              "ns": "",
+              "name": "body"
+            }
+          },
+          "max-matches": "1",
+          "max-snippet-chars": "150",
+          "per-match-tokens": "20"
+        }
+      }, {
+        "name": "detailed",
+        "transform-results": {
+          "apply": "snippet",
+          "preferred-elements": {
+            "element": {
+              "ns": "",
+              "name": "body"
+            }
+          },
+          "max-matches": "2",
+          "max-snippet-chars": "400",
+          "per-match-tokens": "30"
+        }
+      }]
+    }],
+    "annotation": ["Delta options here"],
+    "extract-metadata": {
+      "qname": [{
+        "elem-ns": "",
+        "elem-name": "title"
+      }]
+    },
+    "constraint": []
+  }
+}

@@ -20,7 +20,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marklogic.client.document.GenericDocumentManager;
 import com.marklogic.client.document.JSONDocumentManager;
+import com.marklogic.client.io.BytesHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.query.DeleteQueryDefinition;
 import com.marklogic.client.query.QueryManager;
@@ -45,6 +47,15 @@ public abstract class MarkLogicBaseService {
 	};
 	
 	/**
+	 * Gets a new MarkLogic GenericDocumentManager based on a ClientRole.
+	 * @param role The Role to secure the manager.
+	 * @return A GenericDocumentManager
+	 */
+	protected GenericDocumentManager genericDocumentManager(ClientRole role) {
+		return clients.get(role).newDocumentManager();
+	};
+
+	/**
 	 * Gets a new MarkLogic QueryManager based on a ClientRole.
 	 * @param role
 	 * @return A QueryManager
@@ -68,6 +79,20 @@ public abstract class MarkLogicBaseService {
 		JacksonHandle jacksonHandle = clients.get(role).newJSONDocumentManager()
 				.read(documentUri, handle);
 		return jacksonHandle.get();
+	}
+
+	/**
+	 * Gets bytes of a document from the database as byte[], 
+	 * based on the caller's ClientRole and the document URI.
+	 * @param role the caller's role.
+	 * @param documentUri the document URI.
+	 * @return byte[] containing the document.
+	 */
+	protected byte[] getBytesDocument(ClientRole role, String documentUri) {
+		BytesHandle handle = new BytesHandle();
+		BytesHandle bytesHandle = clients.get(role).newDocumentManager()
+				.read(documentUri, handle);
+		return bytesHandle.get();
 	}
 
 	/**

@@ -1,0 +1,26 @@
+{
+  "name": "ml-utils",
+  "version": "0.0.1",
+  "description": "ml-utils angular module",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/withjam/ml-utils.git"
+  },
+  "author": "Matt Pileggi <matt.pileggi@marklogic.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/withjam/ml-utils/issues"
+  },
+  "homepage": "http://withjam.github.io/ml-utils",
+  "devDependencies": {
+    "browserify": "^4.2.0",
+    "gulp": "^3.8.5",
+    "gulp-jshint": "^1.7.0",
+    "gulp-jsmin": "^0.1.4",
+    "gulp-rename": "^1.2.0",
+    "jshint-stylish": "^0.3.0",
+    "jsmin": "^1.0.1",
+    "vinyl-source-stream": "^0.1.1"
+  }
+}

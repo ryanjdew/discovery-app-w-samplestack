@@ -54,12 +54,14 @@ public class SamplestackSecurityConfigurer {
 
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/v1/session", "/v1/questions/**",
-						"/v1/contributors/**", "/v1/hasVoted", "/**")
+				.antMatchers(HttpMethod.GET, "/v1/session", "/server/**",
+						"/v1/contributors/**", "/**")
 				.permitAll().and().authorizeRequests()
-				.antMatchers(HttpMethod.POST, "/v1/search", "/v1/tags/**")
+				.antMatchers(HttpMethod.POST, "/v1/search", "/server/**")
 				.permitAll().and().authorizeRequests()
-				.antMatchers("/v1/questions/**", "/v1/contributors/**")
+				.antMatchers(HttpMethod.PUT, "/server/**")
+				.permitAll().and().authorizeRequests()
+				.antMatchers("/v1/contributors/**")
 				.authenticated().and().authorizeRequests().anyRequest()
 				.denyAll();
 		http.formLogin()

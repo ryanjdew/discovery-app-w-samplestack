@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ml-utils demo</title>
+  <link rel="stylesheet" href="demo/bower_components/highlightjs/styles/github.css">
+  <link rel="stylesheet" href="demo/demo.css">
+</head>
+<body ng-controller="DemoCtrl as demoControl">
+  <div id="largeMap" ml-map="main"></div>
+
+  <div id="content">
+    <section>
+    <h3>ML-Utils Demo</h3>
+    <p>The large map area has been created using the mlMap directive and has been given the name "main".  Other elements can manipulate this map by it's name.  The div itself is styled by CSS before the map is loaded:
+
+    <div class="code" hljs><div id="largeMap" ml-map="main"></div></div>
+
+    <h4>Add Maps <span ng-show="demoControl.hasOtherMaps"><input type="checkbox" ng-model="demoControl.hideMaps"> hide other maps</span></h4>
+    <p>You can add maps using the <span class="code">ml-utils</span> directive anywhere on the site</p>
+    <form name="nextMapForm" ng-submit="demoControl.addMap()"><strong>New Map:</strong> <input type="text" ng-model="demoControl.nextMap.name" placeholder="Map name"> <input type="checkbox" ng-model="demoControl.nextMap.inclCtrl"> <em>include map controls</em> <button submit="true">Add Map</button></form>
+
+    <h4>Add Markers</h4>
+    <p>You can add markers to any exiting map via the mlMapService</p>
+    <form name="addMarkerForm" ng-submit="demoControl.addMarker()"><strong>Marker Coords:</strong> <input type="text" ng-model="demoControl.marker.coords" placeholder="lat,lng"> <select ng-model="demoControl.marker.mapname" ng-options="name as name for (name,opts) in demoControl.maps"><option value="">Main</option></select> <button submit="true">Create Marker</button></form>
+
+    <h4>Add KML</h4>
+    <p>You can add KML data via a public URL to any existing map by name</p>
+    <form name="kmlDataForm" ng-submit="demoControl.addKml()"><strong>KML URL:</strong> <input type="text" ng-model="demoControl.kml.url" placeholder="url"> <select ng-model="demoControl.kml.mapname" ng-options="name as name for (name,opts) in demoControl.maps"><option value="">Main</option></select> <button submit="true" ng-click="demoControl.addKml()">Load KML</button></form>
+
+    <h4>Layers</h4>
+    <p>Google offers a few default layers that are included in the mlMapService.  By abstracting this functionality out it should be possible to implement the same behavior even with different map providers in the future.</p>
+    <div class="inline-selection"><input type="checkbox" ng-model="demoControl.layers.transit"> Transit</div>
+    <div class="inline-selection"><input type="checkbox" ng-model="demoControl.layers.traffic"> Traffic</div>
+
+    </section>
+  </div>
+
+  <div id="othermaps" ng-hide="demoControl.hideMaps">
+    <div class="mapPanel" ng-repeat="(name,opts) in demoControl.maps" ng-init="flags = { transit: false, traffice: false }">
+      <div class="flags">
+        <div class="inline-selection"><input type="checkbox" ng-change="demoControl.toggleTraffic(name,flags.traffic)" ng-model="flags.traffic"> Traffic</div>
+        <div class="inline-selection"><input type="checkbox" ng-change="demoControl.toggleTransit(name,flags.transit)" ng-model="flags.transit"> Transit</div>
+      </div>
+      <h3>{{ name }} <span> controls: {{ opts.controls }}</h3>
+      <div class="small-map" ml-map="{{name}}" controls="{{ opts.controls }}" zoom="11"></div>
+    </div>
+  </div>
+
+  <script src="demo/bower_components/highlightjs/highlight.pack.js"></script>
+  <script src="https://code.angularjs.org/snapshot/angular.min.js"></script>
+  <script src="demo/bower_components/angular-highlightjs/angular-highlightjs.min.js"></script>
+  <script src="ml-utils.js"></script>
+  <script src="demo/demo.js"></script>
+
+</body>
+</html>

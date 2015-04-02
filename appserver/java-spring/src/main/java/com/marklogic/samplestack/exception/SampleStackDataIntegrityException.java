@@ -18,8 +18,6 @@ package com.marklogic.samplestack.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.marklogic.samplestack.exception.SamplestackException;
-
 /**
  * Error class for wrapping integrity violation exceptions
  */
