@@ -2,7 +2,17 @@ define(['app/module'], function (module) {
   'use strict';
 
   module
-    .controller('setupCtlr', ['$modal', '$scope', 'ServerConfig', '$window', 'MLSearchFactory', 'newRangeIndexDialog', 'editRangeIndexDialog', function ($modal, $scope, ServerConfig, win, searchFactory, newRangeIndexDialog, editRangeIndexDialog) {
+    .controller('setupCtlr', [
+      '$modal', '$scope', 'ServerConfig', 
+      '$window', 'MLSearchFactory', 
+      'newRangeIndexDialog', 'editRangeIndexDialog', 
+      'newChartWidgetDialog', 
+      function (
+        $modal, $scope, ServerConfig, 
+        win, searchFactory, 
+        newRangeIndexDialog, editRangeIndexDialog, 
+        newChartWidgetDialog
+      ) {
       var model = {};
       var mlSearch = searchFactory.newContext();
 
@@ -20,6 +30,7 @@ define(['app/module'], function (module) {
       updateSearchResults();
 
       ServerConfig.get().then(function(config){
+        model.charts = [];
         model.fields = config.fields;
         model.rangeIndexes = config.rangeIndexes;
         model.searchOptions = config.searchOptions;
@@ -52,6 +63,12 @@ define(['app/module'], function (module) {
             if (index) {
               ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults);
             }
+          });
+        },
+        addChart: function() {
+          newChartWidgetDialog(model.search.facets).then(function(chart) {
+            model.charts.push(chart);
+            //ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults);
           });
         },
         addIndex: function() {

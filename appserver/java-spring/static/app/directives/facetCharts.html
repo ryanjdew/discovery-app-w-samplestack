@@ -1,0 +1,8 @@
+<div class="col-md-12">
+	<div ng-repeat="chart in populatedConfigs" class="col-md-6" ng-class="{'col-md-offset-3': $even && $last}">
+		<div>
+			<a class="pull-right" ng-click="charts.splice($index, 1)"><i class="glyphicon glyphicon-trash"></i></a>
+			<highchart id="chart{{$index}}" config="chart"></highchart>
+		</div>
+	</div>
+</div>

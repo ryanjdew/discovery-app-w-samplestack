@@ -1,4 +1,5 @@
 define([
+  './facetCharts',
   './finder',
   './ssAccountDropdown',
   './ssMarkdown',

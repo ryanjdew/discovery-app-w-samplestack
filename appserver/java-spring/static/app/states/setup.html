@@ -1,4 +1,4 @@
-<div class="setup">
+<div class="setup col-md-10 col-md-offset-1">
   <div class="row">
     <div class="col-sm-2"></div>
     <h2 class="col-sm-10">Setup Application</h2>
@@ -81,11 +81,12 @@
     </div>
     <div ng-show="state === 'appearance'">
       <div class="panel panel-default">
-        <div class="panel-heading">Preview <a href="/">Explore</a></div>
+        <div class="panel-heading">Preview <a href="/">Explore</a><a class="pull-right" ng-click="addChart()"><i class="glyphicon glyphicon-plus-sign"></i> Add Widget</a></div>
         <div class="panel-body">
           <h3 ng-if="model.search.total === 0">No results to show</h3>
           <ml-facets class="col-md-3" facets="model.search.facets" toggle="toggleFacet(facet, value)"></ml-facets>
           <div class="col-md-9">
+            <facet-charts charts="model.charts" facets="model.search.facets"></facet-charts>
             <ml-results results="model.search.results" template="/app/directives/ssSearchResults.html"></ml-results>
           </div>
         </div>

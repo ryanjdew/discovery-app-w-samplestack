@@ -2,5 +2,6 @@ define([
   './contributor',
   './login',
   './editRangeIndex',
-  './newRangeIndex'
+  './newRangeIndex',
+  './newChartWidget'
 ], function () {});

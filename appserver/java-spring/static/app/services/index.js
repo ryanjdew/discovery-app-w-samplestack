@@ -1,5 +1,6 @@
 define([
   './appRouting',
   './initialize',
-  './serverConfig'
+  './serverConfig',
+  './highchartsHelper'
 ], function () {});

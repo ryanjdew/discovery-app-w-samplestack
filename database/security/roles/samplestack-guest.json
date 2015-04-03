@@ -2,7 +2,8 @@
   "role-name": "samplestack-guest",
   "description": "Role for access to limited set of questions and answers, read-only",
   "role": [
-      "rest-extension-user"
+      "rest-extension-user",
+      "rest-reader"
   ],
   "permission": [
     {
