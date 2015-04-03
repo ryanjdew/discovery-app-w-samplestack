@@ -1,6 +1,6 @@
 <div ng-repeat="result in results">
   <h4>
-    <a ng-href="{{ result.link }}">{{ result.metadata.title.values[0] || result.uri }}</a>
+    <a ui-sref="root.layout.doc({uri: result.uri})">{{ result.metadata.title.values[0] || result.uri }}</a>
   </h4>
   <div class="matches">
     <div class="match" ng-repeat="match in result.matches">

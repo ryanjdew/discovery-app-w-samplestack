@@ -17,6 +17,8 @@ package com.marklogic.samplestack.web;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,11 +68,16 @@ public class DocumentController {
 	 * @param start The index of the first return result.
 	 * @return A Search API JSON response containing matches, facets and snippets.
 	 */
-	@RequestMapping(value = "v1/documents", method = RequestMethod.GET)
+	@RequestMapping(value = "v1/documents", method = RequestMethod.GET, produces = "application/xml")
 	public @ResponseBody
-	byte[] getDocuments(@RequestParam(required = true) String uri,
+	byte[] getDocuments(HttpServletResponse response,
+			@RequestParam(required = true) String uri,
 			@RequestParam(required = false) String transform,
 			@RequestParam(required = false, defaultValue = "json") String format) {
+		if (format != "binary") {
+			response.setContentType("application/"+format);
+			logger.warn("set setContentType: application/"+format);
+		}
 		ServerTransform serverTransform = null;
 		if (transform != null) {
 			new ServerTransform(transform);

@@ -1,0 +1,8 @@
+<div class="row detail">
+  <div class="col-md-offset-2 col-md-8">
+    <!-- display JSON data -->
+    <json-explorer ng-if="model.type === 'json'" data="model.detail"></json-explorer>
+    <pre class="prettify-w-indentation" ng-if="model.type === 'xml'" ng-bind-html="model.detail"></pre>
+    <object ng-cloak class="col-sm-12" ng-if="model.type === 'binary'" class="object-fit-cover" data="/vl/documents?uri={{model.uri}}"></object>
+  </div>
+</div>

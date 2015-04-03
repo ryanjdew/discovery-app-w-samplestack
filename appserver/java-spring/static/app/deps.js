@@ -8,6 +8,7 @@ names.
 require.config({
   paths: {
     /* jshint ignore: start */
+    'prettify': 'deps/google-code-prettify/bin/prettify.min',
     'lodash': 'deps/lodash/dist/lodash.compat',
     'angular': 'deps/angular/angular',
     'ui-router': 'deps/angular-ui-router/release/angular-ui-router',
@@ -34,7 +35,7 @@ require.config({
   },
 
   shim: {
-    'angular': { exports: 'angular', deps: ['jquery'] },
+    'angular': { exports: 'angular', deps: ['jquery', 'prettify'] },
     'angular-mocks': { deps: ['angular'] },
     'ui-router': { deps: ['angular'] },
     'state-helper': { deps: ['angular', 'ui-router'] },
