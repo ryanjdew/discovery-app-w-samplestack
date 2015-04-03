@@ -9,7 +9,7 @@ define(['app/module'], function (module) {
    *
    */
 
-  module.controller('exploreCtlr', ['$scope', '$location', 'MLSearchFactory', function ($scope, $location, searchFactory) {
+  module.controller('exploreCtlr', ['$scope', '$location', 'MLSearchFactory', 'ServerConfig', function ($scope, $location, searchFactory, ServerConfig) {
       var mlSearch = searchFactory.newContext(),
           model = {
             page: 1,
@@ -18,11 +18,7 @@ define(['app/module'], function (module) {
           };
 
       (function init() {
-
-        // run a search when the user logs in
-        $scope.$watch('model.user.authenticated', function() {
-          search();
-        });
+        search();
 
         // capture initial URL params in mlSearch and ctrl model
         mlSearch.fromParams().then(function() {
@@ -39,6 +35,10 @@ define(['app/module'], function (module) {
         });
       })();
 
+      ServerConfig.getCharts().then(function(chartData) {
+        model.chartData = chartData;
+      });
+      
       function updateSearchResults(data) {
         model.search = data;
         model.qtext = mlSearch.getText();
