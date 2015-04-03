@@ -5,14 +5,16 @@ define(['app/module'], function (module) {
       var serverConfig = {};
       serverConfig.get = function() {
         var config = {},
-            defered = [$q.defer(),$q.defer(),$q.defer()],
+            defered = [$q.defer(),$q.defer(),$q.defer(),$q.defer()],
             promises = _.map(defered, function(d) { return d.promise; }),
             configItems = {
+              chartData: 'getCharts',
               searchOptions: 'getSearchOptions',
               fields: 'getFields',
               rangeIndexes: 'getRangeIndexes'
             },
             defaults = {
+              chartData: {charts: []},
               searchOptions: {option: {constraint: []}},
               fields: {fieldList: []},
               rangeIndexes: {tangeindexList: []}
@@ -33,6 +35,20 @@ define(['app/module'], function (module) {
         recursiveRun(Object.keys(configItems), 0);
 
         return $q.all(promises).then(function() { return config; });
+      };
+
+      serverConfig.getCharts = function() {
+        return $http.get('/server/charts')
+          .then(function(response){
+            return response.data;
+          });
+      };
+
+      serverConfig.setCharts = function(charts) {
+        return $http.put('/server/charts', charts)
+          .then(function(response){
+            return response.data;
+          });
       };
 
       serverConfig.getFields = function() {

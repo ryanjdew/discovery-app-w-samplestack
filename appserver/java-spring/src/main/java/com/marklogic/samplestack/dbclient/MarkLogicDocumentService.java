@@ -19,22 +19,30 @@ import static com.marklogic.samplestack.SamplestackConstants.DOCUMENTS_DIRECTORY
 import static com.marklogic.samplestack.SamplestackConstants.DOCUMENTS_OPTIONS;
 import static com.marklogic.samplestack.security.ClientRole.SAMPLESTACK_CONTRIBUTOR;
 
+import java.io.IOException;
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.marklogic.client.ResourceNotFoundException;
 import com.marklogic.client.document.GenericDocumentManager;
+import com.marklogic.client.document.JSONDocumentManager;
 import com.marklogic.client.document.ServerTransform;
 import com.marklogic.client.io.BytesHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.QueryManager.QueryView;
 import com.marklogic.client.query.RawQueryDefinition;
+import com.marklogic.samplestack.exception.SamplestackIOException;
 import com.marklogic.samplestack.exception.SamplestackSearchException;
 import com.marklogic.samplestack.security.ClientRole;
 import com.marklogic.samplestack.service.ContributorService;
@@ -129,4 +137,32 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 		deleteDirectory(SAMPLESTACK_CONTRIBUTOR, DOCUMENTS_DIRECTORY);
 	}
 
+	@PostConstruct
+	public void storeNeccesaryConfig() {
+		JSONDocumentManager docMgr = jsonDocumentManager(SAMPLESTACK_CONTRIBUTOR);
+		try {
+			// leave them alone if already in db.
+			JacksonHandle responseHandle = new JacksonHandle();
+			docMgr.read("/config/charts.json", responseHandle);
+			logger.info("charts config already in the database");
+		} catch (ResourceNotFoundException e) {
+			ClassPathResource chartsResource = new ClassPathResource(
+					"config/charts.json");
+			ObjectNode charts = null;
+			try {
+				charts = mapper.readValue(chartsResource.getInputStream(),
+						ObjectNode.class);
+			} catch (JsonParseException e1) {
+				throw new SamplestackIOException(
+						"Setup of Charts Failed.  Check/clean/clear db", e1);
+			} catch (JsonMappingException e1) {
+				throw new SamplestackIOException(
+						"Setup of Charts Failed.  Check/clean/clear db", e1);
+			} catch (IOException e1) {
+				throw new SamplestackIOException(
+						"Setup of Charts Failed.  Check/clean/clear db", e1);
+			}
+			docMgr.write("/config/charts.json", new JacksonHandle(charts));;
+		}
+	}
 }

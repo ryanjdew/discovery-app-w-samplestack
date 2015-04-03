@@ -34,4 +34,8 @@ public interface SetupService {
 	public ObjectNode setSearchOptions(ObjectNode searchOptions);
 	
 	public ObjectNode loadData(String directory);
+	
+	public ObjectNode findChartData();
+	
+	public ObjectNode setChartData(ObjectNode chartData);
 }

@@ -30,7 +30,7 @@ define(['app/module'], function (module) {
       updateSearchResults();
 
       ServerConfig.get().then(function(config){
-        model.charts = [];
+        model.chartData = config.chartData;
         model.fields = config.fields;
         model.rangeIndexes = config.rangeIndexes;
         model.searchOptions = config.searchOptions;
@@ -59,9 +59,13 @@ define(['app/module'], function (module) {
         },
         addChart: function() {
           newChartWidgetDialog(model.search.facets).then(function(chart) {
-            model.charts.push(chart);
-            //ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults);
+            model.chartData.charts.push(chart);
+            ServerConfig.setCharts(model.chartData).then(updateSearchResults);
           });
+        },
+        removeChart: function(chartPosition) {
+          model.chartData.charts.splice(chartPosition, 1);
+          ServerConfig.setCharts(model.chartData).then(updateSearchResults);
         },
         addIndex: function() {
           newRangeIndexDialog().then(function(index) {

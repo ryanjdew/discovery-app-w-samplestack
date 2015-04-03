@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.admin.QueryOptionsManager;
+import com.marklogic.client.document.JSONDocumentManager;
 import com.marklogic.client.extensions.ResourceManager;
 import com.marklogic.client.extensions.ResourceServices.ServiceResult;
 import com.marklogic.client.extensions.ResourceServices.ServiceResultIterator;
@@ -189,9 +190,9 @@ public class SetupManager extends ResourceManager implements SetupService {
 	}
 
 	/**
-	 * Gets tags from the server that are related to the provided one.
-	 * @param tag An input tag to check for related tags.
-	 * @return A list of tags related to the input.
+	 * Loads data
+	 * @param directory to load into DB.
+	 * @return ObjectNode
 	 */
 	public ObjectNode loadData(String directory) {
 		ObjectNode docNode = mapper.createObjectNode();
@@ -208,5 +209,27 @@ public class SetupManager extends ResourceManager implements SetupService {
 			results = (ObjectNode) result.getContent(new JacksonHandle()).get();
 		}
 		return results;
+	}
+	
+	/**
+	 * Gets chart data from the server.
+	 * @return ObjectNode
+	 */
+	public ObjectNode findChartData() {
+		JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newJSONDocumentManager(); 
+		JacksonHandle responseHandle = new JacksonHandle();
+		docMgr.read("/config/charts.json", responseHandle);
+		return (ObjectNode) responseHandle.get();
+	}
+
+	/**
+	 * Sets chart data in database.
+	 * @param chartData An input tag to check for related tags.
+	 * @return ObjectNode.
+	 */
+	public ObjectNode setChartData(ObjectNode chartData) {
+		JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newJSONDocumentManager(); 
+		docMgr.write("/config/charts.json", new JacksonHandle(chartData));
+		return chartData;
 	}
 }
