@@ -51,15 +51,7 @@ define(['app/module'], function (module) {
           ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults);
         },
         editIndex: function(index) {
-          var indexValue,
-            indexType;
-          angular.forEach(index, function(val, keyName){
-            if (keyName === 'rangeElementIndex' || keyName === 'rangeElementAttributeIndex' || keyName === 'rangeFieldIndex') {
-              indexType = keyName;
-              indexValue = val;
-            }
-          });
-          editRangeIndexDialog(indexValue, indexType).then(function(index) {
+          editRangeIndexDialog(index).then(function(index) {
             if (index) {
               ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults);
             }
