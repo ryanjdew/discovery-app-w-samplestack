@@ -24,6 +24,6 @@ public
 .springbeans
 *.iml
 *.ipr
-bin
+/bin/
 src/main/resources/test-server.ldif~
 creds
