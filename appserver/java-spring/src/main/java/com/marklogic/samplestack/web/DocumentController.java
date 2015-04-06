@@ -154,5 +154,33 @@ public class DocumentController {
 		}
 		return docService.rawSearch(ClientRole.securityContextRole(), combinedQuery, options, start, pageLength);
 	}
+	
+	/**
+	 * Exposes an endpoint for search suggestions.
+	 * @param combinedQuery A JSON combined query.
+	 * @param start The index of the first result to return.
+	 * @return A Search Results JSON response.
+	 */
+	@RequestMapping(value = "v1/suggest", method = RequestMethod.GET)
+	public @ResponseBody
+	ObjectNode getSearchSuggest(
+			@RequestParam(defaultValue = "", required = false) String qtext,
+			@RequestParam(defaultValue = "all", required = false) String options) {
+		return docService.suggest(qtext, options);
+	}
+
+	/**
+	 * Exposes an endpoint for search suggestions.
+	 * @param combinedQuery A JSON combined query.
+	 * @param start The index of the first result to return.
+	 * @return A Search Results JSON response.
+	 */
+	@RequestMapping(value = "v1/suggest", method = RequestMethod.POST)
+	public @ResponseBody
+	ObjectNode postSearchSuggest(
+			@RequestParam(defaultValue = "", required = false) String qtext,
+			@RequestParam(defaultValue = "all", required = false) String options) {
+		return docService.suggest(qtext, options);
+	}
 
 }

@@ -27,38 +27,7 @@
       "max-snippet-chars": "150",
       "per-match-tokens": "20"
     },
-    "operator": [{
-      "name": "results",
-      "state": [{
-        "name": "compact",
-        "transform-results": {
-          "apply": "snippet",
-          "preferred-elements": {
-            "element": {
-              "ns": "",
-              "name": "body"
-            }
-          },
-          "max-matches": "1",
-          "max-snippet-chars": "150",
-          "per-match-tokens": "20"
-        }
-      }, {
-        "name": "detailed",
-        "transform-results": {
-          "apply": "snippet",
-          "preferred-elements": {
-            "element": {
-              "ns": "",
-              "name": "body"
-            }
-          },
-          "max-matches": "2",
-          "max-snippet-chars": "400",
-          "per-match-tokens": "30"
-        }
-      }]
-    }],
+    "operator": [],
     "annotation": ["Delta options here"],
     "extract-metadata": {
       "qname": [{

@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.ResourceNotFoundException;
 import com.marklogic.client.document.GenericDocumentManager;
@@ -42,6 +43,7 @@ import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.QueryManager.QueryView;
 import com.marklogic.client.query.RawQueryDefinition;
+import com.marklogic.client.query.SuggestDefinition;
 import com.marklogic.samplestack.exception.SamplestackIOException;
 import com.marklogic.samplestack.exception.SamplestackSearchException;
 import com.marklogic.samplestack.security.ClientRole;
@@ -104,7 +106,7 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 		GenericDocumentManager docMgr = genericDocumentManager(role);
 
 		RawQueryDefinition qdef = queryManager.newRawStructuredQueryDefinition(
-				new JacksonHandle(docNode), DOCUMENTS_OPTIONS);;
+				new JacksonHandle(docNode), DOCUMENTS_OPTIONS);
 		qdef.setDirectory(DOCUMENTS_DIRECTORY);
 		qdef.setOptionsName(options);
 		JacksonHandle responseHandle = new JacksonHandle();
@@ -164,5 +166,18 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 			}
 			docMgr.write("/config/charts.json", new JacksonHandle(charts));;
 		}
+	}
+
+	@Override
+	public ObjectNode suggest(String qtext, String options) {
+		QueryManager queryManager = clients.get(SAMPLESTACK_CONTRIBUTOR).newQueryManager();	
+		SuggestDefinition suggestionDef = queryManager.newSuggestDefinition(qtext, options);
+		String[] suggestions = queryManager.suggest(suggestionDef);
+		ObjectNode docNode = mapper.createObjectNode();
+		ArrayNode suggestionsArray = docNode.putArray("suggestions");
+		for (String val:suggestions) {
+			suggestionsArray.add(val);
+		}
+		return docNode;
 	}
 }

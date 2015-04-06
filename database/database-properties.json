@@ -10,5 +10,7 @@
     "range-element-index": [],
     "range-path-index": [],
     "three-character-searches":true,
+    "fast-element-character-searches": true, 
+    "fast-element-phrase-searches": true,
     "triple-index": true
 }

@@ -59,9 +59,14 @@ define(['app/module'], function (module) {
           .then(updateSearchResults);
       }
 
+      function suggest(qtext) {
+        return mlSearch.suggest(qtext);
+      }
+
       angular.extend($scope, {
         model: model,
         search: search,
+        suggest: suggest,
         toggleFacet: function toggleFacet(facetName, value) {
           mlSearch
             .toggleFacet( facetName, value )

@@ -45,14 +45,19 @@ public interface DocumentService {
 	/**
 	 * Retrieves a Document by uri.
 	 * 
-	 * @param role
-	 *            ClientRole on whose behalf to execute the search.
-	  * @param contributor
-	 *            The contributor who is getting the question.
 	 * @param uri  of the document
-	 * @return The QnADocument identified by id
+	 * @param transform of document
+	 * @return The Document identified by uri
 	 */
 	public byte[] get(String uri, ServerTransform transform);
+
+	/**
+	 * Suggests text for search
+	 * 
+	 * @param qtext query text for suggestion
+	 * @param options for suggestion
+	 */
+	public ObjectNode suggest(String qtext, String options);
 
 	/**
 	 * Removes a QnA document from the database. Not used by the runtime

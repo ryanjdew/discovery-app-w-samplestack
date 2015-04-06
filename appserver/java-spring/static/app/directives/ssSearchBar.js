@@ -14,21 +14,20 @@ define(['app/module'], function (module) {
 
   /* jshint ignore:end */
 
-  module.directive('ssSearchBar', function () {
+  module.directive('ssSearchBar', ['MLSearchFactory',function (searchFactory) {
     return {
       restrict: 'E',
       templateUrl: '/app/directives/ssSearchBar.html',
       link: function (scope) {
-        scope.setQueryText = function () {
-          scope.$emit('setQueryText', { queryText: scope.searchbarText });
-        };
-        scope.clearSearch = function () {
-          scope.searchbarText = null;
-          scope.showTips = false;
-          scope.setQueryText(); // reset mode to browse
+        mlSearch = searchFactory.newContext();
+        scope.suggest = function(val) {
+          return mlSearch.suggest(val).then(function(resp) {
+            console.log(resp);
+            return resp.suggestions;
+          });
         };
         scope.showTips = false;
       }
     };
-  });
+  }]);
 });
