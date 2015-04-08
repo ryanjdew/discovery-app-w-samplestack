@@ -9,7 +9,7 @@ define([
             scope.populatedConfigs = [];
             var chartsLength = scope.charts.length;
             angular.forEach(scope.charts, function(chart, index) {
-              var populatedConfig = HighchartsHelper.chartFromConfig(chart, scope.facets[chart.facetName]);
+              var populatedConfig = HighchartsHelper.chartFromConfig(chart, scope.facets[chart.facetName], scope.callback);
               scope.populatedConfigs.push(populatedConfig);
             });
           }
@@ -32,7 +32,8 @@ define([
       scope: {
         'facets': '=',
         'removeChart': '=',
-        'charts': '='
+        'charts': '=',
+        'callback': '&'
       },
       link: link
     };

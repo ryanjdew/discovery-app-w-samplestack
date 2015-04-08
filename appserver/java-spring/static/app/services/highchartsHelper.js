@@ -1,4 +1,4 @@
-define(['app/module'], function (module) {
+define(['app/module'], function(module) {
   'use strict';
   module
     .factory('HighchartsHelper', [function() {
@@ -9,10 +9,9 @@ define(['app/module'], function (module) {
           seriesData = [{
             type: chartType,
             name: facet.name,
-            data: 
-              _.map(facet.facetValues, function(val) {
-                return [ val.name, val.count ];
-              })
+            data: _.map(facet.facetValues, function(val) {
+              return [val.name, val.count];
+            })
           }];
         } else {
           seriesData = _.map(facet.facetValues, function(val) {
@@ -25,11 +24,26 @@ define(['app/module'], function (module) {
         return seriesData;
       };
 
-      highchartsHelper.chartFromConfig = function(highchartConfig, facet) {
+      highchartsHelper.chartFromConfig = function(highchartConfig, facet, callback) {
         var chartType = highchartConfig.options.chart.type;
         var chart = angular.copy(highchartConfig);
         if (facet) {
-          chart.series =  highchartsHelper.seriesData(facet, chartType);
+          chart.series = highchartsHelper.seriesData(facet, chartType);
+          if (callback) {
+            chart.options.plotOptions = {
+              series: {
+                cursor: 'pointer',
+                point: {
+                  events: {
+                    click: function() {
+                      var value = this.name || this.series.name;
+                      callback({facet:facet.__key, value:value});
+                    }
+                  }
+                }
+              }
+            };
+          }
         }
         return chart;
       };
@@ -42,7 +56,7 @@ define(['app/module'], function (module) {
           'areaspline',
           'column',
           'bar',
-          'pie' ,
+          'pie',
           'scatter'
         ];
       };

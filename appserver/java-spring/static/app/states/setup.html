@@ -86,7 +86,7 @@
           <h3 ng-if="model.search.total === 0">No results to show</h3>
           <ml-facets class="col-md-3" facets="model.search.facets" toggle="toggleFacet(facet, value)"></ml-facets>
           <div class="col-md-9">
-            <facet-charts charts="model.chartData.charts" facets="model.search.facets" remove-chart="removeChart"></facet-charts>
+            <facet-charts charts="model.chartData.charts" facets="model.search.facets" remove-chart="removeChart" callback="toggleFacet(facet, value)"></facet-charts>
             <ml-results results="model.search.results" template="/app/directives/ssSearchResults.html"></ml-results>
           </div>
         </div>
