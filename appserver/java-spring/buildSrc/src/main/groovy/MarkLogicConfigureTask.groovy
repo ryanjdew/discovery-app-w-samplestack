@@ -1,5 +1,6 @@
 import groovy.json.*
 import groovyx.net.http.RESTClient
+import java.util.regex.Pattern
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.InputDirectory
@@ -123,8 +124,9 @@ public class MarkLogicConfigureTask extends MarkLogicTask {
 
     void putExtension(extension) {
         def extensionFileName = extension.getPath().replaceAll(~"\\\\","/")
+        def extensionNameRegex = ".*"+ Pattern.quote(restExtensions) + "\\/"
         def extensionName = 
-            extensionFileName.replaceAll(~".*\\/","")
+            extensionFileName.replaceAll(~extensionNameRegex,"")
         logger.info( "Saving library extension " + extensionFileName)
         RESTClient client = new RESTClient("http://" + config.marklogic.rest.host + ":" + config.marklogic.rest.port + "/v1/ext/" + extensionName)
         client.getEncoder().putAt("application/xquery", client.getEncoder().getAt("text/plain"))

@@ -76,12 +76,12 @@ public class DocumentController {
 			@RequestParam(required = false, defaultValue = "json") String format) {
 		if (format != "binary") {
 			response.setContentType("application/"+format);
-			logger.warn("set setContentType: application/"+format);
 		}
 		ServerTransform serverTransform = null;
 		if (transform != null) {
-			new ServerTransform(transform);
+			serverTransform = new ServerTransform(transform);
 		}
+		logger.warn("[docController.get] Transform: " + transform);
 		return docService.get(uri, serverTransform);
 	}	
 	/**

@@ -125,6 +125,9 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 	public byte[] get(String uri, ServerTransform transform) {
 		GenericDocumentManager docMgr = genericDocumentManager(SAMPLESTACK_CONTRIBUTOR);
 		BytesHandle responseHandle = new BytesHandle();
+		if (transform != null) {
+			logger.warn("[docService.get] Transform: " + transform.getName());
+		}
 		docMgr.read(uri, null, responseHandle, transform);
 		return responseHandle.get();
 	}

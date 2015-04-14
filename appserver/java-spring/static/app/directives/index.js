@@ -4,6 +4,5 @@ define([
   './ssAccountDropdown',
   './ssMarkdown',
   './ssMarkdownEditor',
-  './ssSearchBar',
-  './ssSearchResult'
+  './ssSearchBar'
 ], function () {});

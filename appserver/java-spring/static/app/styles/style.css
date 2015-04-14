@@ -5197,8 +5197,10 @@ h1 {
   /* entire last column */
   /* last label */
   /* last sample */ }
-  .ss-search-bar .search-wrapper {
+  .ss-main {
     margin-top: 50px;
+  }
+  .ss-search-bar .search-wrapper {
     background: #22224f;
     /* Old browsers */
     background: -moz-linear-gradient(left, #22224f 0%, #4668a9 43%, #4668a9 58%, #222350 100%);

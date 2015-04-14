@@ -37,21 +37,18 @@ define(['app/module'], function (module) {
       }
 
       if (model.type !== 'binary') {
-        console.log('making doc call');
-        mlRest.getDocument(model.uri, { format: model.type }).then(function(response) {
-          console.log('response');
-          console.log(response);
+        mlRest.getDocument(model.uri, { format: 'json', transform: 'simple-html' }).then(function(response) {
+          model.html = response.data.transform;
           if (model.type === 'xml') {
-            model.detail = prettyPrintOne(escapeXml(response.data), 'xml');
+            model.detail = prettyPrintOne(escapeXml(response.data.source), 'xml');
           } else {
-            model.detail = response.data;
+            model.detail = response.data.source;
           }
         });
       }
-      console.log(model);
       angular.extend($scope, {
-        model: model
-
+        model: model,
+        state: 'Display'
       });
     }]);
 

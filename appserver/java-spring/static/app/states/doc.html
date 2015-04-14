@@ -1,8 +1,20 @@
-<div class="row detail">
+<div class="container-fluid detail">
   <div class="col-md-offset-2 col-md-8">
-    <!-- display JSON data -->
-    <json-explorer ng-if="model.type === 'json'" data="model.detail"></json-explorer>
-    <pre class="prettify-w-indentation" ng-if="model.type === 'xml'" ng-bind-html="model.detail"></pre>
-    <object ng-cloak class="col-sm-12" ng-if="model.type === 'binary'" class="object-fit-cover" data="/vl/documents?uri={{model.uri}}"></object>
+    <div>
+      <ul class="nav nav-tabs">
+        <li role="presentation" ng-class="{'active': state === 'Display'}"><a ng-click="state = 'Display'">Display</a></li>
+        <li role="presentation" ng-class="{'active': state === 'Source'}"><a ng-click="state = 'Source'">Source</a></li>
+      </ul>
+      <div ng-show="state === 'Display'">
+        <!-- display JSON data -->
+        <div ng-bind-html="model.html"></div>
+      </div>
+      <div ng-show="state === 'Source'">
+        <!-- display JSON data -->
+        <json-explorer ng-if="model.type === 'json'" data="model.detail"></json-explorer>
+        <pre class="prettify-w-indentation" ng-if="model.type === 'xml'" ng-bind-html="model.detail"></pre>
+        <object ng-cloak class="col-sm-12" ng-if="model.type === 'binary'" class="object-fit-cover" data="/vl/documents?uri={{model.uri}}"></object>
+      </div>
+    </div>
   </div>
 </div>
