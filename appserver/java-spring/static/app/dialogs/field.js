@@ -3,7 +3,7 @@ define(['app/module'], function (module) {
   /**
    * @ngdoc controller
    * @kind constructor
-   * @name EditIndexCtrl
+   * @name EditFieldCtrl
    * @description
    * Controller for {@link loginDialog}. The controller is injected by the
    * $modal service. Provides a user interface for authenticating a user.
@@ -22,47 +22,40 @@ define(['app/module'], function (module) {
    * @property {string} $scope.session.username The username input.
    * @property {string} $scope.session.password The password input.
    */
-  module.controller('EditIndexCtrl', ['$modalInstance', '$scope', 'ServerConfig', 'index', 'indexType', function ($modalInstance, $scope, ServerConfig, index, indexType) {
-      $scope.indexType = indexType;
-      $scope.dataTypes = ServerConfig.dataTypes();
-      $scope.index = index;
+  module.controller('FieldCtrl', ['$modalInstance', '$scope', 'field', function ($modalInstance, $scope, field) {
+      $scope.field = field;
       $scope.save = function () {
-        if ($scope.index['scalar-type'] !== 'string') {
-          $scope.index.collation = '';
-        }
-        $modalInstance.close($scope.index);
+        $modalInstance.close($scope.field);
       };
     }]);
 
   /**
    * @ngdoc dialog
-   * @name newRangeIndexDialog
+   * @name editFieldDialog
    * @kind function
    * @description A UI Bootstrap component that provides a modal dialog for
    * adding a range index to the application.
    */
-  module.factory('editRangeIndexDialog', [
+  module.factory('fieldDialog', [
     '$modal',
     function ($modal) {
-      return function (index) {
-      	var indexValue,
-            indexType;
-        angular.forEach(index, function(val, keyName){
-          if (keyName === 'range-element-index' || keyName === 'range-element-attribute-index' || keyName === 'range-field-index') {
-            indexType = keyName;
-            indexValue = val;
-          }
-        });
+      return function (field) {
+        field = field || {
+            'include-root': false,
+            'field-name': '',
+            'included-element': [],
+            'excluded-element': [],
+            'word-lexicons': ["http://marklogic.com/collation/"]
+          };
         return $modal.open({
-            templateUrl: '/app/dialogs/editRangeIndex.html',
-            controller: 'EditIndexCtrl',
+            templateUrl: '/app/dialogs/field.html',
+            controller: 'FieldCtrl',
             size: 'lg',
             resolve: {
-              index: function() {
-                return indexValue;
-              },
-              indexType: function() {
-                return indexType;
+              field: function() {
+                field['included-element'] = field['included-element'] || []; 
+                field['excluded-element'] = field['excluded-element'] || []; 
+                return field;
               }
             }
           }).result;

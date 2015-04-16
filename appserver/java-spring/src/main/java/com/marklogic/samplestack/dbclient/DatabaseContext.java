@@ -50,6 +50,16 @@ public class DatabaseContext {
 		Clients clients = new Clients(env);
 		return clients;
 	}
+
+	@Bean
+	/**
+	 * Makes a ManagementClient object available to the application.
+	 * @return A ManagementClient class, which allows use to modify database properties;
+	 */
+	public ManagementClient managementClient() {
+		ManagementClient mgClient = new ManagementClient(env);
+		return mgClient;
+	}
 	
 	@Bean
 	/**

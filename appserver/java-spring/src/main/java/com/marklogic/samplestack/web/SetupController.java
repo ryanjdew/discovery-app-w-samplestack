@@ -65,15 +65,16 @@ public class SetupController {
 		return setupService.setChartData(charts);
 	}
 
+	
 	/**
 	 * Exposes endpoint that returns CSRF token information and a session for use in login.
 	 * @param request The Http Request.
 	 * @param response The Http response.
 	 * @return A JsonNode with bare-bones acknowledgement.
 	 */
-	@RequestMapping(value = "server/database/range-indexes", method = RequestMethod.GET)
-	public @ResponseBody ObjectNode getRangeIndexes() {
-		return setupService.findIndexes();
+	@RequestMapping(value = "server/database/properties", method = RequestMethod.GET)
+	public @ResponseBody ObjectNode getDatabaseProperties() {
+		return setupService.getDatabaseProperties();
 	}
 	
 	/**
@@ -87,17 +88,6 @@ public class SetupController {
 		return setupService.setIndexes(indexes);
 	}
 	
-	/**
-	 * Exposes endpoint that returns CSRF token information and a session for use in login.
-	 * @param request The Http Request.
-	 * @param response The Http response.
-	 * @return A JsonNode with bare-bones acknowledgement.
-	 */
-	@RequestMapping(value = "server/database/fields", method = RequestMethod.GET)
-	public @ResponseBody ObjectNode getFields() {
-		return setupService.findFields();
-	}
-
 	/**
 	 * Exposes endpoint that returns CSRF token information and a session for use in login.
 	 * @param request The Http Request.

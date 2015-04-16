@@ -12,27 +12,31 @@
         <label class="control-label">Type of Index</label>
         <input class="form-control" type="text" ng-model="indexType" disabled="disabled" />
       </div>
+      <div ng-if="index['field-name']" class="form-group">
+        <label class="control-label">Field Name</label>
+        <input class="form-control" type="text" ng-model="index['field-name']" />
+      </div>
       <div class="form-group">
         <label class="control-label">Type</label>
-        <select class="form-control" name="indexType" ng-model="index.scalarType" ng-options="dataType for dataType in dataTypes">
+        <select class="form-control" name="indexType" ng-model="index['scalar-type']" ng-options="dataType for dataType in dataTypes">
         </select>
       </div>
       <div class="form-group">
         <label class="control-label">Collation</label>
-        <span ng-show="index.scalarType !== 'string'"><em>Not applicable</em></span>
-        <input class="form-control" ng-show="index.scalarType === 'string'" name="collation" type="text" ng-model="index.collation">
+        <span ng-show="index['scalar-type'] !== 'string'"><em>Not applicable</em></span>
+        <input class="form-control" ng-show="index['scalar-type'] === 'string'" name="collation" type="text" ng-model="index.collation">
       </div>
-      <div ng-if="index.parentNamespaceUri" class="form-group">
+      <div ng-if="index['parent-namespace-uri']" class="form-group">
         <label class="control-label">Parent Namespace URI</label>
-        <input class="form-control" name="parentNamespaceUri" type="text" ng-model="index.parentNamespaceUri">
+        <input class="form-control" name="parentNamespaceUri" type="text" ng-model="index['parent-namespace-uri']">
       </div>
-      <div ng-if="index.parentLocalname" class="form-group">
+      <div ng-if="index['parent-localname']" class="form-group">
         <label class="control-label">Parent Localname</label>
-        <input class="form-control" name="parentLocalname" type="text" ng-model="index.parentLocalname">
+        <input class="form-control" name="parentLocalname" type="text" ng-model="index['parent-localname']">
       </div>
-      <div ng-if="index.namespaceUri" class="form-group">
+      <div ng-if="index['namespace-uri']" class="form-group">
         <label class="control-label">Parent Namespace URI</label>
-        <input class="form-control" name="namespaceUri" type="text" ng-model="index.namespaceUri">
+        <input class="form-control" name="namespaceUri" type="text" ng-model="index['namespace-uri']">
       </div>
       <div ng-if="index.localname" class="form-group">
         <label class="control-label">Localname</label>

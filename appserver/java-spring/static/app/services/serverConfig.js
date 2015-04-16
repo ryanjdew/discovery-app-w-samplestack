@@ -3,6 +3,7 @@ define(['app/module'], function (module) {
   module
     .factory('ServerConfig', ['$http', '$q', function($http, $q) {
       var serverConfig = {};
+      var databasePropertiesPromise;
       serverConfig.get = function() {
         var config = {},
             defered = [$q.defer(),$q.defer(),$q.defer(),$q.defer()],
@@ -16,15 +17,18 @@ define(['app/module'], function (module) {
             defaults = {
               chartData: {charts: []},
               searchOptions: {option: {constraint: []}},
-              fields: {fieldList: []},
-              rangeIndexes: {tangeindexList: []}
+              fields: {'field-list': []},
+              rangeIndexes: {'range-index-list': []}
             };
+        if (databasePropertiesPromise) {
+          databasePropertiesPromise = null;
+        } 
         var recursiveRun = function(keys, index) {
           if (index < keys.length) {
             var d = defered[index],
               key = keys[index],
               value = configItems[key];
-            serverConfig[value]().then(function(result) {
+            serverConfig[value](true).then(function(result) {
               config[key] = result || defaults[key];
               recursiveRun(keys, index + 1);
               d.resolve(result);
@@ -35,6 +39,16 @@ define(['app/module'], function (module) {
         recursiveRun(Object.keys(configItems), 0);
 
         return $q.all(promises).then(function() { return config; });
+      };
+
+      serverConfig.getDatabaseProperties = function(cache) {
+        if (!(databasePropertiesPromise && cache)) {
+          databasePropertiesPromise = $http.get('/server/database/properties')
+          .then(function(response){
+            return response.data;
+          });
+        }
+        return databasePropertiesPromise;
       };
 
       serverConfig.getCharts = function() {
@@ -51,11 +65,14 @@ define(['app/module'], function (module) {
           });
       };
 
-      serverConfig.getFields = function() {
-        return $http.get('/server/database/fields')
-          .then(function(response){
-            return response.data;
-          });
+      serverConfig.getFields = function(cache) {
+        return serverConfig.getDatabaseProperties(cache).then(
+            function(dbProperties) {
+              return {
+                'field-list': dbProperties.field || []
+              };
+            }
+          );
       };
 
       serverConfig.setFields = function(rangeIndexes) {
@@ -65,11 +82,23 @@ define(['app/module'], function (module) {
           });
       };
 
-      serverConfig.getRangeIndexes = function() {
-        return $http.get('/server/database/range-indexes')
-          .then(function(response){
-            return response.data;
-          });
+      var rangeIndexTypes = ['range-element-index','range-element-attribute-index', 'range-path-index', 'range-field-index'];
+      serverConfig.getRangeIndexes = function(cache) {
+        return serverConfig.getDatabaseProperties(cache).then(
+            function(dbProperties) {
+              var rangeIndexes = [];
+              angular.forEach(rangeIndexTypes, function(indexType){
+                angular.forEach(dbProperties[indexType], function(index) {
+                  var modIndex = {};
+                  modIndex[indexType] = index;
+                  rangeIndexes.push(modIndex);
+                });
+              });
+              return {
+                'range-index-list': rangeIndexes
+              };
+            }
+          );
       };
 
       serverConfig.setRangeIndexes = function(rangeIndexes) {

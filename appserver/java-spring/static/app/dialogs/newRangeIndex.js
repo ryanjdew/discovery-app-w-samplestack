@@ -22,8 +22,9 @@ define(['app/module'], function (module) {
    * @property {string} $scope.session.username The username input.
    * @property {string} $scope.session.password The password input.
    */
-  module.controller('AddIndexCtrl', ['$modalInstance', '$scope', 'ServerConfig', function ($modalInstance, $scope, ServerConfig) {
+  module.controller('AddIndexCtrl', ['$modalInstance', '$scope', 'fields', 'ServerConfig', function ($modalInstance, $scope, fields, ServerConfig) {
       $scope.indexType = 'element';
+      $scope.fields = fields;
       $scope.dataTypes = ServerConfig.dataTypes();
       $scope.index = {
         scalarType: 'string',
@@ -31,29 +32,32 @@ define(['app/module'], function (module) {
       };
       $scope.add = function () {
         var selectedNode = $scope.index.selectedNode;
-        if (selectedNode) {
+        if (selectedNode || ($scope.indexType === 'field' && $scope.field)) {
           var index = {},
               indexTypeToObjProperty = {
-                element: 'rangeElementIndex',
-                attribute: 'rangeElementAttributeIndex',
-                field: 'rangeFieldIndex'
+                element: 'range-element-index',
+                attribute: 'range-element-attribute-index',
+                field: 'range-field-index'
               },
               objProperty = indexTypeToObjProperty[$scope.indexType];
           index[objProperty] = {
-            rangeValuePositions: false,
-            invalidValues: 'ignore'
+            'range-value-positions': false,
+            'invalid-values': 'ignore'
           };
           var subPart = index[objProperty];
           if ($scope.indexType === 'element' || $scope.indexType === 'attribute') {
             subPart.localname = selectedNode.attribute || selectedNode.element;
-            subPart.namespaceUri = selectedNode.attributeNamespace || selectedNode.elementNamespace;
+            subPart['namespace-uri'] = selectedNode.attributeNamespace || selectedNode.elementNamespace;
           }
           if ($scope.indexType === 'attribute') {
-            subPart.parentLocalname = selectedNode.element;
-            subPart.parentNamespaceUri = selectedNode.elementNamespace;
+            subPart['parent-localname'] = selectedNode.element;
+            subPart['parent-namespace-uri'] = selectedNode.elementNamespace;
           }
-          subPart.scalarType = $scope.index.scalarType;
-          if  (subPart.scalarType === 'string') {
+          if ($scope.indexType === 'field') {
+            subPart['field-name'] = $scope.field['field-name'];
+          }
+          subPart['scalar-type'] = $scope.index.scalarType;
+          if  (subPart['scalar-type'] === 'string') {
             subPart.collation = $scope.index.collation;
           }
           $modalInstance.close(index);
@@ -71,11 +75,16 @@ define(['app/module'], function (module) {
   module.factory('newRangeIndexDialog', [
     '$modal',
     function ($modal) {
-      return function () {
+      return function (fields) {
         return $modal.open({
           templateUrl : '/app/dialogs/newRangeIndex.html',
           controller : 'AddIndexCtrl',
-          size : 'lg'
+          size : 'lg',
+          resolve: {
+            fields: function() {
+              return fields;
+            }
+          }
         }).result;
       };
     }

@@ -16,6 +16,11 @@
           <option value="field">Field</option>
         </select>
       </div>
+      <div ng-show="indexType === 'field'" class="form-group">
+        <label class="control-label">Field</label>
+        <select class="form-control" name="field" ng-model="field" ng-options="field['field-name'] for field in fields">
+        </select>
+      </div>      
       <div class="form-group">
         <label class="control-label">Type</label>
         <select class="form-control" name="indexType" ng-model="index.scalarType" ng-options="dataType for dataType in dataTypes">
@@ -26,7 +31,7 @@
         <span ng-show="index.scalarType !== 'string'"><em>Not applicable</em></span>
         <input class="form-control" ng-show="index.scalarType === 'string'" name="collation" type="text" ng-model="index.collation">
       </div>
-      <finder type="indexType" index="index"></finder>
+      <finder ng-show="indexType !== 'field'" type="indexType" index="index"></finder>
       <div class="clearfix">
         <button type="button" class="btn btn-primary pull-right" ng-click="add()">Add</button>
       </div>

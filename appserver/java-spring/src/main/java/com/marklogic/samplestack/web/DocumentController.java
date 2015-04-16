@@ -81,7 +81,6 @@ public class DocumentController {
 		if (transform != null) {
 			serverTransform = new ServerTransform(transform);
 		}
-		logger.warn("[docController.get] Transform: " + transform);
 		return docService.get(uri, serverTransform);
 	}	
 	/**

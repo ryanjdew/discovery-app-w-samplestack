@@ -1,4 +1,5 @@
 <div class="setup col-md-10 col-md-offset-1">
+  <div ng-if="error" class="alert alert-danger">{{error}}</div>
   <div class="row">
     <div class="col-sm-2"></div>
     <h2 class="col-sm-10">Setup Application</h2>
@@ -28,33 +29,33 @@
               <tr><th>Name</th><th>Type</th><th>Collation</th><th class="col-sm-1"></th></tr>
             </thead>
             <tbody>
-              <tr ng-repeat="index in model.rangeIndexes.rangeindexList track by $index">
-                <td><a ng-click="editIndex(index)">{{(index.rangeElementIndex || index.rangeElementAttributeIndex || index.rangeFieldIndex).localname || (index.rangeElementIndex || index.rangeElementAttributeIndex || index.rangeFieldIndex).name}}</a></td>
-                <td>{{(index.rangeElementIndex || index.rangeElementAttributeIndex || index.rangeFieldIndex).scalarType}}</td>
-                <td>{{(index.rangeElementIndex || index.rangeElementAttributeIndex || index.rangeFieldIndex).collation}}</td>
+              <tr ng-repeat="index in model.rangeIndexes['range-index-list'] track by $index">
+                <td><a ng-click="editIndex(index)">{{(index['range-element-index'] || index['range-element-attribute-index']).localname || (index['range-element-index'] || index['range-element-attribute-index']).name || index['range-field-index']['field-name']}}</a></td>
+                <td>{{(index['range-element-index'] || index['range-element-attribute-index'] || index['range-field-index'])['scalar-type']}}</td>
+                <td>{{(index['range-element-index'] || index['range-element-attribute-index'] || index['range-field-index']).collation}}</td>
                 <td class="col-sm-1"><a class="pull-right" ng-click="removeIndex($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <!--div class="panel panel-default">
-        <div class="panel-heading">Fields </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Fields <a class="pull-right" ng-click="addField()"><i class="glyphicon glyphicon-plus-sign"></i> Add</a></div>
         <div class="panel-body">
           <table>
             <thead>
               <tr><th>Name</th><th></th><th class="col-sm-1"></th></tr>
             </thead>
             <tbody>
-              <tr ng-repeat="field in model.fields.fieldList track by $index">
-                <td>{{field.field.fieldName}}</td>
-                <td><span ng-repeat="includedElement in field.field.includedElements.includedElement">{{includedElement.localname}} <span ng-if="!$last">, </span></span></td>
+              <tr ng-repeat="field in model.fields['field-list'] track by $index">
+                <td><a ng-click="editField(field)">{{field['field-name']}}</a></td>
+                <td><span ng-repeat="includedElement in field['included-element']">{{includedElement.localname}} <span ng-if="!$last">, </span></span></td>
                 <td class="col-sm-1"><a class="pull-right" ng-click="removeField($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
               </tr>
             </tbody>
           </table>
         </div>
-      </div-->
+      </div>
     </div>
     <div ng-show="state === 'constraints'">
       <div class="panel panel-default">
@@ -62,13 +63,14 @@
         <div class="panel-body">
           <table>
           <thead>
-            <tr><th class="col-sm-3">Label</th><th class="col-sm-4">Source</th><th class="col-sm-1">Faceted</th></tr>
+            <tr><th class="col-sm-3">Label</th><th class="col-sm-4">Source</th><th class="col-sm-1">Faceted</th><th class="col-sm-1"></th></tr>
           </thead>
           <tbody>
             <tr ng-repeat="constraint in model.constraints track by $index">
             <td class="col-sm-3"><input type="text" ng-model="constraint.name"/></td>
             <td class="col-sm-4" ng-init="details = (constraint.range || constraint.word)"><span ng-if="constraint.range">Range:</span><span ng-if="constraint.word">Word:</span> {{(constraint.range || constraint.word).field.name || (constraint.range || constraint.word).attribute.name || (constraint.range || constraint.word).element.name}} (<span ng-if="(constraint.range || constraint.word).attribute">attribute</span><span ng-if="(constraint.range || constraint.word).element && !(constraint.range || constraint.word).attribute">element</span><span ng-if="(constraint.range || constraint.word).field">field</span>)</td>
             <td class="col-sm-1"><input type="checkbox" ng-model="(constraint.range || constraint.word).facet"/></td>
+            <td class="col-sm-1"><a class="pull-right" ng-click="removeConstraint($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
           </tbody>
           </table>

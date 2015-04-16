@@ -50,7 +50,10 @@ public class SetupManager extends ResourceManager implements SetupService {
 
 	@Autowired
 	private Clients clients;
-	
+
+	@Autowired
+	private ManagementClient managementClient;
+
 	@Autowired
 	private MarkLogicUtilities utilities;
 	
@@ -90,62 +93,9 @@ public class SetupManager extends ResourceManager implements SetupService {
 	 * @param tag An input tag to check for related tags.
 	 * @return A list of tags related to the input.
 	 */
-	public ObjectNode findIndexes() {
-		clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).init("range-indexes",  this);  // is this expensive?
-		RequestParameters params = new RequestParameters();
-		params.add("mode", "json");
-		String[] mimetypes = new String[] { "application/json" };
-		
-		ServiceResultIterator resultIterator = getServices().get(params, mimetypes);
-		
-		ObjectNode results = null;
-		if (resultIterator.hasNext() ){
-			ServiceResult result = resultIterator.next();
-			results = (ObjectNode) result.getContent(new JacksonHandle()).get();
-		}
-		return results;
-	}
-
-	/**
-	 * Gets tags from the server that are related to the provided one.
-	 * @param tag An input tag to check for related tags.
-	 * @return A list of tags related to the input.
-	 */
 	public ObjectNode setIndexes(ObjectNode indexes) {
-		clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).init("range-indexes",  this);  // is this expensive?
-		RequestParameters params = new RequestParameters();
-		params.add("mode", "json");
-		String[] mimetypes = new String[] { "application/json" };
-		
-		ServiceResultIterator resultIterator = getServices().post(params, new JacksonHandle(indexes), mimetypes);
-		
-		ObjectNode results = null;
-		if (resultIterator.hasNext() ){
-			ServiceResult result = resultIterator.next();
-			results = (ObjectNode) result.getContent(new JacksonHandle()).get();
-		}
-		return results;
-	}
-
-	/**
-	 * Gets tags from the server that are related to the provided one.
-	 * @param tag An input tag to check for related tags.
-	 * @return A list of tags related to the input.
-	 */
-	public ObjectNode findFields() {
-		clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).init("fields",  this);  // is this expensive?
-		RequestParameters params = new RequestParameters();
-		params.add("mode", "json");
-		String[] mimetypes = new String[] { "application/json" };
-		
-		ServiceResultIterator resultIterator = getServices().get(params, mimetypes);
-		
-		ObjectNode results = null;
-		if (resultIterator.hasNext() ){
-			ServiceResult result = resultIterator.next();
-			results = (ObjectNode) result.getContent(new JacksonHandle()).get();
-		}
-		return results;
+		managementClient.setRangeIndexes(indexes);
+		return indexes;
 	}
 
 	/**
@@ -154,18 +104,8 @@ public class SetupManager extends ResourceManager implements SetupService {
 	 * @return A list of tags related to the input.
 	 */
 	public ObjectNode setFields(ObjectNode fields) {
-		clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).init("fields",  this);  // is this expensive?
-		RequestParameters params = new RequestParameters();
-		params.add("mode", "json");
-		String[] mimetypes = new String[] { "application/json" };
-		ServiceResultIterator resultIterator = getServices().post(params, new JacksonHandle(fields), mimetypes);
-		
-		ObjectNode results = null;
-		if (resultIterator.hasNext() ){
-			ServiceResult result = resultIterator.next();
-			results = (ObjectNode) result.getContent(new JacksonHandle()).get();
-		}
-		return results;
+		managementClient.setFields(fields);
+		return fields;
 	}
 	
 	/**
@@ -209,6 +149,14 @@ public class SetupManager extends ResourceManager implements SetupService {
 			results = (ObjectNode) result.getContent(new JacksonHandle()).get();
 		}
 		return results;
+	}
+	
+	/**
+	 * Gets database properties from the server.
+	 * @return ObjectNode
+	 */
+	public ObjectNode getDatabaseProperties() {
+		return managementClient.getDatabaseProperties();
 	}
 	
 	/**

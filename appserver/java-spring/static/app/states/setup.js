@@ -6,17 +6,20 @@ define(['app/module'], function (module) {
       '$modal', '$scope', 'ServerConfig', 
       '$window', 'MLSearchFactory', 
       'newRangeIndexDialog', 'editRangeIndexDialog', 
+      'fieldDialog', 
       'newChartWidgetDialog', 
       function (
         $modal, $scope, ServerConfig, 
         win, searchFactory, 
         newRangeIndexDialog, editRangeIndexDialog, 
+        fieldDialog, 
         newChartWidgetDialog
       ) {
       var model = {};
       var mlSearch = searchFactory.newContext();
 
       function updateSearchResults() {
+        $scope.error = null;
         return mlSearch.setPageLength(5).search().then(
           function(data) {
             model.isInErrorState = false;
@@ -25,6 +28,10 @@ define(['app/module'], function (module) {
           function() {
             model.isInErrorState = true;
           });
+      }
+
+      function handleError(response) {
+        $scope.error = response.data.message || response.data;
       }
 
       updateSearchResults();
@@ -44,42 +51,54 @@ define(['app/module'], function (module) {
             updateSearchResults().then(function() {
               $scope.state = 'appearance';
             });
-          });
+          }, handleError);
         },
         removeIndex: function(indexPosition) {
-          model.rangeIndexes.rangeindexList.splice(indexPosition, 1);
-          ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults);
+          model.rangeIndexes['range-index-list'].splice(indexPosition, 1);
+          ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults, handleError);
         },
         editIndex: function(index) {
           editRangeIndexDialog(index).then(function(index) {
             if (index) {
-              ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults);
+              ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults, handleError);
             }
           });
         },
         addChart: function() {
           newChartWidgetDialog(model.search.facets).then(function(chart) {
             model.chartData.charts.push(chart);
-            ServerConfig.setCharts(model.chartData).then(updateSearchResults);
+            ServerConfig.setCharts(model.chartData).then(updateSearchResults, handleError);
           });
         },
         removeChart: function(chartPosition) {
           model.chartData.charts.splice(chartPosition, 1);
-          ServerConfig.setCharts(model.chartData).then(updateSearchResults);
+          ServerConfig.setCharts(model.chartData).then(updateSearchResults, handleError);
         },
         addIndex: function() {
-          newRangeIndexDialog().then(function(index) {
-            model.rangeIndexes.rangeindexList.push(index);
-            ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults);
+          newRangeIndexDialog(model.fields['field-list']).then(function(index) {
+            model.rangeIndexes['range-index-list'].push(index);
+            ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults, handleError);
           });
         },
         removeField: function(fieldPosition) {
-          model.fields.fieldList.splice(fieldPosition, 1);
-          ServerConfig.setFields(model.fields).then(updateSearchResults);
+          model.fields['field-list'].splice(fieldPosition, 1);
+          ServerConfig.setFields(model.fields).then(updateSearchResults, handleError);
         },
         addField: function(field) {
-          model.fields.fieldList.push(field);
-          ServerConfig.setFields(model.fields).then(updateSearchResults);
+          fieldDialog().then(function(field) {
+            model.fields['field-list'].push(field);
+            ServerConfig.setFields(model.fields).then(updateSearchResults, handleError);
+          });
+        },
+        editField: function(field) {
+          fieldDialog(field).then(function(field) {
+            if (field) {
+              ServerConfig.setFields(model.fields).then(updateSearchResults, handleError);
+            }
+          });
+        },
+        removeConstraint: function(index) {
+          model.searchOptions.options.constraint.splice(index,1);
         },
         submitConstraints: function() {
           model.searchOptions.options.constraint = model.constraints;
@@ -87,55 +106,65 @@ define(['app/module'], function (module) {
             updateSearchResults().then(function() {
               $scope.state = 'appearance';
             });
-          });
+          },handleError);
         },
         resampleConstraints: function() {
           model.constraints = [];
-          angular.forEach(model.rangeIndexes.rangeindexList, function(val){
-            var value = val.rangeElementIndex || val.rangeElementAttributeIndex || val.fieldIndex;
-            var constraint =
-              {
-                'name': value.localname,
-                'range':
-                  {
-                    'type': 'xs:'+ value.scalarType,
-                    'facet': true,
-                    'facet-option' : [
-                      'limit=10',
-                      'frequency-order',
-                      'descending'
-                    ],
+          angular.forEach(model.rangeIndexes['range-index-list'], function(val){
+            var value = val['range-element-index'] || val['range-element-attribute-index'] || val['range-field-index'];
+            var name = value.localname || value['field-name'];
+            if (name && name !== '') {
+              var constraint =
+                {
+                  'name': name,
+                  'range':
+                    {
+                      'type': 'xs:'+ value['scalar-type'],
+                      'facet': true,
+                      'facet-option' : [
+                        'limit=10',
+                        'frequency-order',
+                        'descending'
+                      ],
+                      'collation': value.collation
+                  }
+                };
+              if (value.localname) {
+                constraint.range.element = {
+                    'name': (value['parent-localname'] || value.localname),
+                    'ns': (value['parent-namespace-uri'] || value['namespace-uri'])
+                  };
+              }
+              if (value['parent-localname']) {
+                constraint.range.attribute = {
+                    'name': value.localname,
+                    'ns': value['namespace-uri']
+                  };
+              }
+              if (value['field-name']) {
+                constraint.range.field = {
+                    'name': value['field-name'],
                     'collation': value.collation
-                }
-              };
-            if (value.localname) {
-              constraint.range.element = {
-                  'name': (value.parentLocalname || value.localname),
-                  'ns': (value.parentNamespaceUri || value.namespaceUri)
-                };
+                  };
+              }
+              model.constraints.push(constraint);
             }
-            if (value['parent-localname']) {
-              constraint.range.attribute = {
-                  'name': value.localname,
-                  'ns': value.namespaceUri
-                };
-            }
-            model.constraints.push(constraint);
           });
-          angular.forEach(model.fields.fieldList, function(value){
-            var constraint =
-              {
-                'name': value.field.fieldName,
-                'facet': false,
-                'word':
-                  {
-                    'field': {
-                      'name': value.field.fieldName,
-                      'collation': value.field.collation
-                    }
-                }
-              };
-            model.constraints.push(constraint);
+          angular.forEach(model.fields['field-list'], function(value){
+            if (value['field-name'] && value['field-name'] !== '') {
+              var constraint =
+                {
+                  'name': value['field-name'],
+                  'word':
+                    {
+                      'field': {
+                        'name': value['field-name'],
+                        'collation': value.collation
+                      }
+                  }
+                };
+              model.constraints.push(constraint);
+            }
           });
         }
       });
