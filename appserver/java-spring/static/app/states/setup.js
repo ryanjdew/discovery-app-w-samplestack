@@ -47,11 +47,18 @@ define(['app/module'], function (module) {
         model: model,
         state: 'indexes',
         loadData: function() {
-          ServerConfig.loadData($scope.loadDirectory).then(function() {
+          ServerConfig.loadData($scope.loadDirectory).then(function(data) {
+            $scope.loadDataInfo = data;
             updateSearchResults().then(function() {
               $scope.state = 'appearance';
             });
           }, handleError);
+        },
+        clearLoadDataInfo: function() {
+          $scope.loadDataInfo = null;
+        },
+        clearError: function() {
+          $scope.error = null;
         },
         removeIndex: function(indexPosition) {
           model.rangeIndexes['range-index-list'].splice(indexPosition, 1);

@@ -1,5 +1,28 @@
 <div class="setup col-md-10 col-md-offset-1">
-  <div ng-if="error" class="alert alert-danger">{{error}}</div>
+  <div ng-if="error" class="alert alert-danger">
+    <div>
+      <button type="button" class="close" ng-click="clearError()">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+      </button>
+    </div>
+    {{error}}
+  </div>
+  <div ng-if="loadDataInfo" class="alert alert-success">
+    <div>
+      <button type="button" class="close" ng-click="clearLoadDataInfo()">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+      </button>
+    </div>
+    <p>Loaded {{loadDataInfo.docCountSucceeded}} documents of {{loadDataInfo.docCountFound}}.</p>
+    <div ng-if="loadDataInfo.failedDocuments.length">
+      <p>Failed to load the following documents:</p>
+      <ul>
+        <li ng-repeat="doc in loadDataInfo.failedDocuments">{{doc}}</li>
+      </ul>
+    </div>
+  </div>
   <div class="row">
     <div class="col-sm-2"></div>
     <h2 class="col-sm-10">Setup Application</h2>

@@ -33,12 +33,28 @@ function ext:post(
     )
   let $directory := map:get($params, 'directory')
   let $directory-info := xdmp:filesystem-directory($directory)
-  for $file in $directory-info/dir:entry[dir:type eq "file"][fn:ends-with(dir:filename, ".xml")]
+  let $docs-found := $directory-info/dir:entry[dir:type eq "file"]
+  let $docs-failed :=
+      for $file in $docs-found
+      return
+        try {
+          xdmp:document-insert(
+            "/documents/" || $file/dir:filename,
+            document {xdmp:unquote(xdmp:filesystem-file($file/dir:pathname))},
+            $doc-permissions
+          )
+        } catch * {
+          fn:string($file/dir:filename)
+        }
   return
-    xdmp:document-insert(
-      "/documents/" || $file/dir:filename,
-      document {xdmp:unquote(xdmp:filesystem-file($file/dir:pathname))},
-      $doc-permissions
-    ),
-  document { '{"success": true}' }
+    document { 
+      object-node {
+        "success": fn:true(),
+        "docCountFound": fn:count($docs-found),
+        "docCountSucceeded": fn:count($docs-found) - fn:count($docs-failed),
+        "failedDocuments": array-node {
+          $docs-failed
+        }
+      }
+    }
 };
