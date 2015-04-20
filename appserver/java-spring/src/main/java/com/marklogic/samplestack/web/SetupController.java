@@ -44,10 +44,8 @@ public class SetupController {
 	private SetupService setupService;
 
 	/**
-	 * Exposes endpoint that returns CSRF token information and a session for use in login.
-	 * @param request The Http Request.
-	 * @param response The Http response.
-	 * @return A JsonNode with bare-bones acknowledgement.
+	 * Exposes endpoint that returns the application's chart data
+	 * @return An ObjectNode with with the chart information
 	 */
 	@RequestMapping(value = "server/charts", method = RequestMethod.GET)
 	public @ResponseBody ObjectNode getCharts() {
@@ -55,10 +53,9 @@ public class SetupController {
 	}
 
 	/**
-	 * Exposes endpoint that returns CSRF token information and a session for use in login.
-	 * @param request The Http Request.
-	 * @param response The Http response.
-	 * @return A JsonNode with bare-bones acknowledgement.
+	 * Exposes endpoint that sets the application's chart data
+	 * @param charts The object .
+	 * @return An ObjectNode with with the chart information
 	 */
 	@RequestMapping(value = "server/charts", method = RequestMethod.PUT)
 	public @ResponseBody ObjectNode setCharts(@RequestBody ObjectNode charts) {
@@ -67,10 +64,8 @@ public class SetupController {
 
 	
 	/**
-	 * Exposes endpoint that returns CSRF token information and a session for use in login.
-	 * @param request The Http Request.
-	 * @param response The Http response.
-	 * @return A JsonNode with bare-bones acknowledgement.
+	 * Exposes endpoint that returns the database properties.
+	 * @return A JsonNode with the database properties.
 	 */
 	@RequestMapping(value = "server/database/properties", method = RequestMethod.GET)
 	public @ResponseBody ObjectNode getDatabaseProperties() {
@@ -78,10 +73,9 @@ public class SetupController {
 	}
 	
 	/**
-	 * Exposes endpoint that returns CSRF token information and a session for use in login.
-	 * @param request The Http Request.
-	 * @param response The Http response.
-	 * @return A JsonNode with bare-bones acknowledgement.
+	 * Exposes endpoint that sets the range indexes in the database properties.
+	 * @param indexes ObjectNode containing a list of range indexes.
+	 * @return An ObjectNode with the list of range indexes.
 	 */
 	@RequestMapping(value = "server/database/range-indexes", method = RequestMethod.PUT)
 	public @ResponseBody ObjectNode setRangeIndexes(@RequestBody ObjectNode indexes) {
@@ -89,10 +83,9 @@ public class SetupController {
 	}
 	
 	/**
-	 * Exposes endpoint that returns CSRF token information and a session for use in login.
-	 * @param request The Http Request.
-	 * @param response The Http response.
-	 * @return A JsonNode with bare-bones acknowledgement.
+	 * Exposes endpoint that sets the fields in the database properties.
+	 * @param indexes ObjectNode containing a list of fields.
+	 * @return An ObjectNode with the list of range indexes.
 	 */
 	@RequestMapping(value = "server/database/fields", method = RequestMethod.PUT)
 	public @ResponseBody ObjectNode setFields(@RequestBody ObjectNode fields) {
@@ -100,10 +93,8 @@ public class SetupController {
 	}
 
 	/**
-	 * Exposes endpoint that returns CSRF token information and a session for use in login.
-	 * @param request The Http Request.
-	 * @param response The Http response.
-	 * @return A JsonNode with bare-bones acknowledgement.
+	 * Exposes endpoint that returns the default search options.
+	 * @return An ObjectNode with the search options.
 	 */
 	@RequestMapping(value = "server/search-options", method = RequestMethod.GET)
 	public @ResponseBody ObjectNode getSearchOptions() {
@@ -111,22 +102,32 @@ public class SetupController {
 	}
 
 	/**
-	 * Exposes endpoint that returns CSRF token information and a session for use in login.
-	 * @param request The Http Request.
-	 * @param response The Http response.
-	 * @return A JsonNode with bare-bones acknowledgement.
+	 * Exposes endpoint that sets the default search options.
+	 * @param searchOptions an ObjectNode to set the search options
+	 * @return An ObjectNode with the search options.
 	 */
 	@RequestMapping(value = "server/search-options", method = RequestMethod.PUT)
 	public @ResponseBody ObjectNode setSearchOptions(@RequestBody ObjectNode searchOptions) {
 		return setupService.setSearchOptions(searchOptions);
 	}
 
+	/**
+	 * Exposes endpoint that returns a list of matching element types.
+	 * @param localname String specifying the content structure to search for
+	 * @param type String specifying the type of content structure to search for
+	 * @return An ObjectNode with the search options.
+	 */
 	@RequestMapping(value = "server/database/content-metadata", method = RequestMethod.GET)
 	public @ResponseBody ObjectNode getContentMetadata(@RequestParam(required = true) String localname,
 			@RequestParam(required = false) String type) {
 		return setupService.findContentMetadata(localname, type);
 	}
 	
+	/**
+	 * Exposes endpoint that loads data from the specified local directory.
+	 * @param directory String specifying the directory to load
+	 * @return An ObjectNode with the search options.
+	 */
 	@RequestMapping(value = "server/database/load-data", method = RequestMethod.GET)
 	public @ResponseBody ObjectNode loadData(@RequestParam(required = true) String directory) {
 		return setupService.loadData(directory);

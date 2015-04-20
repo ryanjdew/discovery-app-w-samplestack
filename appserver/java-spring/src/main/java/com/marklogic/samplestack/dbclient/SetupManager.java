@@ -66,9 +66,10 @@ public class SetupManager extends ResourceManager implements SetupService {
 			.getLogger(SetupManager.class);
 	
 	/**
-	 * Gets tags from the server that are related to the provided one.
-	 * @param tag An input tag to check for related tags.
-	 * @return A list of tags related to the input.
+	 * Returns a list of matching element types.
+	 * @param localname String specifying the content structure to search for
+	 * @param type String specifying the type of content structure to search for
+	 * @return An ObjectNode with the search options.
 	 */
 	public ObjectNode findContentMetadata(String localname, String type) {
 		clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).init("content-metadata",  this);  // is this expensive?
@@ -89,9 +90,9 @@ public class SetupManager extends ResourceManager implements SetupService {
 	}
 
 	/**
-	 * Gets tags from the server that are related to the provided one.
-	 * @param tag An input tag to check for related tags.
-	 * @return A list of tags related to the input.
+	 * Sets the range indexes in the database properties.
+	 * @param indexes ObjectNode containing a list of range indexes.
+	 * @return An ObjectNode with the list of range indexes.
 	 */
 	public ObjectNode setIndexes(ObjectNode indexes) {
 		managementClient.setRangeIndexes(indexes);
@@ -99,9 +100,9 @@ public class SetupManager extends ResourceManager implements SetupService {
 	}
 
 	/**
-	 * Gets tags from the server that are related to the provided one.
-	 * @param tag An input tag to check for related tags.
-	 * @return A list of tags related to the input.
+	 * Sets the fields in the database properties.
+	 * @param indexes ObjectNode containing a list of fields.
+	 * @return An ObjectNode with the list of range indexes.
 	 */
 	public ObjectNode setFields(ObjectNode fields) {
 		managementClient.setFields(fields);
@@ -109,18 +110,17 @@ public class SetupManager extends ResourceManager implements SetupService {
 	}
 	
 	/**
-	 * Gets tags from the server that are related to the provided one.
-	 * @param tag An input tag to check for related tags.
-	 * @return A list of tags related to the input.
+	 * Returns the default search options.
+	 * @return An ObjectNode with the search options.
 	 */
 	public ObjectNode findSearchOptions() {
 		return utilities.getSearchOptions("all");
 	}
 
 	/**
-	 * Gets tags from the server that are related to the provided one.
-	 * @param tag An input tag to check for related tags.
-	 * @return A list of tags related to the input.
+	 * Sets the default search options.
+	 * @param searchOptions an ObjectNode to set the search options
+	 * @return An ObjectNode with the search options.
 	 */
 	public ObjectNode setSearchOptions(ObjectNode searchOptions) {
 		QueryOptionsManager optsManager = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newServerConfigManager().newQueryOptionsManager();  // is this expensive?
@@ -131,7 +131,7 @@ public class SetupManager extends ResourceManager implements SetupService {
 
 	/**
 	 * Loads data
-	 * @param directory to load into DB.
+	 * @param directory String of directory to load into DB.
 	 * @return ObjectNode
 	 */
 	public ObjectNode loadData(String directory) {
