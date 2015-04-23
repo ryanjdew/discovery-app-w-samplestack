@@ -68,8 +68,14 @@ define(['app/module'], function (module) {
       serverConfig.getFields = function(cache) {
         return serverConfig.getDatabaseProperties(cache).then(
             function(dbProperties) {
+              var fieldList = [];
+              angular.forEach(dbProperties.field, function(field){
+                if (field['field-name'] && field['field-name'] != '') {
+                  fieldList.push(field);
+                }
+              });
               return {
-                'field-list': dbProperties.field || []
+                'field-list': fieldList
               };
             }
           );

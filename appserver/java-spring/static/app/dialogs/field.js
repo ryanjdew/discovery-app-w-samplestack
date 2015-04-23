@@ -41,11 +41,11 @@ define(['app/module'], function (module) {
     function ($modal) {
       return function (field) {
         field = field || {
-            'include-root': false,
             'field-name': '',
+            'include-root': false,
+            'word-lexicon': ["http://marklogic.com/collation/"],
             'included-element': [],
-            'excluded-element': [],
-            'word-lexicons': ["http://marklogic.com/collation/"]
+            'excluded-element': []
           };
         return $modal.open({
             templateUrl: '/app/dialogs/field.html',
