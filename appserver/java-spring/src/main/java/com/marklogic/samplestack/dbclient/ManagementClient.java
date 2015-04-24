@@ -40,7 +40,7 @@ public class ManagementClient {
 	private String database;
 	private DefaultHttpClient client;
 	private HttpHost target;
-	private ClientRole admin = ClientRole.SAMPLESTACK_ADMIN;
+	private ClientRole admin = ClientRole.SAMPLESTACK_CONTRIBUTOR;
 	
 	public ManagementClient(Environment env) {
 		host = env.getProperty("marklogic.rest.host");
