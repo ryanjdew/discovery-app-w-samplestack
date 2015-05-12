@@ -130,7 +130,8 @@ public class MarkLogicConfigureTask extends MarkLogicTask {
 
     void putExtension(extension) {
         def extensionFileName = extension.getPath().replaceAll(~"\\\\","/")
-        def extensionNameRegex = ".*"+ Pattern.quote(restExtensions) + "\\/"
+        def restExtensionsFolder = restExtensions.replaceAll(~"\\\\","/")
+        def extensionNameRegex = ".*"+ Pattern.quote(restExtensionsFolder) + "\\/"
         def extensionName = 
             extensionFileName.replaceAll(~extensionNameRegex,"")
         logger.info( "Saving library extension " + extensionFileName)
