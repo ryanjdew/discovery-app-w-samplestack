@@ -137,3 +137,8 @@ test.dependsOn(props, dbConfigure)
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
+
+/* set springboot related properties */
+tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
+	systemProperty('server.port', project.property("samplestack.port"))
+}
