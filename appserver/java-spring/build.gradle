@@ -140,5 +140,10 @@ task wrapper(type: Wrapper) {
 
 /* set springboot related properties */
 tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
-	systemProperty('server.port', project.property("samplestack.port"))
+    def keys = project.properties.keySet()
+    for (key in keys) {
+        if (key.size() > 7 && "spring." == key[0..6]) {
+            systemProperty(key[7..(key.size()-1)], project.property(key))
+        }
+    }
 }
