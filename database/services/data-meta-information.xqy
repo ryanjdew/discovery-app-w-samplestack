@@ -3,7 +3,6 @@ xquery version "1.0-ml";
 module namespace ext = "http://marklogic.com/rest-api/resource/data-meta-information";
 
 import module namespace data = "http://marklogic.com/appservices/builder/data" at "/ext/content-metadata.xqy";
-import module namespace database-model="http://marklogic.com/appservices/infostudio/models/database" at "/ext/database-model.xqy";
 import module namespace amped-common = "http://marklogic.com/appservices/util-amped" at "/MarkLogic/appservices/utils/common-amped.xqy";
 import module namespace utilities = "http://marklogic.com/utilities" at "/ext/utilities.xqy";
 
