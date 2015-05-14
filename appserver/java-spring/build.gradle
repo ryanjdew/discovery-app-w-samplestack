@@ -42,8 +42,10 @@ task dbConfigFile {
     def forestSize = 3
     def dbname = project.property("marklogic.rest.name")
     def map = [:]
+	def prefix = "mldb."
+	def len = prefix.size()
     for (key in keys) {
-        if (key.size() > 4 && "mldb." == key[0..4]) {
+        if (key.size() > len && prefix == key[0..(len-1)]) {
             def dbprop = key[5..(key.size()-1)]
             def lastdot = dbprop.lastIndexOf('.') 
             if (dbprop == "database-name") {
@@ -97,7 +99,7 @@ task dbTeardown(type: MarkLogicTeardownTask)
  * based on files in the database directory
  */
 task dbConfigure(type: MarkLogicConfigureTask)
-dbConfigFile.dependsOn dbConfigFile
+dbConfigure.dependsOn dbConfigFile
 
 task dbConfigureClean << {
     delete("${buildDir}/database")
@@ -184,9 +186,11 @@ task wrapper(type: Wrapper) {
 /* set springboot related properties */
 tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
     def keys = project.properties.keySet()
+	def prefix = "spring."
+	def len = prefix.size()
     for (key in keys) {
-        if (key.size() > 7 && "spring." == key[0..6]) {
-            systemProperty(key[7..(key.size()-1)], project.property(key))
+        if (key.size() > len && prefix == key[0..(len-1)]) {
+            systemProperty(key[len..(key.size()-1)], project.property(key))
         }
     }
 }
