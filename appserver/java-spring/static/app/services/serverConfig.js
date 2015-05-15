@@ -141,6 +141,19 @@ define(['app/module'], function (module) {
             return response.data;
           });
       };
+      serverConfig.getSuggestionSource = function() {
+        return $http.get('/server/database/defaultsource')
+          .then(function(response){
+            return response.data;
+          });
+      };
+
+      serverConfig.setSuggestionSource = function(charts) {
+        return $http.put('/server/database/defaultsource', charts)
+          .then(function(response){
+            return response.data;
+          });
+      };
 
       serverConfig.dataTypes = function() {
         return [

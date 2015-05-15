@@ -180,4 +180,25 @@ public class SetupManager extends ResourceManager implements SetupService {
 		docMgr.write("/config/charts.json", new JacksonHandle(chartData));
 		return chartData;
 	}
+	
+	/**
+	 * Sets the suggestion default source.
+	 * @param searchOptions an ObjectNode to set the search options
+	 * @return An ObjectNode with the search options.
+	 */
+	public ObjectNode setSuggestionOption(ObjectNode searchOptions) {
+		QueryOptionsManager optsManager = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newServerConfigManager().newQueryOptionsManager();  // is this expensive?
+		JacksonHandle responseHandle = new JacksonHandle(searchOptions);
+		optsManager.writeOptions("opt-suggest", responseHandle);
+		return searchOptions;
+	}
+	
+	/**
+	 * Sets the default search options.
+	 * @param searchOptions an ObjectNode to set the search options
+	 * @return An ObjectNode with the search options.
+	 */
+	public ObjectNode getSuggestionOption() {
+		return utilities.getSearchOptions("opt-suggest");
+	}
 }

@@ -115,6 +115,44 @@ define(['app/module'], function (module) {
             });
           },handleError);
         },
+        saveDefaultSource: function(){
+          var chosenOption = model.defaultSource;
+          var parts = chosenOption.split("|");
+          var data = {
+            "options":{
+              "default-suggestion-source":{
+                "range": {
+                  "type": "xs:"+parts[1],
+                  "facet": true,
+                  "collation": parts[2],
+                  "element": {
+                    "ns": parts[3],
+                    "name": parts[0]
+                  }
+                }
+              }
+            }
+          }
+          ServerConfig.setSuggestionSource(data).then(updateSearchResults, handleError);
+        },
+        getDefaultSourceOpts: function(){
+          var options = [];
+          //TODO: have this initialized somewhere.
+          angular.forEach(model.rangeIndexes['range-index-list'], function(val){
+            var value = val['range-element-index'] || val['range-element-attribute-index'] || val['range-field-index'];
+            var name = value.localname || value['field-name'];
+            var type = value['scalar-type'];
+            var collation = value.collation;
+            var namespace = (value['parent-namespace-uri'] || value['namespace-uri']);
+            
+            var optVal = name +"|"+type+"|"+collation+"|"+namespace;
+            var option = {};
+            option.name = name;
+            option.value = optVal;
+            options.push(option);
+          });
+          model.suggestOptions = options;
+        },
         resampleConstraints: function() {
           model.constraints = [];
           angular.forEach(model.rangeIndexes['range-index-list'], function(val){

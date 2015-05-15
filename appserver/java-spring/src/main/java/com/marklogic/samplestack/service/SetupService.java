@@ -29,4 +29,8 @@ public interface SetupService {
 	public ObjectNode findChartData();
 	
 	public ObjectNode setChartData(ObjectNode chartData);
+	
+	public ObjectNode setSuggestionOption(ObjectNode chartData);
+	
+	public ObjectNode getSuggestionOption();
 }

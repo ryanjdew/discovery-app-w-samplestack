@@ -132,4 +132,24 @@ public class SetupController {
 	public @ResponseBody ObjectNode loadData(@RequestParam(required = true) String directory) {
 		return setupService.loadData(directory);
 	}
+	
+	/**
+	 * Exposes endpoint that sets the suggestion default source.
+	 * @param indexes ObjectNode containing a list of range indexes.
+	 * @return An ObjectNode with the list of range indexes.
+	 */
+	@RequestMapping(value = "server/database/defaultsource", method = RequestMethod.PUT)
+	public @ResponseBody ObjectNode setSuggestionOption(@RequestBody ObjectNode indexes) {
+		return setupService.setSuggestionOption(indexes);
+	}
+	
+	/**
+	 * Exposes endpoint that gets the suggestion default source.
+	 * @param indexes ObjectNode containing a list of range indexes.
+	 * @return An ObjectNode with the list of range indexes.
+	 */
+	@RequestMapping(value = "server/database/defaultsource", method = RequestMethod.GET)
+	public @ResponseBody ObjectNode getSuggestionOption() {
+		return setupService.getSuggestionOption();
+	}
 }
