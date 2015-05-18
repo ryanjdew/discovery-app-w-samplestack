@@ -176,7 +176,7 @@ public class MarkLogicConfigureTask extends MarkLogicTask {
         RESTClient client = new RESTClient("http://" + config.marklogic.rest.host + ":" + config.marklogic.rest.port + "/v1/config/query/" + optionsName)
         client.auth.basic config.marklogic.rest.admin.user, config.marklogic.rest.admin.password
         def params = [:]
-		params.contentType = "application/json"
+        params.contentType = "application/json"
         def resp = 0;
         try {
             resp = client.get(params).status
@@ -184,8 +184,8 @@ public class MarkLogicConfigureTask extends MarkLogicTask {
             resp = e.statusCode
         }
         if (resp == 404) {
-			params = [:]
-			params.contentType = "application/json"
+            params = [:]
+            params.contentType = "application/json"
             params.body = options.text
             put(client,params)
         }
