@@ -20,6 +20,9 @@ import static com.marklogic.samplestack.SamplestackConstants.DOCUMENTS_OPTIONS;
 import static com.marklogic.samplestack.security.ClientRole.SAMPLESTACK_CONTRIBUTOR;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
@@ -144,31 +147,41 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 
 	@PostConstruct
 	public void storeNeccesaryConfig() {
-		JSONDocumentManager docMgr = jsonDocumentManager(SAMPLESTACK_CONTRIBUTOR);
-		try {
-			// leave them alone if already in db.
-			JacksonHandle responseHandle = new JacksonHandle();
-			docMgr.read("/config/charts.json", responseHandle);
-			logger.info("charts config already in the database");
-		} catch (ResourceNotFoundException e) {
-			ClassPathResource chartsResource = new ClassPathResource(
-					"config/charts.json");
-			ObjectNode charts = null;
-			try {
-				charts = mapper.readValue(chartsResource.getInputStream(),
-						ObjectNode.class);
-			} catch (JsonParseException e1) {
-				throw new SamplestackIOException(
-						"Setup of Charts Failed.  Check/clean/clear db", e1);
-			} catch (JsonMappingException e1) {
-				throw new SamplestackIOException(
-						"Setup of Charts Failed.  Check/clean/clear db", e1);
-			} catch (IOException e1) {
-				throw new SamplestackIOException(
-						"Setup of Charts Failed.  Check/clean/clear db", e1);
-			}
-			docMgr.write("/config/charts.json", new JacksonHandle(charts));;
-		}
+	  Map<String, String> records = new HashMap<String, String>();
+	  records.put("Charts Config", "config/charts.json");
+	  records.put("UI Config", "config/ui_config.json");
+	  
+	  for (Entry<String, String> entry : records.entrySet()) {
+	    storeNeccesaryConfig(entry.getKey(), entry.getValue());
+	  }
+	}
+	
+	private void storeNeccesaryConfig(String name, String path) {
+	  JSONDocumentManager docMgr = jsonDocumentManager(SAMPLESTACK_CONTRIBUTOR);
+	  try {
+	    // leave them alone if already in db.
+	    JacksonHandle responseHandle = new JacksonHandle();
+	    docMgr.read("/" + path, responseHandle);
+	    logger.info("charts config already in the database");
+	  } catch (ResourceNotFoundException e) {
+	    ClassPathResource chartsResource = new ClassPathResource(
+	        path);
+	    ObjectNode charts = null;
+	    try {
+	      charts = mapper.readValue(chartsResource.getInputStream(),
+	          ObjectNode.class);
+	    } catch (JsonParseException e1) {
+	      throw new SamplestackIOException(
+	          "Setup of " + name + " Failed.  Check/clean/clear db", e1);
+	    } catch (JsonMappingException e1) {
+	      throw new SamplestackIOException(
+	          "Setup of " + name + " Failed.  Check/clean/clear db", e1);
+	    } catch (IOException e1) {
+	      throw new SamplestackIOException(
+	          "Setup of " + name + " Failed.  Check/clean/clear db", e1);
+	    }
+	    docMgr.write("/" + path, new JacksonHandle(charts));;
+	  }
 	}
 
 	@Override

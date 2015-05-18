@@ -152,4 +152,24 @@ public class SetupController {
 	public @ResponseBody ObjectNode getSuggestionOption() {
 		return setupService.getSuggestionOption();
 	}
+	
+	/**
+	 * Exposes endpoint that returns the application's ui config data
+	 * @return An ObjectNode with with the ui config information
+	 */
+	@RequestMapping(value = "server/ui_config", method = RequestMethod.GET)
+	public @ResponseBody ObjectNode getUiConfig() {
+		return setupService.getUiConfig();
+	}
+
+	/**
+	 * Exposes endpoint that sets the application's ui config data
+	 * @param charts The object .
+	 * @return An ObjectNode with with the ui config information
+	 */
+	@RequestMapping(value = "server/ui_config", method = RequestMethod.PUT)
+	public @ResponseBody ObjectNode setUiConfig(@RequestBody ObjectNode uiConfig) {
+		return setupService.setUiConfig(uiConfig);
+	}
+
 }

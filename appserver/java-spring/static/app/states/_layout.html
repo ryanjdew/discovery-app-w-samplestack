@@ -1,4 +1,4 @@
-<div ng-if="globalError.length && !errorCondition.length" marked="globalError" class="ss-global-error has-error"></div>
+<div ng-if="globalError.length && !errorCondition.length" marked="globalError" class="ss-global-error has-error" ></div>
 <div>
 
   <div ng-if="loading" class="spinner">
@@ -20,9 +20,12 @@
 
           <!-- samplestack logo -->
           <a class="ss-app-title navbar-brand" href="/">
-            <img src="app/images/samplestack.svg"
+            <img src="{{model.logo.value}}"
+              ng-if="model.logo.type === 'image'"
               border="0"
+              height="36"
               title="Return to home page">
+            <span ng-if="model.logo.type === 'text'">{{model.logo.value}}</span>
           </a>
 
         </div>
@@ -117,7 +120,13 @@
 
     <footer class="ss-page-footer">
       <p class="text-center">
-        Samplestack 1.0.0&nbsp;&nbsp;|&nbsp;&nbsp;Copyright &copy; 2015 <a href="http://www.marklogic.com">MarkLogic Corporation</a>, licensed under the Apache License, <a href="http://www.apache.org/licenses/LICENSE-2.0" >Version 2.0</a>&nbsp;&nbsp;|&nbsp;&nbsp;Seed data from <a href="http://stackoverflow.com">Stack Overflow</a> under <a href="http://creativecommons.org/licenses/by-sa/3.0">cc-by-sa</a>
+        <span>Samplestack 1.0.0&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <span ng-if="model.footer.copyright.holder">
+          <span>Copyright &copy; {{model.footer.copyright.year}} <a href="{{model.footer.copyright.link}}">{{model.footer.copyright.holder}}</a></span>
+          <span ng-if="model.footer.license.text">, licensed under the <a href="{{model.footer.license.link}}" >{{model.footer.license.text}}</a></span>
+          <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        </span>
+        <span>Seed data from <a href="http://stackoverflow.com">Stack Overflow</a> under <a href="http://creativecommons.org/licenses/by-sa/3.0">cc-by-sa</a></span>
       </p>
     </footer>
   </div>

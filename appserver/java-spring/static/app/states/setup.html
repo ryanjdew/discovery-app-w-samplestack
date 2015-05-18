@@ -33,6 +33,7 @@
       <li role="presentation" ng-class="{'active': state === 'indexes'}"><a ng-click="state = 'indexes'">Indexes</a></li>
       <li role="presentation" ng-class="{'active': state === 'constraints'}"><a ng-click="state = 'constraints'">Constraints <span ng-if="model.isInErrorState" class="alert-danger" title="Constraints don't match indexes"><i class="glyphicon glyphicon-exclamation-sign"></i></span></a></li>
       <li role="presentation" ng-class="{'active': state === 'suggestions'}"><a ng-click="state = 'suggestions'">Suggestions <span ng-if="model.isInErrorState" class="alert-danger" title="Constraints don't match indexes"><i class="glyphicon glyphicon-exclamation-sign"></i></span></a></li>
+      <li role="presentation" ng-class="{'active': state === 'uiConfig'}"><a ng-click="state = 'uiConfig'">UI Config</a></li>
       <li role="presentation" ng-class="{'active': state === 'appearance'}"><a ng-click="state = 'appearance'">Results</a></li>
     </ul>
     <div ng-show="state === 'loadData'">
@@ -112,11 +113,14 @@
         <div class="panel-body">
           <table>
           <tbody>
-          	<tr>
-          	<td>Default source: </td>
-          	<td><select ng-model="model.defaultSource">
-          	<option ng-repeat="option in model.suggestOptions track by $index" value="{{option.value}}">{{option.name}}</option>
-          	</select></td>
+            <tr>
+            <td>Default source: </td>
+            <td><select ng-model="model.defaultSource">
+              <option ng-repeat="option in model.suggestOptions track by $index" 
+                  value="{{option.value}}"
+                  ng-selected="{{option.selected}}" 
+                >{{option.name}}</option>
+            </select></td>
             </tr>
           </tbody>
           </table>
@@ -124,6 +128,74 @@
         <div class="clearfix panel-footer">
           <button ng-click="saveDefaultSource()" class="clearfix btn btn-primary pull-right">Save</button>
         </div>
+      </div>
+    </div>
+    <div ng-show="state === 'uiConfig'">
+      <div class="panel panel-default">
+        <div class="clearfix panel-heading">UI Configuration</div>
+        <div class="panel-body">
+          <table>
+            <tbody>
+              <tr>
+                <td colspan="2">Page: </td>
+              </tr>
+              <tr>
+                <td>Title: </td>
+                <td>
+                  <input type="text" ng-model="model.uiConfig.page.title"/>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">Header: </td>
+              </tr>
+              <tr>
+                <td>Company Logo: </td>
+                <td>
+                  <select ng-model="model.uiConfig.logo.type">
+                    <option value="image">Image</option>
+                    <option value="text">Text</option>
+                  </select>
+                  <input type="text" ng-model="model.uiConfig.logo.value"/>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">Footer: </td>
+              </tr>
+              <tr>
+                <td>Copyright year: </td>
+                <td>
+                  <input type="text" ng-model="model.uiConfig.footer.copyright.year"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Copyright holder: </td>
+                <td>
+                  <input type="text" ng-model="model.uiConfig.footer.copyright.holder"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Copyright holder link: </td>
+                <td>
+                  <input type="text" ng-model="model.uiConfig.footer.copyright.link"/>
+                </td>
+              </tr>
+              <tr>
+                <td>License text: </td>
+                <td>
+                  <input type="text" ng-model="model.uiConfig.footer.license.text"/>
+                </td>
+              </tr>
+              <tr>
+                <td>License link: </td>
+                <td>
+                  <input type="text" ng-model="model.uiConfig.footer.license.link"/>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="clearfix panel-footer">
+          <button ng-click="setUiConfig()" class="clearfix btn btn-primary pull-right">Save</button>
         </div>
       </div>
     </div>

@@ -33,4 +33,8 @@ public interface SetupService {
 	public ObjectNode setSuggestionOption(ObjectNode chartData);
 	
 	public ObjectNode getSuggestionOption();
+	
+	public ObjectNode setUiConfig(ObjectNode uiConfigData);
+	
+	public ObjectNode getUiConfig();
 }
