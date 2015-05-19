@@ -1,6 +1,7 @@
 /*
  * Samplestack gradle build file
  */
+import groovy.json.JsonOutput
 
 configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
@@ -34,6 +35,49 @@ version = samplestackVersion
 sourceCompatibility = samplestackSourceCompatibility
 
 /*
+ * Create the database-properties.json file from mldb prefixed entries in gradle.properties
+ */
+task dbConfigFile {
+    def keys = project.properties.keySet()
+    def forestSize = 3
+    def dbname = project.property("marklogic.rest.name")
+    def map = [:]
+	def prefix = "mldb."
+	def len = prefix.size()
+    for (key in keys) {
+        if (key.size() > len && prefix == key[0..(len-1)]) {
+            def dbprop = key[5..(key.size()-1)]
+            def lastdot = dbprop.lastIndexOf('.') 
+            if (dbprop == "database-name") {
+                dbname = project.property(key)
+            } else if (dbprop == "forest-size") {
+                forestSize = project.property(key).toLong()
+            } else {
+                def value = project.property(key)
+                if (value == 'false' || value == 'true') {
+                    value = value.toBoolean()
+                } else if (value.isDouble()) {
+                    value = value.toDouble()
+                } else if (value.isLong()) {
+                    value = value.toLong()
+                }
+                map.put(dbprop, value)
+            }
+        }
+    }
+    map.put("database-name", dbname)
+    def forest = []
+    for (i in (1..forestSize)) {
+        forest.add(dbname + "-" + String.valueOf(i).padLeft(3, "0"))
+    }
+    map.put("forest", forest)
+    map.put("forests-per-host", forestSize)
+
+    def file = new File("../../database/database-properties.json")
+    file.write(JsonOutput.prettyPrint(JsonOutput.toJson(map)))
+}
+
+/*
  * INIT
  * Run this task to initialize a fresh MarkLogic server
  * and install security objects.
@@ -55,6 +99,7 @@ task dbTeardown(type: MarkLogicTeardownTask)
  * based on files in the database directory
  */
 task dbConfigure(type: MarkLogicConfigureTask)
+dbConfigure.dependsOn dbConfigFile
 
 task dbConfigureClean << {
     delete("${buildDir}/database")
@@ -136,4 +181,16 @@ test.dependsOn(props, dbConfigure)
 /* task to generate the gradle wrapper script */
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
+}
+
+/* set springboot related properties */
+tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
+    def keys = project.properties.keySet()
+	def prefix = "spring."
+	def len = prefix.size()
+    for (key in keys) {
+        if (key.size() > len && prefix == key[0..(len-1)]) {
+            systemProperty(key[len..(key.size()-1)], project.property(key))
+        }
+    }
 }
