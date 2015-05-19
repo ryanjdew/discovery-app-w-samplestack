@@ -14,16 +14,15 @@ define(['app/module'], function (module) {
 
   /* jshint ignore:end */
 
-  module.directive('ssSearchBar', ['MLSearchFactory',function (searchFactory) {
+  module.directive('ssSearchBar', ['$http', function ($http) {
     return {
       restrict: 'E',
       templateUrl: '/app/directives/ssSearchBar.html',
       link: function (scope) {
-        mlSearch = searchFactory.newContext();
         scope.suggest = function(val) {
-          return mlSearch.suggest(val).then(function(resp) {
-            console.log(resp);
-            return resp.suggestions;
+          return $http.get('/v1/suggest', {params: {"qtext": val, "options":"opt-suggest"}})
+          .then(function(response){
+            return response.data.suggestions;
           });
         };
         scope.showTips = false;

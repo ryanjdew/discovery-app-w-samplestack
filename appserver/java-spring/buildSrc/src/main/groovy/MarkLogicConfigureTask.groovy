@@ -177,8 +177,18 @@ public class MarkLogicConfigureTask extends MarkLogicTask {
         client.auth.basic config.marklogic.rest.admin.user, config.marklogic.rest.admin.password
         def params = [:]
         params.contentType = "application/json"
-        params.body = options.text
-        put(client,params)
+        def resp = 0;
+        try {
+            resp = client.get(params).status
+        } catch (groovyx.net.http.HttpResponseException e) {
+            resp = e.statusCode
+        }
+        if (resp == 404) {
+            params = [:]
+            params.contentType = "application/json"
+            params.body = options.text
+            put(client,params)
+        }
     }
 
     void putRESTProperties(File f) {

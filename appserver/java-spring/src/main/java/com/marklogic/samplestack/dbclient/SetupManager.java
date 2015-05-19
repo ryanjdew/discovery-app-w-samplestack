@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.marklogic.client.ResourceNotFoundException;
 import com.marklogic.client.admin.QueryOptionsManager;
 import com.marklogic.client.document.JSONDocumentManager;
 import com.marklogic.client.extensions.ResourceManager;
@@ -180,4 +181,53 @@ public class SetupManager extends ResourceManager implements SetupService {
 		docMgr.write("/config/charts.json", new JacksonHandle(chartData));
 		return chartData;
 	}
+	
+    /**
+     * Sets the suggestion default source.
+     * @param searchOptions an ObjectNode to set the search options
+     * @return An ObjectNode with the search options.
+     */
+    public ObjectNode setSuggestionOption(ObjectNode searchOptions) {
+        QueryOptionsManager optsManager = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newServerConfigManager().newQueryOptionsManager();  // is this expensive?
+        JacksonHandle responseHandle = new JacksonHandle(searchOptions);
+        optsManager.writeOptions("opt-suggest", responseHandle);
+        return searchOptions;
+    }
+    
+    /**
+     * Sets the default search options.
+     * @param searchOptions an ObjectNode to set the search options
+     * @return An ObjectNode with the search options.
+     */
+    public ObjectNode getSuggestionOption() {
+        try {
+            return utilities.getSearchOptions("opt-suggest");
+        } catch (ResourceNotFoundException e) {
+            logger.error("No suggestion default source set.", e);
+            return null;
+        }
+    }
+    
+    /**
+     * Sets the suggestion default source.
+     * @param searchOptions an ObjectNode to set the search options
+     * @return An ObjectNode with the search options.
+     */
+    public ObjectNode setUiConfig(ObjectNode uiConfig) {
+        JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newJSONDocumentManager(); 
+        docMgr.write("/config/ui_config.json", new JacksonHandle(uiConfig));
+        return uiConfig;
+    }
+    
+    /**
+     * Sets the default search options.
+     * @param searchOptions an ObjectNode to set the search options
+     * @return An ObjectNode with the search options.
+     */
+    public ObjectNode getUiConfig() {
+        JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newJSONDocumentManager(); 
+        JacksonHandle responseHandle = new JacksonHandle();
+        docMgr.read("/config/ui_config.json", responseHandle);
+        return (ObjectNode) responseHandle.get();
+    }
 }

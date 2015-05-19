@@ -11,8 +11,17 @@ define(['app/module'], function (module) {
    */
 
   module.controller('layoutCtlr', [
-    '$scope', 'appRouting', 'appInitialized',
-    function ($scope, appRouting, appInitialized) {
+    '$scope', 'appRouting', 'appInitialized', 'ServerConfig',
+    function ($scope, appRouting, appInitialized, serverConfig) {
+      $scope.model = {};
+      serverConfig.getUiConfig().then(function (uiConfig){
+        $scope.model = uiConfig;
+      })
+      
+      $scope.$on('uiConfigChanged', function(event, uiConfig){
+        $scope.model = uiConfig; 
+      })
+      
       $scope.setup = function () {
         appRouting.go('root.layout.setup');
       };

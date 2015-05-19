@@ -6,19 +6,23 @@ define(['app/module'], function (module) {
       var databasePropertiesPromise;
       serverConfig.get = function() {
         var config = {},
-            defered = [$q.defer(),$q.defer(),$q.defer(),$q.defer()],
+            defered = [$q.defer(),$q.defer(),$q.defer(),$q.defer(),$q.defer(),$q.defer()],
             promises = _.map(defered, function(d) { return d.promise; }),
             configItems = {
               chartData: 'getCharts',
               searchOptions: 'getSearchOptions',
               fields: 'getFields',
-              rangeIndexes: 'getRangeIndexes'
+              rangeIndexes: 'getRangeIndexes',
+              defaultSource: 'getSuggestionSource',
+              uiConfig: 'getUiConfig'
             },
             defaults = {
               chartData: {charts: []},
               searchOptions: {option: {constraint: []}},
               fields: {'field-list': []},
-              rangeIndexes: {'range-index-list': []}
+              rangeIndexes: {'range-index-list': []},
+              defaultSource: "",
+              uiConfig: {}
             };
         if (databasePropertiesPromise) {
           databasePropertiesPromise = null;
@@ -137,6 +141,33 @@ define(['app/module'], function (module) {
 
       serverConfig.loadData = function(directory) {
         return $http.get('/server/database/load-data', {params: {directory: directory}})
+          .then(function(response){
+            return response.data;
+          });
+      };
+      serverConfig.getSuggestionSource = function() {
+        return $http.get('/server/database/defaultsource')
+          .then(function(response){
+            return response.data;
+          });
+      };
+
+      serverConfig.setSuggestionSource = function(defaultsource) {
+        return $http.put('/server/database/defaultsource', defaultsource)
+          .then(function(response){
+            return response.data;
+          });
+      };
+      
+      serverConfig.getUiConfig = function() {
+        return $http.get('/server/ui_config')
+          .then(function(response){
+            return response.data;
+          });
+      };
+
+      serverConfig.setUiConfig = function(uiConfig) {
+        return $http.put('/server/ui_config', uiConfig)
           .then(function(response){
             return response.data;
           });

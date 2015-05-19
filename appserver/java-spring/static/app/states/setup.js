@@ -33,6 +33,37 @@ define(['app/module'], function (module) {
       function handleError(response) {
         $scope.error = response.data.message || response.data;
       }
+      
+      function constructDefaultSourceOptions(inIndexes, inDefaultSource) {
+        var options = [];
+        angular.forEach(inIndexes, function(val){
+          var value = val['range-element-index'] || val['range-element-attribute-index'] || val['range-field-index'];
+          var name = value.localname || value['field-name'];
+          var type = value['scalar-type'];
+          var collation = value.collation;
+          var namespace = (value['parent-namespace-uri'] || value['namespace-uri']);
+          
+          var optVal = name +"|"+type+"|"+collation+"|"+namespace;
+          var option = {};
+          option.name = name;
+          option.value = optVal;
+          option.selected = inDefaultSource === optVal;
+          options.push(option);
+        });
+        return options;
+      }
+      
+      function convertToOption(inDefaultSource) {
+        var result = [];
+        if (inDefaultSource) {
+          var range = inDefaultSource.options["default-suggestion-source"].range;
+          result.push(range.element.name);
+          result.push(range.type.substr(3));
+          result.push(range.collation);
+          result.push(range.element.ns);
+        }
+        return result.join("|");
+      }
 
       updateSearchResults();
 
@@ -42,6 +73,10 @@ define(['app/module'], function (module) {
         model.rangeIndexes = config.rangeIndexes;
         model.searchOptions = config.searchOptions;
         model.constraints = config.searchOptions.options.constraint;
+        model.defaultSource = convertToOption(config.defaultSource);
+        model.uiConfig = config.uiConfig;
+        model.suggestOptions = constructDefaultSourceOptions(model.rangeIndexes['range-index-list'], model.defaultSource);
+        $scope.$emit('uiConfigChanged', model.uiConfig);
       });
       angular.extend($scope, {
         model: model,
@@ -115,6 +150,29 @@ define(['app/module'], function (module) {
             });
           },handleError);
         },
+        saveDefaultSource: function(){
+          var chosenOption = model.defaultSource;
+          var parts = chosenOption.split("|");
+          var data = {
+            "options":{
+              "default-suggestion-source":{
+                "range": {
+                  "type": "xs:"+parts[1],
+                  "facet": true,
+                  "collation": parts[2],
+                  "element": {
+                    "ns": parts[3],
+                    "name": parts[0]
+                  }
+                }
+              }
+            }
+          }
+          ServerConfig.setSuggestionSource(data).then(updateSearchResults, handleError);
+        },
+        getDefaultSourceOpts: function(){
+          model.suggestOptions = constructDefaultSourceOptions(model.rangeIndexes['range-index-list'], model.defaultSource);
+        },
         resampleConstraints: function() {
           model.constraints = [];
           angular.forEach(model.rangeIndexes['range-index-list'], function(val){
@@ -173,6 +231,18 @@ define(['app/module'], function (module) {
               model.constraints.push(constraint);
             }
           });
+        },
+        setUiConfig: function() {
+          ServerConfig.setUiConfig(model.uiConfig)
+          .then(
+            function() {
+              updateSearchResults();
+              $scope.$emit('uiConfigChanged', model.uiConfig);
+            }, handleError);
+        },
+        getUiConfig: function() {
+          model.uiConfig = ServerConfig.getUiConfig();
+          return model.uiConfig;
         }
       });
     }]);
