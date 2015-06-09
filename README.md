@@ -1,29 +1,6 @@
-# marklogic-samplestack
+# Discovery App from Marklogic SampleStack
 
-
-<!--
-
-
-NO TRAVIS badge until things start to settle down in e2e tests
-
-***********************************************************************
-REMEMBER to change the branch name in this code when preparing releases
-***********************************************************************
-<div>
-<a target="_blank" href="https://travis-ci.org/marklogic/marklogic-samplestack">
-  <img hspace="15" align="right" src="https://travis-ci.org/marklogic/marklogic-samplestack.svg"></img>
-</a>
-</div>
-<div/>
-
--->
-
-> Samplestack is a comprehensive sample application that demonstrates how to build an effective MarkLogic application.  Based on the idea of a "Question and Answer" website, Samplestack shows you how to integrate MarkLogic into a three-tier application architecture (browser, application server, and database).
-
-## README for Version 1.0.1
-
-
-This release features a middle tier for the Java Enterprise Developer, implemented using Java, Spring, and Gradle.
+This application is derived from the [MarkLogic SampleStack](https://github.com/marklogic/marklogic-samplestack) and is implemented using Java, Spring, and Gradle.
 
 The project includes the following major components:
 * MVC browser application implemented in [Angular.js](https://angularjs.org)
@@ -32,12 +9,9 @@ The project includes the following major components:
 * [Gradle](http://www.gradle.org/) framework to drive build and configuration of the appserver and database tiers
 * Unit and end-to-end tests
 
-A [Node.js](http://nodejs.org/) version of Samplestack that uses gulp automation will be coming soon.
-
 This README covers the following topics:
 * [Getting Started](#getting-started)
 * [Additional Information](#additional-information)
-* [Contributing](#contributing)
 * [License](#license)
 
 ## Getting Started
@@ -45,28 +19,19 @@ This README covers the following topics:
 To start, clone this repository. For example, run the following command:  
 
 ```
-git clone https://github.com/marklogic/marklogic-samplestack
+git clone https://github.com/ryanjdew/discovery-app-w-samplestack
 ```
 
-Then, launch each of the tiers to get a feel for Samplestack's 3-tiered architecture (from the bottom-up):
+Ensure the [gradle.properties](appserver/java-spring/gradle.properties) configuration matches what you desire. You'll need to be sure that 'marklogic.admin.user' and 'marklogic.admin.password' match a MarkLogic user that has the admin role. The default ports to run on are 8006 (MarkLogic) and 9080 (Java Spring). These can also be adjusted appropriately in the gradle.properties.
 
-1) **Database**
+```
+cd discovery-app-w-samplestack
+sh startup.sh
+```
 
-This version of Samplestack is intended to run with MarkLogic 8.0
+This will configure your MarkLogic install as necessary and then start a Java Spring application server. It will stop prior to hitting 100%, but you should see a message about a Tomcat instance starting.
 
-2) **Middle Tier - Application Server**
-
-You can choose to run/examine one of two middle tier application servers.  Each of these will use the same MarkLogic backend configuration and the same MVC browser application.
-
-* [Set up the Java middle tier and database tiers with gradle](appserver/java-spring/README.md)  (Available now)
-* [Set up the Node middle and database tiers with gulp](appserver/node-express/README.md) (Available in future release, under development)
-
-3) **Browser Application**
-
-The browser application is delivered in two forms:
-
-* The Java middle tier hosts a pre-built version; or
-* [Set up the Angular.js/Gulp development environment](browser/README.md) (Available now)
+From here, you can open your browser to http://localhost:9080/. Login with the credentials admin/admin (Note: This is a user setup provided with an included [ldif file](appserver/java-spring/src/main/resources/samplestack-ds.ldif), not a MarkLogic user.). Once you're logged the setup link in the top right corner will be available to take you to the Setup section where your application can be configured.
 
 ## Additional Information
 For more information, see the following:
@@ -77,53 +42,6 @@ For more information, see the following:
 * Full [Documentation](http://docs.marklogic.com/guide/ref-arch) on the Reference Architecture and Samplestack.
 * Take [Free MarkLogic Training](http://www.marklogic.com/services/training).
 Some of the courses cover how to build Samplestack.
-
-## Reference Architecture Introduction
-
-Samplestack is an instantiation of MarkLogic’s Reference Architecture. It demonstrates how to structure three-tiered MarkLogic applications for production:
-
-* MarkLogic plays the role of database in Samplestack’s three-tier architecture. Samplestack shows how to configure MarkLogic to ingest, store, and manipulate documents. With the project comes tooling and configuration files to get MarkLogic primed to expose robust search and data services.
-
-* The middle tier brokers the data between the database and the browser-based web application, coordinates integration with additional services (LDAP), locally optimizes applicationdatabase communications, and enforces business rules. There will be two versions of Samplestack which you can explore based on your preference. One version features a Java middle tier with a Spring Framework and Gradle automation. There will also be a JavaScriptNode.js implementation with gulp automation.
-
-* The web-based front-end is a Model-View-Controller browser application which drives workflow using the business services exposed by the middle-tier and presents the user interface. It is implemented as an Angular.js application.
-
-## Application Overview
-
-The sample application itself is centered around the idea of a Question and Answer site. It is a searchable, transactional, content-rich web application. Users of the application participate in the crowd-sourced knowledge community by asking questions, submitting answers, commenting, and voting. Search is a rich experience with interactive facets and parameters which enable users to narrow in on the answers they seek. The initial seed dataset is an extract of content from the popular [Stack Overflow](http://stackoverflow.com) website.  Their archives are made available under [CC BY-SA](http://creativecommons.org/licenses/by-sa/3.0/) and comprise the seed data for Samplestack.
-
-Each of the features in Samplestack demonstrates an important concept for developers building on MarkLogic:
-
-Samplestack Feature | MarkLogic Concept
------------- | -------------
-Full-text Search | Indexes, query styles
-User records and Question documents | Data Model for POJOs and JSON.
-Users and Roles (log in, log out) | Security (authentication and authorization)
-Restricted Content | Role-based Permissions
-Facets | Search constraints, analytics
-Ask, Answer, Comment | Document updates
-Voting | Updates impact sorting
-Accepted Answers and Reputation | Transactional model, data integrity
-
-Coming soon: Related tags — demonstration of semantics with the use of RDF triples and SPARQL.
-
-## Contributing
-
-Please see our [contributing guidelines](./CONTRIBUTING.md).
-
-## Support
-
-Samplestack is maintained by MarkLogic Engineering and distributed under the
-[Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0). It is not
-designed for use in production. Everyone is encouraged to file bug reports,
-feature requests, and pull requests through GitHub. This input is critical and
-will be carefully considered, but we can’t promise a specific resolution or
-timeframe for any request. In addition, MarkLogic provides technical support
-for release tags of Samplestack to licensed customers under the terms outlined
-in the [Support
-Handbook](http://www.marklogic.com/files/Mark_Logic_Support_Handbook.pdf) For
-more information or to sign up for support, visit
-[help.marklogic.com](http://help.marklogic.com).
 
 ## License
 

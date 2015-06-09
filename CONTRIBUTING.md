@@ -1,18 +1,11 @@
-# Contributing to Samplestack
+# Contributing to Discovery App
 
 Samplestack welcomes new contributors. This document will guide you through the
 process.
 
- - [Question or Problem?](#question)
  - [Issues and Bugs](#issue)
  - [Feature Requests](#feature)
  - [Submission Guidelines](#submit)
-
-## <a name="question"></a> Got a Question or Problem?
-
-If you have questions about how to use Samplestack, you can ask on
-[StackOverflow](http://stackoverflow.com/tags/marklogic), tagging the question
-with MarkLogic.
 
 ## <a name="issue"></a> Found an Issue?
 If you find a bug in the source code or a mistake in the documentation, you can help us by
@@ -40,20 +33,15 @@ to what might be causing the problem (line of code or commit)
 
 ### Submitting a Pull Request
 
-#### Fill in the CLA
-
-Before we can accept your pull request, you need to sign the [Contributor
-License Agreement](http://developer.marklogic.com/products/cla).
-
 #### Fork Samplestack
 
-Fork the project [on GitHub](https://github.com/marklogic/marklogic-samplestack/fork)
+Fork the project [on GitHub](https://github.com/ryanjdew/discovery-app-w-samplestack/fork)
 and clone your copy.
 
 ```sh
-$ git clone git@github.com:username/marklogic-samplestack.git
+$ git clone git@github.com:username/discovery-app-w-samplestack.git
 $ cd marklogic-samplestack
-$ git remote add upstream git://github.com/marklogic/marklogic-samplestack.git
+$ git remote add upstream git://github.com/ryanjdew/discovery-app-w-samplestack.git
 ```
 
 All bug fixes and new features go into the develop branch.
@@ -126,7 +114,7 @@ $ git push origin my-feature-branch
 
 #### Submit the pull request
 
-Go to https://github.com/username/marklogic-samplestack and select your feature
+Go to https://github.com/username/discovery-app-w-samplestack and select your feature
 branch. Click the 'Pull Request' button and fill out the form.
 
 Pull requests are usually reviewed within a few days. If you get comments that
@@ -166,4 +154,4 @@ from the main (upstream) repository:
     git pull --ff upstream develop
     ```
 
-[issue tracker]: https://github.com/marklogic/marklogic-samplestack/issues
+[issue tracker]: https://github.com/ryanjdew/discovery-app-w-samplestack/issues
