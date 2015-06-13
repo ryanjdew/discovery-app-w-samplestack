@@ -6,24 +6,31 @@ define(['app/module'], function (module) {
       var databasePropertiesPromise;
       serverConfig.get = function() {
         var config = {},
-            defered = [$q.defer(),$q.defer(),$q.defer(),$q.defer(),$q.defer(),$q.defer()],
-            promises = _.map(defered, function(d) { return d.promise; }),
+            defered = [],
             configItems = {
+              databaseName: 'getDatabaseName',
               chartData: 'getCharts',
               searchOptions: 'getSearchOptions',
               fields: 'getFields',
               rangeIndexes: 'getRangeIndexes',
               defaultSource: 'getSuggestionSource',
-              uiConfig: 'getUiConfig'
+              uiConfig: 'getUiConfig',
+              databases: 'getDatabases'
             },
             defaults = {
+              databaseName: 'Documents',
               chartData: {charts: []},
               searchOptions: {option: {constraint: []}},
               fields: {'field-list': []},
               rangeIndexes: {'range-index-list': []},
               defaultSource: "",
-              uiConfig: {}
+              uiConfig: {},
+              databases: []
             };
+        angular.forEach(configItems, function() {
+          defered.push($q.defer());
+        });
+        var promises = _.map(defered, function(d) { return d.promise; });
         if (databasePropertiesPromise) {
           databasePropertiesPromise = null;
         } 
@@ -67,6 +74,14 @@ define(['app/module'], function (module) {
           .then(function(response){
             return response.data;
           });
+      };
+
+      serverConfig.getDatabaseName = function(cache) {
+        return serverConfig.getDatabaseProperties(cache).then(
+            function(dbProperties) {
+              return dbProperties['database-name'];
+            }
+          );
       };
 
       serverConfig.getFields = function(cache) {
@@ -172,6 +187,23 @@ define(['app/module'], function (module) {
             return response.data;
           });
       };
+
+      serverConfig.getDatabases = function() {
+        return $http.get('/server/databases')
+          .then(function(response){
+            return  _.map(response.data['database-default-list']['list-items']['list-item'], 
+                function(db){ 
+                  return db.nameref;
+                });
+          });
+      }
+
+      serverConfig.setDatabase = function(dbConfig) {
+        return $http.put('/server/database', dbConfig)
+          .then(function(response){
+            return response.data;
+          });
+      }
 
       serverConfig.dataTypes = function() {
         return [

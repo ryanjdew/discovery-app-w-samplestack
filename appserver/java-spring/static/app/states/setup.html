@@ -29,14 +29,20 @@
   </div>
   <div>
     <ul class="nav nav-tabs">
-      <li role="presentation" ng-class="{'active': state === 'loadData'}"><a ng-click="state = 'loadData'">Load Data</a></li>
+      <li role="presentation" ng-class="{'active': state === 'database'}"><a ng-click="state = 'database'">Database</a></li>
       <li role="presentation" ng-class="{'active': state === 'indexes'}"><a ng-click="state = 'indexes'">Indexes</a></li>
       <li role="presentation" ng-class="{'active': state === 'constraints'}"><a ng-click="state = 'constraints'">Constraints <span ng-if="model.isInErrorState" class="alert-danger" title="Constraints don't match indexes"><i class="glyphicon glyphicon-exclamation-sign"></i></span></a></li>
       <li role="presentation" ng-class="{'active': state === 'suggestions'}"><a ng-click="state = 'suggestions'">Suggestions <span ng-if="model.isInErrorState" class="alert-danger" title="Constraints don't match indexes"><i class="glyphicon glyphicon-exclamation-sign"></i></span></a></li>
       <li role="presentation" ng-class="{'active': state === 'uiConfig'}"><a ng-click="state = 'uiConfig'">UI Config</a></li>
       <li role="presentation" ng-class="{'active': state === 'appearance'}"><a ng-click="state = 'appearance'">Results</a></li>
     </ul>
-    <div ng-show="state === 'loadData'">
+    <div ng-show="state === 'database'">
+      <div class="form-group">
+        <label class="control-label">Database Name <a ng-click="addDatabase()"><i class="glyphicon glyphicon-plus-sign"></i> Add</a></label>
+        <select class="form-control" ng-model="model.databaseName" ng-options="db for db in model.databaseOptions"></select>
+      </div>
+      <button class="btn btn-primary" type="button" ng-click="setDatabase()">Set Database</button>
+      <h4>Load Data</h4>
       <div class="form-group">
         <label class="control-label">Directory</label>
         <input class="form-control" name="directory" type="text" ng-model="loadDirectory">

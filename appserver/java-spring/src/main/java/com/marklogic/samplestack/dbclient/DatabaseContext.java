@@ -22,7 +22,12 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.ResourceNotFoundException;
+import com.marklogic.client.document.JSONDocumentManager;
+import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.pojo.PojoRepository;
 import com.marklogic.samplestack.MarkLogicUtilities;
 import com.marklogic.samplestack.domain.Contributor;
@@ -48,6 +53,19 @@ public class DatabaseContext {
 	 */
 	public Clients clients() {
 		Clients clients = new Clients(env);
+		String database = "Documents";
+		DatabaseClient adminClient = clients.get(ClientRole.SAMPLESTACK_ADMIN);
+		JSONDocumentManager docMgr = adminClient.newJSONDocumentManager();
+		try {
+			// See if there is a database set in configuration
+			JacksonHandle responseHandle = new JacksonHandle();
+			docMgr.read("/discovery-app/config/server_config.json", responseHandle);
+			JsonNode serverConfig = responseHandle.get();
+			database = serverConfig.get("server-config").get("database").asText("Documents");
+		} catch (ResourceNotFoundException e) {
+			
+		}
+		clients.setDatabase(database);
 		return clients;
 	}
 

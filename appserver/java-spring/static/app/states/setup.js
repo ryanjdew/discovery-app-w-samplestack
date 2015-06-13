@@ -67,20 +67,67 @@ define(['app/module'], function (module) {
 
       updateSearchResults();
 
-      ServerConfig.get().then(function(config){
-        model.chartData = config.chartData;
-        model.fields = config.fields;
-        model.rangeIndexes = config.rangeIndexes;
-        model.searchOptions = config.searchOptions;
-        model.constraints = config.searchOptions.options.constraint;
-        model.defaultSource = convertToOption(config.defaultSource);
-        model.uiConfig = config.uiConfig;
-        model.suggestOptions = constructDefaultSourceOptions(model.rangeIndexes['range-index-list'], model.defaultSource);
-        $scope.$emit('uiConfigChanged', model.uiConfig);
-      });
+      function init() {
+        ServerConfig.get().then(function(config){
+          model.databaseName = config.databaseName;
+          model.chartData = config.chartData;
+          model.fields = config.fields;
+          model.rangeIndexes = config.rangeIndexes;
+          model.searchOptions = config.searchOptions;
+          model.constraints = config.searchOptions.options.constraint;
+          model.defaultSource = convertToOption(config.defaultSource);
+          model.uiConfig = config.uiConfig;
+          model.suggestOptions = constructDefaultSourceOptions(model.rangeIndexes['range-index-list'], model.defaultSource);
+          model.databaseOptions = config.databases;
+          $scope.$emit('uiConfigChanged', model.uiConfig);
+        });
+      }
+      init();
+
       angular.extend($scope, {
         model: model,
-        state: 'indexes',
+        state: 'database',
+        setDatabase: function() {
+          ServerConfig.setDatabase({'database-name': model.databaseName}).then(function(data) {
+            init();
+          }, handleError);
+        },
+        addDatabase: function() {
+          $modal.open({
+            template : '<div>'+
+              '<div class="modal-header">'+
+                '<button type="button" class="close" ng-click="$dismiss()">'+
+                  '<span aria-hidden="true">&times;</span>'+
+                  '<span class="sr-only">Close</span>'+
+                '</button>'+
+                '<h4 class="modal-title">Add Database</h4>'+
+              '</div>'+
+              '<div class="modal-body">'+
+                '<form name="form">'+
+                  '<div class="form-group">'+
+                    '<label class="control-label">Database Name </label>&nbsp;'+
+                    '<input type="text" ng-model="dbName" />'+
+                  '</div>'+
+                  '<div class="clearfix">'+
+                    '<button type="button" class="btn btn-primary pull-right" ng-click="add()">Add</button>'+
+                  '</div>'+
+                '</form>'+
+              '</div>'+
+            '</div>',
+            controller : ['$modalInstance', '$scope', function ($modalInstance, $scope) {
+              $scope.add = function() {
+                if ($scope.dbName && $scope.dbName !== '') {
+                  $modalInstance.close($scope.dbName);
+                }
+              };
+            }],
+            size: 'sm'
+          }).result.then(function(dbName) {
+            model.databaseOptions.push(dbName);
+            model.databaseOptions.sort();
+            model.databaseName = dbName;
+          });
+        },
         loadData: function() {
           ServerConfig.loadData($scope.loadDirectory).then(function(data) {
             $scope.loadDataInfo = data;

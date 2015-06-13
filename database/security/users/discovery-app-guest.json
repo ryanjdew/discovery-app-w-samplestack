@@ -1,0 +1,8 @@
+{
+  "user-name": "discovery-app-guest",
+  "password": "sa-pass",
+  "description": "user for read-only, restricted access to discovery-app data",
+  "role": [
+    "discovery-app-guest", "rest-reader"
+  ]
+}

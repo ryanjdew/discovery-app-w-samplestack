@@ -3,22 +3,29 @@ package com.marklogic.samplestack.dbclient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,51 +40,57 @@ public class ManagementClient {
 	private final Logger logger = LoggerFactory
 			.getLogger(ManagementClient.class);
 	
+	@Autowired
+	protected Clients clients;
+
+	@Autowired
+	protected ObjectMapper mapper;
+
 	private int port = 8002;
 	private String host;
 	private String username;
 	private String password;
-	private String database;
 	private DefaultHttpClient client;
 	private HttpHost target;
 	private ClientRole admin = ClientRole.SAMPLESTACK_CONTRIBUTOR;
+	private String hostName;
+	
 	
 	public ManagementClient(Environment env) {
+		ThreadSafeClientConnManager poolingConnManager = new ThreadSafeClientConnManager();
 		host = env.getProperty("marklogic.rest.host");
 		username = env.getProperty(admin.getUserParam());
 		password = env.getProperty(admin.getPasswordParam());
-		database = env.getProperty("marklogic.rest.name");
-		client = new DefaultHttpClient();
+		client = new DefaultHttpClient(poolingConnManager);
 		target = new HttpHost(host, port, "http");
 		Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
 		client.getCredentialsProvider().setCredentials(new AuthScope(host, port, AuthScope.ANY_REALM), defaultcreds);
 	}
 	
-	public ObjectNode getDatabaseProperties() {
-		HttpGet getProperties = new HttpGet("/manage/v2/databases/"+database+"/properties?format=json");
-		ObjectNode properties = null;
-		try {
-			HttpResponse response = client.execute(target, getProperties);
-			HttpEntity entity = response.getEntity();
-			InputStream inputStream = entity.getContent();
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(inputStream, writer, "UTF-8");
-			String jsonString = writer.toString();
-			ObjectMapper mapper = new ObjectMapper();
-			properties = mapper.readValue(jsonString,ObjectNode.class);
-			IOUtils.closeQuietly(inputStream);
-			EntityUtils.consume(entity);
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public String getHostName() {
+		if (hostName == null) {
+			HttpGet getHosts = new HttpGet("/manage/v2/hosts?format=json");
+			ObjectNode hosts = getResponse(getHosts);
+			JsonNode hostInfo = hosts.get("host-default-list").get("list-items").get("list-item").get(0);
+			hostName = hostInfo.get("nameref").asText();
 		}
+		return hostName;
+	}
+
+	
+	public ObjectNode getDatabases() {
+		HttpGet getDatabases = new HttpGet("/manage/v2/databases?format=json");
+		ObjectNode databases = getResponse(getDatabases);
+		return databases;
+	}
+	
+	public ObjectNode getDatabaseProperties(String database) {
+		HttpGet getProperties = new HttpGet("/manage/v2/databases/"+database+"/properties?format=json");
+		ObjectNode properties = getResponse(getProperties);
 		return properties;
 	}
 	
-	public void setDatabaseProperties(ObjectNode properties) {
+	public void setDatabaseProperties(String database, ObjectNode properties) {
 		HttpPut putProperties = new HttpPut("/manage/v2/databases/"+database+"/properties?format=json");
 		try {
 			String requestContent = properties.toString();
@@ -96,9 +109,59 @@ public class ManagementClient {
 		}		
 	}
 
+	public void createDatabase(String database) {
+		HttpPost postDatabase = new HttpPost("/manage/v2/databases?format=json");
+		ObjectNode docNode = mapper.createObjectNode();
+		docNode.put("database-name", database);
+		ArrayNode forests = docNode.putArray("forest");
+		forests.add(database+"-001");
+		forests.add(database+"-002");
+		forests.add(database+"-003");
+		for (JsonNode forest : forests) {
+			createForest(forest.asText());
+		}
+		try {
+			String requestContent = docNode.toString();
+	        StringEntity sendEntity = new StringEntity(requestContent);
+	        postDatabase.setEntity(sendEntity);
+	        postDatabase.setHeader("Content-Type", "application/json");
+			HttpResponse response = client.execute(target, postDatabase);
+			HttpEntity entity = response.getEntity();
+			EntityUtils.consume(entity);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
 	
+	public void createForest(String forest) {
+		HttpPost postDatabase = new HttpPost("/manage/v2/forests?format=json");
+		ObjectNode docNode = mapper.createObjectNode();
+		docNode.put("forest-name", forest);
+		docNode.put("host", getHostName());
+		try {
+			String requestContent = docNode.toString();
+	        StringEntity sendEntity = new StringEntity(requestContent);
+	        postDatabase.setEntity(sendEntity);
+	        postDatabase.setHeader("Content-Type", "application/json");
+			HttpResponse response = client.execute(target, postDatabase);
+			HttpEntity entity = response.getEntity();
+			EntityUtils.consume(entity);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+
 	public void setRangeIndexes(ObjectNode rangeIndexes) {
-		ObjectNode properties = getDatabaseProperties();
+		String database = clients.getDatabase();
+		ObjectNode properties = getDatabaseProperties(database);
 		ArrayNode rangeElementIndexes = properties.putArray("range-element-index");
 		ArrayNode rangeElementAttributeIndexes = properties.putArray("range-element-attribute-index");
 		ArrayNode rangePathIndexes = properties.putArray("range-path-index");
@@ -115,20 +178,67 @@ public class ManagementClient {
 				rangeFieldIndexes.add(indexObj.get("range-field-index"));
 			}
 		}
-		setDatabaseProperties(properties);
+		setDatabaseProperties(database, properties);
 	}
 	
 	public void setFields(ObjectNode fields) {
-		ObjectNode properties = getDatabaseProperties();
+		String database = clients.getDatabase();
+		ObjectNode properties = getDatabaseProperties(database);
 		ArrayNode newFields = properties.putArray("field");
 		for (JsonNode index: (ArrayNode)fields.get("field-list")) {
 			ObjectNode indexObj = (ObjectNode) index;
 			newFields.add(indexObj);
 		}
-		setDatabaseProperties(properties);	
+		setDatabaseProperties(database, properties);	
 	}
 	
 	public void destroy() {
 		client.getConnectionManager().shutdown();
+	}
+	
+	public boolean databaseExists(String database) {
+		HttpGet getDB = new HttpGet("/manage/v2/databases/"+database+"?format=json");
+		boolean exists = false;
+		try {
+			HttpResponse response = client.execute(target, getDB);
+			HttpEntity entity = response.getEntity();
+			InputStream inputStream = entity.getContent();
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(inputStream, writer, "UTF-8");
+			IOUtils.closeQuietly(inputStream);
+			EntityUtils.consume(entity);
+			int statusCode = response.getStatusLine().getStatusCode();
+			exists = statusCode >= 200 && statusCode < 300;
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return exists;
+	}
+	
+	private ObjectNode getResponse(HttpRequest request) {
+		ObjectNode resp = null;
+		try {
+			HttpResponse response = client.execute(target, request);
+			HttpEntity entity = response.getEntity();
+			InputStream inputStream = entity.getContent();
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(inputStream, writer, "UTF-8");
+			String jsonString = writer.toString();
+			ObjectMapper mapper = new ObjectMapper();
+			resp = mapper.readValue(jsonString,ObjectNode.class);
+			IOUtils.closeQuietly(inputStream);
+			EntityUtils.consume(entity);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return resp;
 	}
 }

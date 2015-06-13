@@ -63,7 +63,9 @@ public enum ClientRole {
 	public static ClientRole securityContextRole() {
 		SecurityContext secContext = SecurityContextHolder.getContext();
 		Collection<? extends GrantedAuthority> auths = secContext.getAuthentication().getAuthorities();
-		if (auths.contains(new SimpleGrantedAuthority("ROLE_CONTRIBUTORS"))) {
+		if (auths.contains(new SimpleGrantedAuthority("ROLE_ADMINS"))) {
+			return SAMPLESTACK_ADMIN;
+		} else if (auths.contains(new SimpleGrantedAuthority("ROLE_CONTRIBUTORS"))) {
 			return SAMPLESTACK_CONTRIBUTOR;
 		}
 		else {

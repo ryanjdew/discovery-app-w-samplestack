@@ -1,5 +1,5 @@
 {
-  "role-name": "samplestack-guest",
+  "role-name": "discovery-app-guest",
   "description": "Role for access to limited set of questions and answers, read-only",
   "role": [
       "rest-extension-user",
@@ -25,6 +25,11 @@
     {
         "privilege-name":"sem:sparql",
         "action":"http://marklogic.com/xdmp/privileges/sem-sparql",
+        "kind":"execute"
+    },
+    {
+        "privilege-name":"xdmp:eval-in",
+        "action":"http://marklogic.com/xdmp/privileges/xdmp-eval-in",
         "kind":"execute"
     }
   ]

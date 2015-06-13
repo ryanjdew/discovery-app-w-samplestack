@@ -64,10 +64,6 @@ public class MarkLogicConfigureTask extends MarkLogicTask {
                 logger.warn("Putting search options " + change.file.name)
                 putOptions(changeFile)
             }
-            else if (changeFile.path.contains(dbProperties)) {
-                logger.warn("Putting database configuration " + change.file.name)
-                putDatabaseConfig(changeFile)
-            }
             else if (changeFile.path.contains(restProperties)) {
                 putRESTProperties(changeFile)
             } 
@@ -84,22 +80,6 @@ public class MarkLogicConfigureTask extends MarkLogicTask {
             targetFile.delete()
         }
 
-    }
-
-    void putDatabaseConfig(c) {
-        RESTClient client = new RESTClient("http://" + config.marklogic.rest.host + ":8002/manage/v2/databases/" + config.marklogic.rest.name + "/properties")
-        client.auth.basic config.marklogic.admin.user, config.marklogic.admin.password
-        def params = [:]
-        params.contentType = "application/json"
-		def resp = client.get(params)
-		if (resp.status != 200 || 
-			(resp.data.field == null && resp.data["range-field-index"] == null && resp.data["range-element-index"] == null && resp.data["range-element-attribute-index"] == null)) {
-			logger.info( "Saving Database Configuration")
-			params.body = c.text
-			put(client,params)
-		} else {
-			logger.info( "Database Configuration unchanged")
-		}
     }
 
     void putTransform(transform) {

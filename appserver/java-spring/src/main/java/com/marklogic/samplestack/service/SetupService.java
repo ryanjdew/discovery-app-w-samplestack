@@ -37,4 +37,8 @@ public interface SetupService {
 	public ObjectNode setUiConfig(ObjectNode uiConfigData);
 	
 	public ObjectNode getUiConfig();
+
+	public ObjectNode getDatabases();
+
+	public ObjectNode setDatabase(ObjectNode databaseProps);
 }

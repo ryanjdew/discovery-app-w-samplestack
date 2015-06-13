@@ -1,16 +1,12 @@
 {
-    "database-name": "samplestack",
-    "element-word-lexicon": [],
-    "field": [],
-    "forest": [
-        "samplestack-1",
-        "samplestack-2",
-        "samplestack-3"
-    ],
-    "range-element-index": [],
-    "range-path-index": [],
-    "three-character-searches":true,
-    "fast-element-character-searches": true, 
     "fast-element-phrase-searches": true,
-    "triple-index": true
+    "fast-element-character-searches": true,
+    "triple-index": true,
+    "three-character-searches": true,
+    "database-name": "discovery-app",
+    "forest": [
+        "discovery-app-001",
+        "discovery-app-002"
+    ],
+    "forests-per-host": 2
 }

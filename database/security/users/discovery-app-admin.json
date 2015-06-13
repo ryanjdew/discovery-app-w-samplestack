@@ -1,6 +1,6 @@
 {
-  "user-name": "samplestack-admin",
-  "password": "samplestack-admin-password",
+  "user-name": "discovery-app-admin",
+  "password": "discovery-app-admin-password",
   "description": "user that can administer REST server",
   "role": [
     "rest-admin"

@@ -35,28 +35,47 @@ public class Clients extends HashMap<ClientRole, DatabaseClient> {
 	 * Provided by Spring at startup, for accessing environment-specific variables.
 	 */
 	private Environment env;
+	private String database = "Documents";
 	
 	Clients(Environment env) {
 		super();
 		this.env = env;
-		DatabaseClient writerClient = databaseClient(ClientRole.SAMPLESTACK_CONTRIBUTOR);
-		DatabaseClient guestClient = databaseClient(ClientRole.SAMPLESTACK_GUEST);
+		DatabaseClient adminClient = databaseClient(ClientRole.SAMPLESTACK_ADMIN, "Documents");
+		put(ClientRole.SAMPLESTACK_ADMIN, adminClient);
+	}
+	
+	/**
+	 * Sets the database to the contributor and guest database clients
+	 */
+	
+	public void setDatabase(String database) {
+		this.database = database;
+		DatabaseClient writerClient = databaseClient(ClientRole.SAMPLESTACK_CONTRIBUTOR, this.database);
+		DatabaseClient guestClient = databaseClient(ClientRole.SAMPLESTACK_GUEST, this.database);
 		put(ClientRole.SAMPLESTACK_CONTRIBUTOR, writerClient);
 		put(ClientRole.SAMPLESTACK_GUEST, guestClient);
 	}
-	
+
+	/**
+	 * Gets the database name of the contributor and guest database clients
+	 */
+	public String getDatabase() {
+		return this.database;
+	}
+
 	/**
 	 * Constructs a Java Client API database Client, of which
 	 * this application uses two long-lived instances.
 	 * @param role The security role for whom whom to construct a connection
 	 * @return A DatabaseClient for accessing MarkLogic 
 	 */
-	private DatabaseClient databaseClient(ClientRole role) {
+	private DatabaseClient databaseClient(ClientRole role, String database) {
 		String host = env.getProperty("marklogic.rest.host");
 		Integer port = Integer.parseInt(env.getProperty("marklogic.rest.port"));
 		String username = env.getProperty(role.getUserParam());
 		String password = env.getProperty(role.getPasswordParam());
-		return DatabaseClientFactory.newClient(host, port, username, password,
+		return DatabaseClientFactory.newClient(host, port, database, username, password,
 				Authentication.DIGEST);
 	}
+
 }

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.ResourceNotFoundException;
 import com.marklogic.client.admin.QueryOptionsManager;
+import com.marklogic.client.document.DocumentPatchBuilder;
 import com.marklogic.client.document.JSONDocumentManager;
 import com.marklogic.client.extensions.ResourceManager;
 import com.marklogic.client.extensions.ResourceServices.ServiceResult;
@@ -157,7 +158,7 @@ public class SetupManager extends ResourceManager implements SetupService {
 	 * @return ObjectNode
 	 */
 	public ObjectNode getDatabaseProperties() {
-		return managementClient.getDatabaseProperties();
+		return managementClient.getDatabaseProperties(clients.getDatabase());
 	}
 	
 	/**
@@ -165,9 +166,9 @@ public class SetupManager extends ResourceManager implements SetupService {
 	 * @return ObjectNode
 	 */
 	public ObjectNode findChartData() {
-		JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newJSONDocumentManager(); 
+		JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_ADMIN).newJSONDocumentManager(); 
 		JacksonHandle responseHandle = new JacksonHandle();
-		docMgr.read("/config/charts.json", responseHandle);
+		docMgr.read("/discovery-app/config/charts.json", responseHandle);
 		return (ObjectNode) responseHandle.get();
 	}
 
@@ -177,8 +178,8 @@ public class SetupManager extends ResourceManager implements SetupService {
 	 * @return ObjectNode.
 	 */
 	public ObjectNode setChartData(ObjectNode chartData) {
-		JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newJSONDocumentManager(); 
-		docMgr.write("/config/charts.json", new JacksonHandle(chartData));
+		JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_ADMIN).newJSONDocumentManager(); 
+		docMgr.write("/discovery-app/config/charts.json", new JacksonHandle(chartData));
 		return chartData;
 	}
 	
@@ -188,7 +189,7 @@ public class SetupManager extends ResourceManager implements SetupService {
      * @return An ObjectNode with the search options.
      */
     public ObjectNode setSuggestionOption(ObjectNode searchOptions) {
-        QueryOptionsManager optsManager = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newServerConfigManager().newQueryOptionsManager();  // is this expensive?
+        QueryOptionsManager optsManager = clients.get(ClientRole.SAMPLESTACK_ADMIN).newServerConfigManager().newQueryOptionsManager();  // is this expensive?
         JacksonHandle responseHandle = new JacksonHandle(searchOptions);
         optsManager.writeOptions("opt-suggest", responseHandle);
         return searchOptions;
@@ -214,8 +215,8 @@ public class SetupManager extends ResourceManager implements SetupService {
      * @return An ObjectNode with the search options.
      */
     public ObjectNode setUiConfig(ObjectNode uiConfig) {
-        JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newJSONDocumentManager(); 
-        docMgr.write("/config/ui_config.json", new JacksonHandle(uiConfig));
+        JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_ADMIN).newJSONDocumentManager(); 
+        docMgr.write("/discovery-app/config/ui_config.json", new JacksonHandle(uiConfig));
         return uiConfig;
     }
     
@@ -225,9 +226,31 @@ public class SetupManager extends ResourceManager implements SetupService {
      * @return An ObjectNode with the search options.
      */
     public ObjectNode getUiConfig() {
-        JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newJSONDocumentManager(); 
+        JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_ADMIN).newJSONDocumentManager(); 
         JacksonHandle responseHandle = new JacksonHandle();
-        docMgr.read("/config/ui_config.json", responseHandle);
+        docMgr.read("/discovery-app/config/ui_config.json", responseHandle);
         return (ObjectNode) responseHandle.get();
     }
+
+	/**
+	 * Gets the list of databases to choose from
+	 * 
+	 */
+	public ObjectNode getDatabases() {
+		return managementClient.getDatabases();
+	}
+
+	@Override
+	public ObjectNode setDatabase(ObjectNode databaseProps) {
+		String dbName = databaseProps.get("database-name").asText();
+		if (!managementClient.databaseExists(dbName)) {
+			managementClient.createDatabase(dbName);			
+		}
+		clients.setDatabase(dbName);
+		JSONDocumentManager docMgr = clients.get(ClientRole.SAMPLESTACK_ADMIN).newJSONDocumentManager();
+		DocumentPatchBuilder builder = docMgr.newPatchBuilder();
+		builder.replaceValue("/server-config/database", dbName);
+		docMgr.patch("/discovery-app/config/server_config.json", builder.build());
+		return databaseProps;
+	}
 }

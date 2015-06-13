@@ -17,6 +17,7 @@ package com.marklogic.samplestack.dbclient;
 
 import static com.marklogic.samplestack.SamplestackConstants.DOCUMENTS_DIRECTORY;
 import static com.marklogic.samplestack.SamplestackConstants.DOCUMENTS_OPTIONS;
+import static com.marklogic.samplestack.security.ClientRole.SAMPLESTACK_ADMIN;
 import static com.marklogic.samplestack.security.ClientRole.SAMPLESTACK_CONTRIBUTOR;
 
 import java.io.IOException;
@@ -150,6 +151,7 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 	  Map<String, String> records = new HashMap<String, String>();
 	  records.put("Charts Config", "config/charts.json");
 	  records.put("UI Config", "config/ui_config.json");
+	  records.put("Server Config", "config/server_config.json");
 	  
 	  for (Entry<String, String> entry : records.entrySet()) {
 	    storeNeccesaryConfig(entry.getKey(), entry.getValue());
@@ -157,11 +159,11 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 	}
 	
 	private void storeNeccesaryConfig(String name, String path) {
-	  JSONDocumentManager docMgr = jsonDocumentManager(SAMPLESTACK_CONTRIBUTOR);
+	  JSONDocumentManager docMgr = jsonDocumentManager(SAMPLESTACK_ADMIN);
 	  try {
 	    // leave them alone if already in db.
 	    JacksonHandle responseHandle = new JacksonHandle();
-	    docMgr.read("/" + path, responseHandle);
+	    docMgr.read("/discovery-app/" + path, responseHandle);
 	    logger.info("charts config already in the database");
 	  } catch (ResourceNotFoundException e) {
 	    ClassPathResource chartsResource = new ClassPathResource(
@@ -180,7 +182,7 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 	      throw new SamplestackIOException(
 	          "Setup of " + name + " Failed.  Check/clean/clear db", e1);
 	    }
-	    docMgr.write("/" + path, new JacksonHandle(charts));;
+	    docMgr.write("/discovery-app/" + path, new JacksonHandle(charts));;
 	  }
 	}
 

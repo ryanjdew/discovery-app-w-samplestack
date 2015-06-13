@@ -1,0 +1,8 @@
+{
+  "user-name": "discovery-app-contributor",
+  "password": "sc-pass",
+  "description": "user for write unrestricted for app configuration",
+  "role": [
+    "discovery-app-writer"
+  ]
+}

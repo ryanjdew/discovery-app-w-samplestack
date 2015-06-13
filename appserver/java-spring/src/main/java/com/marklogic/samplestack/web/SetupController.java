@@ -64,6 +64,16 @@ public class SetupController {
 
 	
 	/**
+	 * Exposes endpoint that sets the database used.
+	 * @param indexes ObjectNode containing a list of range indexes.
+	 * @return An ObjectNode with the list of range indexes.
+	 */
+	@RequestMapping(value = "server/database", method = RequestMethod.PUT)
+	public @ResponseBody ObjectNode setDatabase(@RequestBody ObjectNode databaseProps) {
+		return setupService.setDatabase(databaseProps);
+	}
+
+	/**
 	 * Exposes endpoint that returns the database properties.
 	 * @return A JsonNode with the database properties.
 	 */
@@ -111,6 +121,17 @@ public class SetupController {
 		return setupService.setSearchOptions(searchOptions);
 	}
 
+	/**
+	 * Exposes endpoint that returns a list of matching element types.
+	 * @param localname String specifying the content structure to search for
+	 * @param type String specifying the type of content structure to search for
+	 * @return An ObjectNode with the search options.
+	 */
+	@RequestMapping(value = "server/databases", method = RequestMethod.GET)
+	public @ResponseBody ObjectNode getDatabases() {
+		return setupService.getDatabases();
+	}
+	
 	/**
 	 * Exposes endpoint that returns a list of matching element types.
 	 * @param localname String specifying the content structure to search for

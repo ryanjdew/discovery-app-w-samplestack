@@ -114,7 +114,7 @@ public class MarkLogicInitTask extends MarkLogicTask {
         }
         def params = [:]
         params.contentType = "application/json"
-        params.body = String.format('{"rest-api" : { "name" : "%s", "port" : %s }}', config.marklogic.rest.name, config.marklogic.rest.port)
+        params.body = String.format('{"rest-api" : { "name" : "%s", "port" : %s, "database": "Documents" }}', config.marklogic.rest.name, config.marklogic.rest.port)
         try {
             post(client, params)
         } catch (ex) {
