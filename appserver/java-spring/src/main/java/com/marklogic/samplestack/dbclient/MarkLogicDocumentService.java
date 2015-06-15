@@ -19,6 +19,7 @@ import static com.marklogic.samplestack.SamplestackConstants.DOCUMENTS_DIRECTORY
 import static com.marklogic.samplestack.SamplestackConstants.DOCUMENTS_OPTIONS;
 import static com.marklogic.samplestack.security.ClientRole.SAMPLESTACK_ADMIN;
 import static com.marklogic.samplestack.security.ClientRole.SAMPLESTACK_CONTRIBUTOR;
+import static com.marklogic.samplestack.security.ClientRole.SAMPLESTACK_GUEST;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -105,7 +106,7 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 				searchNode.setAll((ObjectNode) structuredQuery.get("search"));
 			}
 		}
-		QueryManager queryManager = clients.get(role).newQueryManager();
+		QueryManager queryManager = clients.get(SAMPLESTACK_GUEST).newQueryManager();
 		queryManager.setView(QueryView.ALL);
 		GenericDocumentManager docMgr = genericDocumentManager(role);
 
