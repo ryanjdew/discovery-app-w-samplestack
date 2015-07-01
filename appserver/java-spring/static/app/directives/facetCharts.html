@@ -1,8 +1,12 @@
 <div class="col-md-12">
 	<div ng-repeat="chart in populatedConfigs" class="col-md-6" ng-class="{'col-md-offset-3': $even && $last}">
 		<div>
-			<a ng-if="removeChart" class="pull-right" ng-click="removeChart($index)"><i class="glyphicon glyphicon-trash"></i></a>
-			<highchart id="chart{{$index}}" config="chart"></highchart>
+			<div class="row" ng-if="removeChart">
+        <a class="pull-right" ng-click="removeChart($index)"><i class="glyphicon glyphicon-trash">&nbsp;</i></a>
+      </div>
+      <div class="clearfix">
+  			<highchart id="chart{{$index}}" config="chart"></highchart>
+      </div>
 		</div>
 	</div>
 </div>
