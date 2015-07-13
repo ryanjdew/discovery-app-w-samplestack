@@ -52,7 +52,7 @@ public class ManagementClient {
 	private String password;
 	private DefaultHttpClient client;
 	private HttpHost target;
-	private ClientRole admin = ClientRole.SAMPLESTACK_CONTRIBUTOR;
+	private ClientRole admin = ClientRole.SAMPLESTACK_ADMIN;
 	private String hostName;
 	
 	
@@ -161,7 +161,7 @@ public class ManagementClient {
 
 	public void setRangeIndexes(ObjectNode rangeIndexes) {
 		String database = clients.getDatabase();
-		ObjectNode properties = getDatabaseProperties(database);
+		ObjectNode properties = mapper.createObjectNode();
 		ArrayNode rangeElementIndexes = properties.putArray("range-element-index");
 		ArrayNode rangeElementAttributeIndexes = properties.putArray("range-element-attribute-index");
 		ArrayNode rangePathIndexes = properties.putArray("range-path-index");
@@ -181,9 +181,25 @@ public class ManagementClient {
 		setDatabaseProperties(database, properties);
 	}
 	
+	public void setGeospatialIndexes(ObjectNode geospatialIndexes) {
+		String database = clients.getDatabase();
+		ObjectNode properties = mapper.createObjectNode();
+		ArrayNode geospatialElementIndexes = properties.putArray("geospatial-element-index");
+		ArrayNode geospatialElementPairIndexes = properties.putArray("geospatial-element-pair-index");
+		for (JsonNode index: (ArrayNode)geospatialIndexes.get("geospatial-index-list")) {
+			ObjectNode indexObj = (ObjectNode) index;
+			if (indexObj.get("geospatial-element-index") != null) {
+				geospatialElementIndexes.add(indexObj.get("geospatial-element-index"));
+			} else if (indexObj.get("geospatial-element-pair-index") != null) {
+				geospatialElementPairIndexes.add(indexObj.get("geospatial-element-pair-index"));
+			}
+		}
+		setDatabaseProperties(database, properties);
+	}
+
 	public void setFields(ObjectNode fields) {
 		String database = clients.getDatabase();
-		ObjectNode properties = getDatabaseProperties(database);
+		ObjectNode properties = mapper.createObjectNode();
 		ArrayNode newFields = properties.putArray("field");
 		for (JsonNode index: (ArrayNode)fields.get("field-list")) {
 			ObjectNode indexObj = (ObjectNode) index;

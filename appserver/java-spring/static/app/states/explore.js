@@ -66,6 +66,7 @@ define(['app/module'], function (module) {
       angular.extend($scope, {
         model: model,
         search: search,
+        mlSearch: mlSearch,
         suggest: suggest,
         toggleFacet: function toggleFacet(facetName, value) {
           mlSearch

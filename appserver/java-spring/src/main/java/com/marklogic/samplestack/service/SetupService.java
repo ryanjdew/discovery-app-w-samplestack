@@ -41,4 +41,6 @@ public interface SetupService {
 	public ObjectNode getDatabases();
 
 	public ObjectNode setDatabase(ObjectNode databaseProps);
+
+	public ObjectNode setGeospatialIndexes(ObjectNode indexes);
 }

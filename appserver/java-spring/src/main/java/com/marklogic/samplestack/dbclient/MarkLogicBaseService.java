@@ -107,4 +107,15 @@ public abstract class MarkLogicBaseService {
 		queryManager.delete(deleteDef);
 	}
 
+	/**
+	 * Removes an entire directory from the server
+	 * @param role the caller's role.
+	 * @param directory The directory to delete.
+	 */
+	protected void deleteCollection(ClientRole role, String collection) {
+		QueryManager queryManager = clients.get(role).newQueryManager();
+		DeleteQueryDefinition deleteDef = queryManager.newDeleteDefinition();
+		deleteDef.setCollections(collection);
+		queryManager.delete(deleteDef);
+	}
 }

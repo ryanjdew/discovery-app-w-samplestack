@@ -34,22 +34,34 @@ function ext:post(
   let $directory := map:get($params, 'directory')
   let $directory-info := xdmp:filesystem-directory($directory)
   let $docs-found := $directory-info/dir:entry[dir:type eq "file"]
+  let $docs-collection := "load-data:"|| fn:string(xdmp:random())
   let $docs-failed :=
-      for $file in $docs-found
+      for $file-info in $docs-found
+      where fn:not(fn:starts-with($file-info/dir:filename, "."))
       return
         try {
           xdmp:document-insert(
-            "/documents/" || $file/dir:filename,
-            document {xdmp:unquote(xdmp:filesystem-file($file/dir:pathname))},
-            $doc-permissions
+            "/documents/" || $file-info/dir:filename,
+            document {
+              let $file := xdmp:filesystem-file($file-info/dir:pathname)
+              return 
+                if (fn:ends-with($file-info/dir:filename, ".xml") or fn:ends-with($file-info/dir:filename, ".json")) then
+                  xdmp:unquote($file)
+                else
+                  $file
+            },
+            $doc-permissions,
+            $docs-collection
           )
         } catch * {
-          fn:string($file/dir:filename)
+          fn:string($file-info/dir:filename),
+          xdmp:log('Error [' || $err:code || ']: ' || $err:description)
         }
   return
     document { 
       object-node {
         "success": fn:true(),
+        "collection": $docs-collection,
         "docCountFound": fn:count($docs-found),
         "docCountSucceeded": fn:count($docs-found) - fn:count($docs-failed),
         "failedDocuments": array-node {

@@ -9,9 +9,16 @@
   <div class="modal-body">
     <form name="form">
       <div class="form-group">
-        <label class="control-label">Index</label>
-        <select class="form-control" name="index" ng-model="highChart.facetName" ng-options="key as key for (key, val) in facets">
-        </select>
+        <label class="control-label">Index(es)</label>
+        <div ng-repeat="facet in highChart.facets track by $index">
+          <select class="form-control" name="index" ng-model="highChart.facets[$index]" ng-options="key as key for (key, val) in facets">
+          </select><a ng-show="highChart.facets.length > 1" ng-click="highChart.facets.splice($index, 1)"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+        <a ng-show="highChart.facets.length < 3" ng-click="highChart.facets.push('')"><span class="glyphicon glyphicon-plus"></span></a>
+      </div>
+      <div class="form-group">
+        <label class="control-label">Result Limit</label>
+        <input class="form-control" ng-model="highChart.facetLimit" type="number" />
       </div>
       <div class="form-group">
         <label class="control-label">Type</label>

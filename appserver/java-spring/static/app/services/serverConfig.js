@@ -13,6 +13,7 @@ define(['app/module'], function (module) {
               searchOptions: 'getSearchOptions',
               fields: 'getFields',
               rangeIndexes: 'getRangeIndexes',
+              geospatialIndexes: 'getGeospatialIndexes',
               defaultSource: 'getSuggestionSource',
               uiConfig: 'getUiConfig',
               databases: 'getDatabases'
@@ -23,6 +24,7 @@ define(['app/module'], function (module) {
               searchOptions: {option: {constraint: []}},
               fields: {'field-list': []},
               rangeIndexes: {'range-index-list': []},
+              geospatialIndexes: {'geospatial-index-list': []},
               defaultSource: "",
               uiConfig: {},
               databases: []
@@ -102,6 +104,32 @@ define(['app/module'], function (module) {
 
       serverConfig.setFields = function(rangeIndexes) {
         return $http.put('/server/database/fields', rangeIndexes)
+          .then(function(response){
+            return response.data;
+          });
+      };
+
+      var geospatialIndexTypes = ['geospatial-element-index','geospatial-element-pair-index'];
+      serverConfig.getGeospatialIndexes = function(cache) {
+        return serverConfig.getDatabaseProperties(cache).then(
+            function(dbProperties) {
+              var rangeIndexes = [];
+              angular.forEach(geospatialIndexTypes, function(indexType){
+                angular.forEach(dbProperties[indexType], function(index) {
+                  var modIndex = {};
+                  modIndex[indexType] = index;
+                  rangeIndexes.push(modIndex);
+                });
+              });
+              return {
+                'geospatial-index-list': rangeIndexes
+              };
+            }
+          );
+      };
+
+      serverConfig.setGeospatialIndexes = function(geospatialIndexes) {
+        return $http.put('/server/database/geospatial-indexes', geospatialIndexes)
           .then(function(response){
             return response.data;
           });
@@ -204,6 +232,13 @@ define(['app/module'], function (module) {
             return response.data;
           });
       }
+
+      serverConfig.removeDataCollection = function(collection) {
+        return $http.delete('/server/database/collection/'+collection)
+          .then(function(response){
+            return response;
+          });
+      };
 
       serverConfig.dataTypes = function() {
         return [

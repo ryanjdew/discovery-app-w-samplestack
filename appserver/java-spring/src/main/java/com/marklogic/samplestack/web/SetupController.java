@@ -93,6 +93,16 @@ public class SetupController {
 	}
 	
 	/**
+	 * Exposes endpoint that sets the geospatial indexes in the database properties.
+	 * @param indexes ObjectNode containing a list of geospatial indexes.
+	 * @return An ObjectNode with the list of range indexes.
+	 */
+	@RequestMapping(value = "server/database/geospatial-indexes", method = RequestMethod.PUT)
+	public @ResponseBody ObjectNode setGeospatialIndexes(@RequestBody ObjectNode indexes) {
+		return setupService.setGeospatialIndexes(indexes);
+	}
+	
+	/**
 	 * Exposes endpoint that sets the fields in the database properties.
 	 * @param indexes ObjectNode containing a list of fields.
 	 * @return An ObjectNode with the list of range indexes.
@@ -192,5 +202,4 @@ public class SetupController {
 	public @ResponseBody ObjectNode setUiConfig(@RequestBody ObjectNode uiConfig) {
 		return setupService.setUiConfig(uiConfig);
 	}
-
 }

@@ -5,12 +5,14 @@ define(['app/module'], function (module) {
     .controller('setupCtlr', [
       '$modal', '$scope', 'ServerConfig', 
       '$window', 'MLSearchFactory', 
+      'newGeospatialIndexDialog', 'editGeospatialIndexDialog', 
       'newRangeIndexDialog', 'editRangeIndexDialog', 
       'fieldDialog', 
       'newChartWidgetDialog', 
       function (
         $modal, $scope, ServerConfig, 
         win, searchFactory, 
+        newGeospatialIndexDialog, editGeospatialIndexDialog, 
         newRangeIndexDialog, editRangeIndexDialog, 
         fieldDialog, 
         newChartWidgetDialog
@@ -43,7 +45,7 @@ define(['app/module'], function (module) {
           var collation = value.collation;
           var namespace = (value['parent-namespace-uri'] || value['namespace-uri']);
           
-          var optVal = name +"|"+type+"|"+collation+"|"+namespace;
+          var optVal = name +'|'+type+'|'+collation+'|'+namespace;
           var option = {};
           option.name = name;
           option.value = optVal;
@@ -55,24 +57,26 @@ define(['app/module'], function (module) {
       
       function convertToOption(inDefaultSource) {
         var result = [];
-        if (inDefaultSource) {
-          var range = inDefaultSource.options["default-suggestion-source"].range;
+        if (inDefaultSource && inDefaultSource.options['default-suggestion-source']) {
+          var range = inDefaultSource.options['default-suggestion-source'].range;
           result.push(range.element.name);
           result.push(range.type.substr(3));
           result.push(range.collation);
           result.push(range.element.ns);
         }
-        return result.join("|");
+        return result.join('|');
       }
 
       updateSearchResults();
 
       function init() {
         ServerConfig.get().then(function(config){
+          model.dataCollections = [];
           model.databaseName = config.databaseName;
           model.chartData = config.chartData;
           model.fields = config.fields;
           model.rangeIndexes = config.rangeIndexes;
+          model.geospatialIndexes = config.geospatialIndexes;
           model.searchOptions = config.searchOptions;
           model.constraints = config.searchOptions.options.constraint;
           model.defaultSource = convertToOption(config.defaultSource);
@@ -87,8 +91,9 @@ define(['app/module'], function (module) {
       angular.extend($scope, {
         model: model,
         state: 'database',
+        mlSearch: mlSearch,
         setDatabase: function() {
-          ServerConfig.setDatabase({'database-name': model.databaseName}).then(function(data) {
+          ServerConfig.setDatabase({'database-name': model.databaseName}).then(function() {
             init();
           }, handleError);
         },
@@ -131,6 +136,15 @@ define(['app/module'], function (module) {
         loadData: function() {
           ServerConfig.loadData($scope.loadDirectory).then(function(data) {
             $scope.loadDataInfo = data;
+            model.dataCollections.push(data.collection);
+            updateSearchResults().then(function() {
+              $scope.state = 'appearance';
+            });
+          }, handleError);
+        },
+        removeCollection: function(index) {
+          ServerConfig.removeDataCollection(model.dataCollections[index]).then(function() {
+            model.dataCollections.splice(index, 1);
             updateSearchResults().then(function() {
               $scope.state = 'appearance';
             });
@@ -169,11 +183,26 @@ define(['app/module'], function (module) {
             ServerConfig.setRangeIndexes(model.rangeIndexes).then(updateSearchResults, handleError);
           });
         },
+        addGeospatialIndex: function() {
+          newGeospatialIndexDialog().then(function(index) {
+            model.geospatialIndexes['geospatial-index-list'].push(index);
+            ServerConfig.setGeospatialIndexes(model.geospatialIndexes).then(updateSearchResults, handleError);
+          });
+        },
+        editGeospatialIndex: function(gsIndex) {
+          editGeospatialIndexDialog(gsIndex).then(function() {
+            ServerConfig.setGeospatialIndexes(model.geospatialIndexes).then(updateSearchResults, handleError);
+          });
+        },
+        removeGeospatialIndex: function(index) {
+          model.geospatialIndexes['geospatial-index-list'].splice(index, 1);
+          ServerConfig.setGeospatialIndexes(model.geospatialIndexes).then(updateSearchResults, handleError);
+        },
         removeField: function(fieldPosition) {
           model.fields['field-list'].splice(fieldPosition, 1);
           ServerConfig.setFields(model.fields).then(updateSearchResults, handleError);
         },
-        addField: function(field) {
+        addField: function() {
           fieldDialog().then(function(field) {
             model.fields['field-list'].push(field);
             ServerConfig.setFields(model.fields).then(updateSearchResults, handleError);
@@ -187,7 +216,7 @@ define(['app/module'], function (module) {
           });
         },
         removeConstraint: function(index) {
-          model.searchOptions.options.constraint.splice(index,1);
+          model.constraints.splice(index,1);
         },
         submitConstraints: function() {
           model.searchOptions.options.constraint = model.constraints;
@@ -199,22 +228,22 @@ define(['app/module'], function (module) {
         },
         saveDefaultSource: function(){
           var chosenOption = model.defaultSource;
-          var parts = chosenOption.split("|");
+          var parts = chosenOption.split('|');
           var data = {
-            "options":{
-              "default-suggestion-source":{
-                "range": {
-                  "type": "xs:"+parts[1],
-                  "facet": true,
-                  "collation": parts[2],
-                  "element": {
-                    "ns": parts[3],
-                    "name": parts[0]
+            'options':{
+              'default-suggestion-source':{
+                'range': {
+                  'type': 'xs:'+parts[1],
+                  'facet': true,
+                  'collation': parts[2],
+                  'element': {
+                    'ns': parts[3],
+                    'name': parts[0]
                   }
                 }
               }
             }
-          }
+          };
           ServerConfig.setSuggestionSource(data).then(updateSearchResults, handleError);
         },
         getDefaultSourceOpts: function(){

@@ -73,4 +73,11 @@ public interface DocumentService {
 	 */
 	public void deleteAll();
 
+	JsonNode rawOptions(ClientRole role, String optionsName);
+
+	JsonNode rawCoocurrence(ClientRole role, ObjectNode structuredQuery,
+			String constraint);
+
+	void deleteLoadedCollection(String collection);
+
 }

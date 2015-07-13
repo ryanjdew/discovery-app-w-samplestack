@@ -50,6 +50,11 @@
       <div class="clearfix">
         <button ng-click="loadData()" class="clearfix btn btn-primary pull-right">Load</button>
       </div>
+      <h4>Previously Loaded Collections</h4>
+      <div ng-repeat="collection in model.dataCollections" class="col-sm-12">
+        {{collection}}
+        <a ng-click="removeCollection($index)"><span class="glyphicon glyphicon-trash"></span></a>
+      </div>
     </div>
     <div ng-show="state === 'indexes'">
       <div class="panel panel-default">
@@ -82,6 +87,23 @@
                 <td><a ng-click="editField(field)">{{field['field-name']}}</a></td>
                 <td><span ng-repeat="includedElement in field['included-element']">{{includedElement.localname}} <span ng-if="!$last">, </span></span></td>
                 <td class="col-sm-1"><a class="pull-right" ng-click="removeField($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Geospatial Indexes <a class="pull-right" ng-click="addGeospatialIndex()"><i class="glyphicon glyphicon-plus-sign"></i> Add</a></div>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Coordinate System</th><th class="col-sm-1"></th></tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="index in model.geospatialIndexes['geospatial-index-list'] track by $index">
+                <td><a ng-click="editGeospatialIndex(index)">{{index['geospatial-element-index'].localname || index['geospatial-element-pair-index']['parent-localname']}}</a></td>
+                <td>{{(index['geospatial-element-index'] || index['geospatial-element-pair-index'])['coordinate-system']}}</td>
+                <td class="col-sm-1"><a class="pull-right" ng-click="removeGeospatialIndex($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
               </tr>
             </tbody>
           </table>
@@ -212,7 +234,7 @@
           <h3 ng-if="model.search.total === 0">No results to show</h3>
           <ml-facets class="col-md-3" facets="model.search.facets" toggle="toggleFacet(facet, value)"></ml-facets>
           <div class="col-md-9">
-            <facet-charts charts="model.chartData.charts" facets="model.search.facets" remove-chart="removeChart" callback="toggleFacet(facet, value)"></facet-charts>
+            <facet-charts charts="model.chartData.charts" ml-search="mlSearch" remove-chart="removeChart" callback="toggleFacet(facet, value)"></facet-charts>
             <ml-results results="model.search.results" template="/app/directives/ssSearchResults.html"></ml-results>
           </div>
         </div>

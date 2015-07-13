@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -180,6 +181,43 @@ public class DocumentController {
 			@RequestParam(defaultValue = "", required = false) String qtext,
 			@RequestParam(defaultValue = "all", required = false) String options) {
 		return docService.suggest(qtext, options);
+	}
+	
+	/**
+	 * Exposes an endpoint for search options.
+	 * @param combinedQuery A JSON combined query.
+	 * @param start The index of the first result to return.
+	 * @return A Search Results JSON response.
+	 */
+	@RequestMapping(value = "v1/config/query/{options}", method = RequestMethod.GET)
+	public @ResponseBody
+	JsonNode getSearchOptions(
+			@PathVariable("options") String options) {
+		return docService.rawOptions(null, options);
+	}
+
+	/**
+	 * Exposes an endpoint for search cooccurence.
+	 * @param combinedQuery A JSON combined query.
+	 * @param constraint The name of the values to return.
+	 * @return A Search Results JSON response.
+	 */
+	@RequestMapping(value = "v1/values/{constraint}", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonNode getCooccurrence(
+			@RequestBody ObjectNode structuredQuery,
+			@PathVariable("constraint") String constraint) {
+		return docService.rawCoocurrence(null, structuredQuery, constraint);
+	}
+	
+	/**
+	 * Exposes an endpoint for deleting loaded collections.
+	 * @param start The index of the first result to return.
+	 */
+	@RequestMapping(value = "server/database/collection/{collection}", method = RequestMethod.DELETE)
+	public void deleteCollection(
+			@PathVariable("collection") String collection) {
+		docService.deleteLoadedCollection(collection);
 	}
 
 }

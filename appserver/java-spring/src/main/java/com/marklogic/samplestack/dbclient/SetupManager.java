@@ -253,4 +253,10 @@ public class SetupManager extends ResourceManager implements SetupService {
 		docMgr.patch("/discovery-app/config/server_config.json", builder.build());
 		return databaseProps;
 	}
+
+	@Override
+	public ObjectNode setGeospatialIndexes(ObjectNode indexes) {
+		managementClient.setGeospatialIndexes(indexes);
+		return indexes;
+	}
 }

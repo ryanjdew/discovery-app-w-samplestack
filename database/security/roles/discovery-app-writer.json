@@ -25,5 +25,22 @@
       "role-name": "rest-admin",
       "capability": "update"
     }
+  ],
+  "privilege": [
+    {
+      "privilege-name": "xdmp:filesystem-directory",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-filesystem-directory",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "xdmp:filesystem-file",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-filesystem-file",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "unprotected-collections",
+      "action": "http://marklogic.com/xdmp/privileges/unprotected-collections",
+      "kind": "execute"
+    }
   ]
 }

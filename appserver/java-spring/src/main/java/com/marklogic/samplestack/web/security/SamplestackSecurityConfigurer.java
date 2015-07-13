@@ -54,9 +54,9 @@ public class SamplestackSecurityConfigurer {
 
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/v1/search", "/v1/suggest", "/v1/session", "/**")
+				.antMatchers(HttpMethod.GET, "/**")
 				.permitAll().and().authorizeRequests()
-				.antMatchers(HttpMethod.POST, "/v1/search", "/v1/suggest")
+				.antMatchers(HttpMethod.POST, "/v1/search", "/v1/suggest", "/v1/values/**")
 				.permitAll().and().authorizeRequests()
 				.antMatchers("/server/**")
 				.authenticated().and().authorizeRequests().anyRequest()

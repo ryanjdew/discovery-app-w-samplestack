@@ -39,7 +39,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.ResourceNotFoundException;
+import com.marklogic.client.admin.QueryOptionsManager;
 import com.marklogic.client.document.GenericDocumentManager;
 import com.marklogic.client.document.JSONDocumentManager;
 import com.marklogic.client.document.ServerTransform;
@@ -47,8 +49,13 @@ import com.marklogic.client.io.BytesHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.QueryManager.QueryView;
+import com.marklogic.client.query.RawCombinedQueryDefinition;
 import com.marklogic.client.query.RawQueryDefinition;
+import com.marklogic.client.query.RawStructuredQueryDefinition;
 import com.marklogic.client.query.SuggestDefinition;
+import com.marklogic.client.query.ValueQueryDefinition;
+import com.marklogic.client.query.ValuesDefinition;
+import com.marklogic.client.query.ValuesListDefinition;
 import com.marklogic.samplestack.exception.SamplestackIOException;
 import com.marklogic.samplestack.exception.SamplestackSearchException;
 import com.marklogic.samplestack.security.ClientRole;
@@ -92,6 +99,25 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 						JsonNode.class);
 		this.rawSearch(SAMPLESTACK_CONTRIBUTOR, query, "all", 1, 1);
 	}
+
+	@Override
+	public JsonNode rawCoocurrence(ClientRole role, ObjectNode structuredQuery, String constraint) {
+		DatabaseClient dbClient = clients.get(SAMPLESTACK_GUEST);
+		logger.warn(dbClient.toString());
+		QueryManager queryManager = dbClient.newQueryManager();
+
+		RawCombinedQueryDefinition qdef = queryManager.newRawCombinedQueryDefinition(
+				new JacksonHandle(structuredQuery), DOCUMENTS_OPTIONS);
+		ValuesDefinition vdef = queryManager.newValuesDefinition(constraint);
+		vdef.setQueryDefinition(qdef);
+		JacksonHandle responseHandle = new JacksonHandle();
+		try {
+			queryManager.tuples(vdef, responseHandle);
+		} catch (com.marklogic.client.FailedRequestException ex) {
+			throw new SamplestackSearchException(ex);
+		}
+		return responseHandle.get();
+	}
 	
 	@Override
 	public JsonNode rawSearch(ClientRole role, ObjectNode structuredQuery, String options,
@@ -108,7 +134,7 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 		}
 		QueryManager queryManager = clients.get(SAMPLESTACK_GUEST).newQueryManager();
 		queryManager.setView(QueryView.ALL);
-		GenericDocumentManager docMgr = genericDocumentManager(role);
+		GenericDocumentManager docMgr = genericDocumentManager(SAMPLESTACK_GUEST);
 
 		RawQueryDefinition qdef = queryManager.newRawStructuredQueryDefinition(
 				new JacksonHandle(docNode), DOCUMENTS_OPTIONS);
@@ -126,6 +152,14 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 		return responseHandle.get();
 	}
 
+	@Override
+	public JsonNode rawOptions(ClientRole role, String optionsName) {
+		QueryOptionsManager queryOptManager = clients.get(SAMPLESTACK_GUEST).newServerConfigManager().newQueryOptionsManager();
+		JacksonHandle responseHandle = new JacksonHandle();
+		queryOptManager.readOptions(optionsName, responseHandle);
+		return responseHandle.get();
+	}
+	
 	@Override
 	public byte[] get(String uri, ServerTransform transform) {
 		GenericDocumentManager docMgr = genericDocumentManager(SAMPLESTACK_CONTRIBUTOR);
@@ -199,4 +233,9 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 		}
 		return docNode;
 	}
+	
+	@Override
+	public void deleteLoadedCollection(String collection) {
+		deleteCollection(SAMPLESTACK_CONTRIBUTOR, collection);
+	};
 }
