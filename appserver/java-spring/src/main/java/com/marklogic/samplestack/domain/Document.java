@@ -18,34 +18,35 @@ package com.marklogic.samplestack.domain;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
 /**
- * Class that wraps a JSON document and its ID.  
- * The main payload for operations on questions and answers.
+ * Class that wraps a JSON document and its ID. The main payload for operations
+ * on questions and answers.
  *
  */
 public class Document {
-	
+
 	protected ObjectNode json;
 
 	public String getId() {
 		return json.get("id").asText();
 	}
-	
+
 	public void setId(String id) {
 		json.put("id", id);
 	}
-	
+
 	public JsonNode getJson() {
 		return json;
 	}
-	
+
 	/**
 	 * Constructor to make a QnADocument from an in-hand JSON node.
-	 * @param jsonObject A JSON node that contains a question and answer document.
+	 * 
+	 * @param jsonObject
+	 *            A JSON node that contains a question and answer document.
 	 */
 	public Document(ObjectNode jsonObject) {
 		this.json = jsonObject;
 	}
-	
+
 }

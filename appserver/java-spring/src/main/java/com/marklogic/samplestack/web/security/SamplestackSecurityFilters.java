@@ -27,8 +27,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- *  Customization to Spring Security. 
- *  Adds CSRF token as header if it exists, and also CORS headers.
+ * Customization to Spring Security. Adds CSRF token as header if it exists, and
+ * also CORS headers.
  */
 @Component
 public final class SamplestackSecurityFilters extends OncePerRequestFilter {

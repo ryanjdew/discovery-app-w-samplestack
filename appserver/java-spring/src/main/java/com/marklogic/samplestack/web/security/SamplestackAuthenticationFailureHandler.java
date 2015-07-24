@@ -32,8 +32,8 @@ import org.springframework.stereotype.Component;
 import com.marklogic.samplestack.web.JsonHttpResponse;
 
 /**
- * Customization to default Spring Security behavior, which
- * simply provides a 401 response to the client then authenication fails.
+ * Customization to default Spring Security behavior, which simply provides a
+ * 401 response to the client then authenication fails.
  */
 @Component
 public class SamplestackAuthenticationFailureHandler extends
@@ -41,7 +41,7 @@ public class SamplestackAuthenticationFailureHandler extends
 
 	@Autowired
 	private JsonHttpResponse errors;
-	
+
 	@Override
 	/**
 	 * Override handler that returns 401 after failed authentication.
@@ -49,13 +49,14 @@ public class SamplestackAuthenticationFailureHandler extends
 	public void onAuthenticationFailure(HttpServletRequest request,
 			HttpServletResponse response, AuthenticationException exception)
 			throws IOException, ServletException {
-		
+
 		HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(
 				response);
 		responseWrapper.setStatus(HttpStatus.SC_UNAUTHORIZED);
-		
+
 		Writer out = responseWrapper.getWriter();
-		errors.writeJsonResponse(out, HttpStatus.SC_UNAUTHORIZED, "Unauthorized");
+		errors.writeJsonResponse(out, HttpStatus.SC_UNAUTHORIZED,
+				"Unauthorized");
 		out.close();
 	}
 

@@ -40,11 +40,11 @@ import com.marklogic.samplestack.security.ClientRole;
 import com.marklogic.samplestack.service.ContributorService;
 
 /**
- * On authentication success, this customization returns a 200 OK
- * with the logged-in contributor's profile information inline.
+ * On authentication success, this customization returns a 200 OK with the
+ * logged-in contributor's profile information inline.
  * 
- * See http://www.baeldung.com/2011/10/31/securing-a-restful-web-service-with-spring-security-3-1-part-3/
- * for the inspiration for this method.
+ * See http://www.baeldung.com/2011/10/31/securing-a-restful-web-service-with-
+ * spring-security-3-1-part-3/ for the inspiration for this method.
  */
 @Component
 public class SamplestackAuthenticationSuccessHandler extends
@@ -52,10 +52,9 @@ public class SamplestackAuthenticationSuccessHandler extends
 
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	@Autowired
 	private ContributorService contributorService;
-	
 
 	private RequestCache requestCache = new HttpSessionRequestCache();
 
@@ -93,7 +92,7 @@ public class SamplestackAuthenticationSuccessHandler extends
 		}
 		ArrayNode roleNode = userNode.putArray("role");
 		roleNode.add(ClientRole.securityContextRole().toString());
-		
+
 		mapper.writeValue(writer, userNode);
 		writer.close();
 	}

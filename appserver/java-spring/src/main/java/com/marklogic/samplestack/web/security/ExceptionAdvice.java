@@ -32,10 +32,8 @@ import com.marklogic.samplestack.exception.SamplestackSearchException;
 import com.marklogic.samplestack.web.JsonHttpResponse;
 
 /**
- * Configures customizations for mapping application
- * exceptions to HTTP responses.
- * Spring automatically weaves this class into the
- * web application.
+ * Configures customizations for mapping application exceptions to HTTP
+ * responses. Spring automatically weaves this class into the web application.
  */
 @ControllerAdvice
 public class ExceptionAdvice {
@@ -51,7 +49,8 @@ public class ExceptionAdvice {
 	 * @return A JSON message body and 404 response code.
 	 */
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	@ExceptionHandler({SamplestackNotFoundException.class, ResourceNotFoundException.class})
+	@ExceptionHandler({ SamplestackNotFoundException.class,
+			ResourceNotFoundException.class })
 	public @ResponseBody JsonNode handleNotFound(Exception ex) {
 		return errors.makeJsonResponse(404, ex.getMessage());
 	}
@@ -77,7 +76,9 @@ public class ExceptionAdvice {
 	 * @return A JSON message body and 400 response code.
 	 */
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler({SamplestackIOException.class, SamplestackSearchException.class, SamplestackInvalidParameterException.class})
+	@ExceptionHandler({ SamplestackIOException.class,
+			SamplestackSearchException.class,
+			SamplestackInvalidParameterException.class })
 	public @ResponseBody JsonNode handleIOException(Exception ex) {
 		return errors.makeJsonResponse(400, ex.getMessage());
 	}

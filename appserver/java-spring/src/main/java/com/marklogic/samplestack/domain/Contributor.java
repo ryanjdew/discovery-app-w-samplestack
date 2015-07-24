@@ -50,8 +50,7 @@ public class Contributor {
 	public String id;
 
 	/**
-	 * The id from the original record, if imported from
-	 * another system.
+	 * The id from the original record, if imported from another system.
 	 */
 	private String originalId;
 
@@ -64,18 +63,19 @@ public class Contributor {
 	 */
 	private int reputation;
 
-	/** The username.  */
+	/** The username. */
 	private String userName;
 
 	/** The number of times this contributor has voted (up or down) */
 	private long voteCount;
-	
+
 	/** URL of this contributor's website. */
 	private String websiteUrl;
 
 	/**
-	 * return a copy of this object as sparse object, to be used
-	 * within QnADocument serializations
+	 * return a copy of this object as sparse object, to be used within
+	 * QnADocument serializations
+	 * 
 	 * @return a SparseContributor object with values from this one.
 	 */
 	public SparseContributor asSparseContributor() {
@@ -106,7 +106,6 @@ public class Contributor {
 		return reputation;
 	}
 
-	
 	public String getUserName() {
 		return userName;
 	}
@@ -122,16 +121,14 @@ public class Contributor {
 	public void setAboutMe(String aboutMe) {
 		this.aboutMe = aboutMe;
 	}
-	
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
 
-	
 	public void setId(String id) {
 		this.id = id;
 	}
-
 
 	public void setLocation(String location) {
 		this.location = location;
@@ -149,11 +146,9 @@ public class Contributor {
 		this.voteCount = voteCount;
 	}
 
-
 	public void setWebsiteUrl(String websiteUrl) {
 		this.websiteUrl = websiteUrl;
 	}
-
 
 	public String getOriginalId() {
 		return originalId;
@@ -162,6 +157,5 @@ public class Contributor {
 	public void setOriginalId(String originalId) {
 		this.originalId = originalId;
 	}
-
 
 }

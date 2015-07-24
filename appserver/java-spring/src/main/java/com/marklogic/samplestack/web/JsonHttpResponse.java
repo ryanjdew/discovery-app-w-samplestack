@@ -33,29 +33,35 @@ public class JsonHttpResponse {
 
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	/**
 	 * Make a JSON object to encapsulate the Http Response Body.
+	 * 
 	 * @param status
 	 * @param message
 	 * @return a JSONNode to return as Response Body
 	 */
 	public JsonNode makeJsonResponse(int status, String message) {
 		ObjectNode node = mapper.createObjectNode();
-		node.put("status",  status);
+		node.put("status", status);
 		node.put("message", message);
 		return node;
 	}
 
 	/**
 	 * Write a constructed JSON object to a Writer.
-	 * @param out The Writer on which to write the object.
-	 * @param status The http status to put in the JSON object.
-	 * @param message The message to include in the response body.
+	 * 
+	 * @param out
+	 *            The Writer on which to write the object.
+	 * @param status
+	 *            The http status to put in the JSON object.
+	 * @param message
+	 *            The message to include in the response body.
 	 */
-	public void writeJsonResponse(Writer out, int status, String message) throws IOException {
+	public void writeJsonResponse(Writer out, int status, String message)
+			throws IOException {
 		JsonNode error = makeJsonResponse(status, message);
 		mapper.writeValue(out, error);
 	}
-	
+
 }

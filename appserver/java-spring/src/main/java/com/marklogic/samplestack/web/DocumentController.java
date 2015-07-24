@@ -63,46 +63,58 @@ public class DocumentController {
 
 	@Autowired
 	private MarkLogicUtilities utilities;
-	/** 
+
+	/**
 	 * Searches for QnADocuments and returns search results to request body
-	 * @param q A search string (See Search API docs)
-	 * @param start The index of the first return result.
-	 * @return A Search API JSON response containing matches, facets and snippets.
+	 * 
+	 * @param q
+	 *            A search string (See Search API docs)
+	 * @param start
+	 *            The index of the first return result.
+	 * @return A Search API JSON response containing matches, facets and
+	 *         snippets.
 	 */
 	@RequestMapping(value = "v1/documents", method = RequestMethod.GET, produces = "application/xml")
-	public @ResponseBody
-	byte[] getDocuments(HttpServletResponse response,
+	public @ResponseBody byte[] getDocuments(HttpServletResponse response,
 			@RequestParam(required = true) String uri,
 			@RequestParam(required = false) String transform,
 			@RequestParam(required = false, defaultValue = "json") String format) {
 		if (format != "binary") {
-			response.setContentType("application/"+format);
+			response.setContentType("application/" + format);
 		}
 		ServerTransform serverTransform = null;
 		if (transform != null) {
 			serverTransform = new ServerTransform(transform);
 		}
 		return docService.get(uri, serverTransform);
-	}	
+	}
+
 	/**
 	 * Exposes an endpoint for searching QnADocuments.
-	 * @param combinedQuery A JSON combined query.
-	 * @param start The index of the first result to return.
+	 * 
+	 * @param combinedQuery
+	 *            A JSON combined query.
+	 * @param start
+	 *            The index of the first result to return.
 	 * @return A Search Results JSON response.
 	 */
 	@RequestMapping(value = "v1/search", method = RequestMethod.POST)
-	public @ResponseBody
-	JsonNode search(@RequestBody ObjectNode combinedQuery,
+	public @ResponseBody JsonNode search(
+			@RequestBody ObjectNode combinedQuery,
 			@RequestParam(defaultValue = "10", required = false) long pageLength,
 			@RequestParam(defaultValue = "1", required = false) long start,
 			@RequestParam(defaultValue = "", required = false) String qtext,
 			@RequestParam(defaultValue = "all", required = false) String options) {
 
-		ObjectNode combinedSearchObject = (ObjectNode) combinedQuery.get("search");
-		ObjectNode combinedQueryObject = (ObjectNode) combinedQuery.get("query");
+		ObjectNode combinedSearchObject = (ObjectNode) combinedQuery
+				.get("search");
+		ObjectNode combinedQueryObject = (ObjectNode) combinedQuery
+				.get("query");
 		if (combinedSearchObject == null && combinedQueryObject == null) {
-			throw new SamplestackSearchException("A Samplestack search must have payload with root key \"search\" or \"query\"");
-		} else if (combinedSearchObject != null && combinedSearchObject.get("qtext") == null) {
+			throw new SamplestackSearchException(
+					"A Samplestack search must have payload with root key \"search\" or \"query\"");
+		} else if (combinedSearchObject != null
+				&& combinedSearchObject.get("qtext") == null) {
 			combinedSearchObject.put("qtext", qtext);
 		}
 		JsonNode postedStartNode = combinedQueryObject.get("start");
@@ -110,18 +122,22 @@ public class DocumentController {
 			start = postedStartNode.asLong();
 			combinedQueryObject.remove("start");
 		}
-		return docService.rawSearch(ClientRole.securityContextRole(), combinedQuery, options, start, pageLength);
+		return docService.rawSearch(ClientRole.securityContextRole(),
+				combinedQuery, options, start, pageLength);
 	}
 
 	/**
 	 * Exposes an endpoint for searching QnADocuments.
-	 * @param combinedQuery A JSON combined query.
-	 * @param start The index of the first result to return.
+	 * 
+	 * @param combinedQuery
+	 *            A JSON combined query.
+	 * @param start
+	 *            The index of the first result to return.
 	 * @return A Search Results JSON response.
 	 */
 	@RequestMapping(value = "v1/search", method = RequestMethod.GET)
-	public @ResponseBody
-	JsonNode getSearch(@RequestParam(defaultValue = "{}",required = false) String structuredQuery,
+	public @ResponseBody JsonNode getSearch(
+			@RequestParam(defaultValue = "{}", required = false) String structuredQuery,
 			@RequestParam(defaultValue = "1", required = false) long start,
 			@RequestParam(defaultValue = "10", required = false) long pageLength,
 			@RequestParam(defaultValue = "", required = false) String qtext,
@@ -129,7 +145,7 @@ public class DocumentController {
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode combinedQuery = null;
 		try {
-			combinedQuery = mapper.readValue(structuredQuery,ObjectNode.class);
+			combinedQuery = mapper.readValue(structuredQuery, ObjectNode.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -140,11 +156,15 @@ public class DocumentController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ObjectNode combinedSearchObject = (ObjectNode) combinedQuery.get("search");
-		ObjectNode combinedQueryObject = (ObjectNode) combinedQuery.get("query");
+		ObjectNode combinedSearchObject = (ObjectNode) combinedQuery
+				.get("search");
+		ObjectNode combinedQueryObject = (ObjectNode) combinedQuery
+				.get("query");
 		if (combinedSearchObject == null && combinedQueryObject == null) {
-			throw new SamplestackSearchException("A Samplestack search must have payload with root key \"search\" or \"query\"");
-		} else if (combinedSearchObject != null && combinedSearchObject.get("qtext") == null) {
+			throw new SamplestackSearchException(
+					"A Samplestack search must have payload with root key \"search\" or \"query\"");
+		} else if (combinedSearchObject != null
+				&& combinedSearchObject.get("qtext") == null) {
 			combinedSearchObject.put("qtext", qtext);
 		}
 		JsonNode postedStartNode = combinedQueryObject.get("start");
@@ -152,18 +172,21 @@ public class DocumentController {
 			start = postedStartNode.asLong();
 			combinedQueryObject.remove("start");
 		}
-		return docService.rawSearch(ClientRole.securityContextRole(), combinedQuery, options, start, pageLength);
+		return docService.rawSearch(ClientRole.securityContextRole(),
+				combinedQuery, options, start, pageLength);
 	}
-	
+
 	/**
 	 * Exposes an endpoint for search suggestions.
-	 * @param combinedQuery A JSON combined query.
-	 * @param start The index of the first result to return.
+	 * 
+	 * @param combinedQuery
+	 *            A JSON combined query.
+	 * @param start
+	 *            The index of the first result to return.
 	 * @return A Search Results JSON response.
 	 */
 	@RequestMapping(value = "v1/suggest", method = RequestMethod.GET)
-	public @ResponseBody
-	ObjectNode getSearchSuggest(
+	public @ResponseBody ObjectNode getSearchSuggest(
 			@RequestParam(defaultValue = "", required = false) String qtext,
 			@RequestParam(defaultValue = "all", required = false) String options) {
 		return docService.suggest(qtext, options);
@@ -171,52 +194,59 @@ public class DocumentController {
 
 	/**
 	 * Exposes an endpoint for search suggestions.
-	 * @param combinedQuery A JSON combined query.
-	 * @param start The index of the first result to return.
+	 * 
+	 * @param combinedQuery
+	 *            A JSON combined query.
+	 * @param start
+	 *            The index of the first result to return.
 	 * @return A Search Results JSON response.
 	 */
 	@RequestMapping(value = "v1/suggest", method = RequestMethod.POST)
-	public @ResponseBody
-	ObjectNode postSearchSuggest(
+	public @ResponseBody ObjectNode postSearchSuggest(
 			@RequestParam(defaultValue = "", required = false) String qtext,
 			@RequestParam(defaultValue = "all", required = false) String options) {
 		return docService.suggest(qtext, options);
 	}
-	
+
 	/**
 	 * Exposes an endpoint for search options.
-	 * @param combinedQuery A JSON combined query.
-	 * @param start The index of the first result to return.
+	 * 
+	 * @param combinedQuery
+	 *            A JSON combined query.
+	 * @param start
+	 *            The index of the first result to return.
 	 * @return A Search Results JSON response.
 	 */
 	@RequestMapping(value = "v1/config/query/{options}", method = RequestMethod.GET)
-	public @ResponseBody
-	JsonNode getSearchOptions(
+	public @ResponseBody JsonNode getSearchOptions(
 			@PathVariable("options") String options) {
 		return docService.rawOptions(null, options);
 	}
 
 	/**
 	 * Exposes an endpoint for search cooccurence.
-	 * @param combinedQuery A JSON combined query.
-	 * @param constraint The name of the values to return.
+	 * 
+	 * @param combinedQuery
+	 *            A JSON combined query.
+	 * @param constraint
+	 *            The name of the values to return.
 	 * @return A Search Results JSON response.
 	 */
 	@RequestMapping(value = "v1/values/{constraint}", method = RequestMethod.POST)
-	public @ResponseBody
-	JsonNode getCooccurrence(
+	public @ResponseBody JsonNode getCooccurrence(
 			@RequestBody ObjectNode structuredQuery,
 			@PathVariable("constraint") String constraint) {
 		return docService.rawCoocurrence(null, structuredQuery, constraint);
 	}
-	
+
 	/**
 	 * Exposes an endpoint for deleting loaded collections.
-	 * @param start The index of the first result to return.
+	 * 
+	 * @param start
+	 *            The index of the first result to return.
 	 */
 	@RequestMapping(value = "server/database/collection/{collection}", method = RequestMethod.DELETE)
-	public void deleteCollection(
-			@PathVariable("collection") String collection) {
+	public void deleteCollection(@PathVariable("collection") String collection) {
 		docService.deleteLoadedCollection(collection);
 	}
 

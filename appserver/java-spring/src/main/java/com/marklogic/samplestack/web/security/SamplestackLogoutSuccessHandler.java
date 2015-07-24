@@ -28,8 +28,8 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 
 /**
- * Logout handler that simply provides a 200 OK upon logout.
- * Default behavior for Spring Security form login is a 302.
+ * Logout handler that simply provides a 200 OK upon logout. Default behavior
+ * for Spring Security form login is a 302.
  */
 @Component
 public class SamplestackLogoutSuccessHandler implements LogoutSuccessHandler {

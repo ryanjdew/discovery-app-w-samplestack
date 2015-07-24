@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 package com.marklogic.samplestack.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +26,15 @@ import org.springframework.stereotype.Component;
 import com.marklogic.samplestack.web.security.SamplestackSecurityConfigurer;
 
 /**
- * The Spring Security configuration for Samplestack.
- * Contains configuration for the web-tier security,
- * including the embedded LDAP backend configuration and the
- * user-facing method for securing the application's endpoints.
+ * The Spring Security configuration for Samplestack. Contains configuration for
+ * the web-tier security, including the embedded LDAP backend configuration and
+ * the user-facing method for securing the application's endpoints.
  */
 @EnableWebSecurity
 @Component
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
-	
 	@Autowired
 	private SamplestackSecurityConfigurer configurer;
 
@@ -49,7 +47,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 	 */
 	protected void configure(HttpSecurity http) throws Exception {
 		configurer.configure(http);
-		
+
 	}
 
 	@Override

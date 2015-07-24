@@ -15,11 +15,9 @@
  */
 package com.marklogic.samplestack.domain;
 
-
-
 /**
- *  Wraps just those values from a Contributor object
- *  that are denormalized and stored with QnADocuments.
+ * Wraps just those values from a Contributor object that are denormalized and
+ * stored with QnADocuments.
  */
 public class SparseContributor {
 
@@ -27,14 +25,12 @@ public class SparseContributor {
 	 * The String identifier for this user, a primary key.
 	 */
 	public String id;
-	
+
 	/** The contributor's display name */
 	public String displayName;
 
-	
-	/** The username.  */
+	/** The username. */
 	public String userName;
-
 
 	public String getUserName() {
 		return userName;
@@ -55,7 +51,7 @@ public class SparseContributor {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public String getId() {
 		return id;
 	}

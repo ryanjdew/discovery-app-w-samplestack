@@ -18,23 +18,21 @@ package com.marklogic.samplestack;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 /**
  * Various application or database- related constants in the application.
  */
 public class SamplestackConstants {
 
-	
 	/**
 	 * Documents are stored with url pattern "/doucments/{id}";
 	 */
 	public static final String DOCUMENTS_DIRECTORY = "/documents/";
-	
+
 	/**
 	 * The main search response uses the "questions" options name.
 	 */
 	public static final String DOCUMENTS_OPTIONS = "all";
-	
+
 	/**
 	 * The single question response page uses these search options:
 	 */
@@ -44,7 +42,7 @@ public class SamplestackConstants {
 	 * Contributor queries use this options configuration.
 	 */
 	public static final String CONTRIBUTORS_OPTIONS = "contributors";
-	
+
 	/**
 	 * Search results have a page length of ten.
 	 */
@@ -54,16 +52,14 @@ public class SamplestackConstants {
 	 * The name of the search transform used for search responses.
 	 */
 	public static final String SEARCH_RESPONSE_TRANSFORM = "search-response";
-	
 
 	/**
 	 * The single question response page uses these search options:
 	 */
 	public static final String SINGLE_DOCUMENT_TRANSFORM = "single-document";
 
-	
 	public static String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ";
-	
+
 	/**
 	 * A formatter used to make dateTime strings in JSON serializations
 	 */

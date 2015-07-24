@@ -39,16 +39,20 @@ public abstract class MarkLogicBaseService {
 
 	/**
 	 * Gets a new MarkLogic JSONDocumentManager based on a ClientRole.
-	 * @param role The Role to secure the manager.
+	 * 
+	 * @param role
+	 *            The Role to secure the manager.
 	 * @return A JSONDocumentManager
 	 */
 	protected JSONDocumentManager jsonDocumentManager(ClientRole role) {
 		return clients.get(role).newJSONDocumentManager();
 	};
-	
+
 	/**
 	 * Gets a new MarkLogic GenericDocumentManager based on a ClientRole.
-	 * @param role The Role to secure the manager.
+	 * 
+	 * @param role
+	 *            The Role to secure the manager.
 	 * @return A GenericDocumentManager
 	 */
 	protected GenericDocumentManager genericDocumentManager(ClientRole role) {
@@ -57,6 +61,7 @@ public abstract class MarkLogicBaseService {
 
 	/**
 	 * Gets a new MarkLogic QueryManager based on a ClientRole.
+	 * 
 	 * @param role
 	 * @return A QueryManager
 	 */
@@ -68,24 +73,30 @@ public abstract class MarkLogicBaseService {
 	protected ObjectMapper mapper;
 
 	/**
-	 * Gets a JSON document from the database as a Jackson JsonNode, 
-	 * based on the caller's ClientRole and the document URI.
-	 * @param role the caller's role.
-	 * @param documentUri the document URI.
+	 * Gets a JSON document from the database as a Jackson JsonNode, based on
+	 * the caller's ClientRole and the document URI.
+	 * 
+	 * @param role
+	 *            the caller's role.
+	 * @param documentUri
+	 *            the document URI.
 	 * @return A JsonNode containing the document.
 	 */
 	protected JsonNode getJsonDocument(ClientRole role, String documentUri) {
 		JacksonHandle handle = new JacksonHandle();
-		JacksonHandle jacksonHandle = clients.get(role).newJSONDocumentManager()
-				.read(documentUri, handle);
+		JacksonHandle jacksonHandle = clients.get(role)
+				.newJSONDocumentManager().read(documentUri, handle);
 		return jacksonHandle.get();
 	}
 
 	/**
-	 * Gets bytes of a document from the database as byte[], 
-	 * based on the caller's ClientRole and the document URI.
-	 * @param role the caller's role.
-	 * @param documentUri the document URI.
+	 * Gets bytes of a document from the database as byte[], based on the
+	 * caller's ClientRole and the document URI.
+	 * 
+	 * @param role
+	 *            the caller's role.
+	 * @param documentUri
+	 *            the document URI.
 	 * @return byte[] containing the document.
 	 */
 	protected byte[] getBytesDocument(ClientRole role, String documentUri) {
@@ -97,8 +108,11 @@ public abstract class MarkLogicBaseService {
 
 	/**
 	 * Removes an entire directory from the server
-	 * @param role the caller's role.
-	 * @param directory The directory to delete.
+	 * 
+	 * @param role
+	 *            the caller's role.
+	 * @param directory
+	 *            The directory to delete.
 	 */
 	protected void deleteDirectory(ClientRole role, String directory) {
 		QueryManager queryManager = clients.get(role).newQueryManager();
@@ -109,8 +123,11 @@ public abstract class MarkLogicBaseService {
 
 	/**
 	 * Removes an entire directory from the server
-	 * @param role the caller's role.
-	 * @param directory The directory to delete.
+	 * 
+	 * @param role
+	 *            the caller's role.
+	 * @param directory
+	 *            The directory to delete.
 	 */
 	protected void deleteCollection(ClientRole role, String collection) {
 		QueryManager queryManager = clients.get(role).newQueryManager();

@@ -63,10 +63,12 @@ public class MarkLogicContributorService extends MarkLogicBaseService implements
 	@Autowired
 	private PojoRepository<Contributor, String> repository;
 
+	@Override
 	public void delete(String... ids) {
 		repository.delete(ids);
 	}
 
+	@Override
 	public Contributor read(String id) {
 		try {
 			return repository.read(id);
@@ -74,7 +76,8 @@ public class MarkLogicContributorService extends MarkLogicBaseService implements
 			return null;
 		}
 	}
-	
+
+	@Override
 	public Contributor read(String id, Transaction transaction) {
 		try {
 			return repository.read(id, transaction);
@@ -83,6 +86,7 @@ public class MarkLogicContributorService extends MarkLogicBaseService implements
 		}
 	}
 
+	@Override
 	public PojoPage<Contributor> search(PojoQueryDefinition query, long start) {
 		return repository.search(query, start);
 	}
@@ -118,12 +122,11 @@ public class MarkLogicContributorService extends MarkLogicBaseService implements
 		}
 	}
 
-
 	@Override
 	public Contributor getByUserName(String userName) {
 		return getByUserName(userName, null);
 	}
-	
+
 	public Contributor getByUserName(String userName, Transaction transaction) {
 		@SuppressWarnings("rawtypes")
 		PojoQueryBuilder qb = repository.getQueryBuilder();
@@ -134,7 +137,7 @@ public class MarkLogicContributorService extends MarkLogicBaseService implements
 			page = repository.search(qdef, 1);
 		} else {
 			page = repository.search(qdef, 1, transaction);
-		}	
+		}
 		if (page.getTotalSize() == 1) {
 			return page.iterator().next();
 		} else if (page.size() > 1) {
@@ -161,7 +164,8 @@ public class MarkLogicContributorService extends MarkLogicBaseService implements
 
 	@Override
 	public void store(Contributor contributor, Transaction transaction) {
-		Contributor cachedContributor = getByUserName(contributor.getUserName(), transaction);
+		Contributor cachedContributor = getByUserName(
+				contributor.getUserName(), transaction);
 		if (cachedContributor != null)
 			logger.debug("cached contributor " + cachedContributor.getId());
 		if (contributor != null)
@@ -174,7 +178,7 @@ public class MarkLogicContributorService extends MarkLogicBaseService implements
 					+ " collides with pre-existing one");
 		}
 
-		// HACK  -- how to use repository to patch permissions?
+		// HACK -- how to use repository to patch permissions?
 		DocumentMetadataPatchBuilder patchBuilder = jsonDocumentManager(
 				ClientRole.SAMPLESTACK_CONTRIBUTOR).newPatchBuilder();
 
@@ -183,10 +187,12 @@ public class MarkLogicContributorService extends MarkLogicBaseService implements
 		String uri = repository.getDocumentUri(contributor);
 		if (transaction == null) {
 			repository.write(contributor);
-			jsonDocumentManager(ClientRole.SAMPLESTACK_CONTRIBUTOR).patch(uri, patch);
+			jsonDocumentManager(ClientRole.SAMPLESTACK_CONTRIBUTOR).patch(uri,
+					patch);
 		} else {
 			repository.write(contributor, transaction);
-			jsonDocumentManager(ClientRole.SAMPLESTACK_CONTRIBUTOR).patch(uri, patch, transaction);
+			jsonDocumentManager(ClientRole.SAMPLESTACK_CONTRIBUTOR).patch(uri,
+					patch, transaction);
 		}
 
 	}

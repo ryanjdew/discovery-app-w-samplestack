@@ -25,57 +25,72 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.marklogic.samplestack.exception.SamplestackSecurityException;
 
 /**
- * Provides the keys to two different database connections,
- * and a method for referring to their properties in build.gradle.
+ * Provides the keys to two different database connections, and a method for
+ * referring to their properties in build.gradle.
  */
 public enum ClientRole {
-	
+
 	SAMPLESTACK_ADMIN, SAMPLESTACK_CONTRIBUTOR, SAMPLESTACK_GUEST;
 	private String getPrefix() {
-		switch(this) {
-    	case SAMPLESTACK_ADMIN: return "marklogic.admin"; 
-    	case SAMPLESTACK_CONTRIBUTOR: return "marklogic.writer"; 
-    	case SAMPLESTACK_GUEST: return "marklogic.guest";
-    	default: throw new SamplestackSecurityException();
+		switch (this) {
+		case SAMPLESTACK_ADMIN:
+			return "marklogic.admin";
+		case SAMPLESTACK_CONTRIBUTOR:
+			return "marklogic.writer";
+		case SAMPLESTACK_GUEST:
+			return "marklogic.guest";
+		default:
+			throw new SamplestackSecurityException();
 		}
 	}
-	
+
 	/**
 	 * Gets the name of the user parameter for this ClientRole.
-	 * @return username parameter used in build.gradle to configure the database connection.
+	 * 
+	 * @return username parameter used in build.gradle to configure the database
+	 *         connection.
 	 */
 	public String getUserParam() {
 		return getPrefix() + ".user";
 	}
-	
+
 	/**
 	 * Gets the name of the password parameter for this ClientRole.
-	 * @return username parameter used in build.gradle to configure the database connection.
+	 * 
+	 * @return username parameter used in build.gradle to configure the database
+	 *         connection.
 	 */
 	public String getPasswordParam() {
 		return getPrefix() + ".password";
 	}
-	
+
 	/**
-	 * Provides the database client role implied by the security context for the spring application.
-	 * @return The ClientRole enum value that corresponds to the current logged-in user.
+	 * Provides the database client role implied by the security context for the
+	 * spring application.
+	 * 
+	 * @return The ClientRole enum value that corresponds to the current
+	 *         logged-in user.
 	 */
 	public static ClientRole securityContextRole() {
 		SecurityContext secContext = SecurityContextHolder.getContext();
-		Collection<? extends GrantedAuthority> auths = secContext.getAuthentication().getAuthorities();
+		Collection<? extends GrantedAuthority> auths = secContext
+				.getAuthentication().getAuthorities();
 		if (auths.contains(new SimpleGrantedAuthority("ROLE_ADMINS"))) {
 			return SAMPLESTACK_ADMIN;
-		} else if (auths.contains(new SimpleGrantedAuthority("ROLE_CONTRIBUTORS"))) {
+		} else if (auths.contains(new SimpleGrantedAuthority(
+				"ROLE_CONTRIBUTORS"))) {
 			return SAMPLESTACK_CONTRIBUTOR;
-		}
-		else {
+		} else {
 			return SAMPLESTACK_GUEST;
 		}
 	}
-	
+
 	/**
-	 * Provides the username for implied by the security context for the spring application.
-	 * @return The username value that corresponds to the current logged-in user.
+	 * Provides the username for implied by the security context for the spring
+	 * application.
+	 * 
+	 * @return The username value that corresponds to the current logged-in
+	 *         user.
 	 */
 	public static String securityContextUserName() {
 		SecurityContext secContext = SecurityContextHolder.getContext();

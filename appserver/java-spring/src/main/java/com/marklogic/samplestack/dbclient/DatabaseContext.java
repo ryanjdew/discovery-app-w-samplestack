@@ -15,6 +15,8 @@
  */
 package com.marklogic.samplestack.dbclient;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -34,7 +36,8 @@ import com.marklogic.samplestack.domain.Contributor;
 import com.marklogic.samplestack.security.ClientRole;
 
 /**
- * Contains the IoC wiring for the part of Samplestack that interacts with MarkLogic.
+ * Contains the IoC wiring for the part of Samplestack that interacts with
+ * MarkLogic.
  */
 @Component
 @ComponentScan
@@ -45,7 +48,9 @@ public class DatabaseContext {
 	/** Spring provides this object at startup, for access to environment configuration
 	 */
 	private Environment env;
-	
+	private final Logger logger = LoggerFactory
+			.getLogger(DatabaseContext.class);
+
 	@Bean
 	/**
 	 * Makes a HashMap of Client objects available to the application.
@@ -59,11 +64,12 @@ public class DatabaseContext {
 		try {
 			// See if there is a database set in configuration
 			JacksonHandle responseHandle = new JacksonHandle();
-			docMgr.read("/discovery-app/config/server_config.json", responseHandle);
+			docMgr.read("/discovery-app/config/server_config.json",
+					responseHandle);
 			JsonNode serverConfig = responseHandle.get();
-			database = serverConfig.get("server-config").get("database").asText("Documents");
+			database = serverConfig.get("server-config").get("database")
+					.asText("Documents");
 		} catch (ResourceNotFoundException e) {
-			
 		}
 		clients.setDatabase(database);
 		return clients;
@@ -78,7 +84,7 @@ public class DatabaseContext {
 		ManagementClient mgClient = new ManagementClient(env);
 		return mgClient;
 	}
-	
+
 	@Bean
 	/**
 	 * This repository object manages operations for the Contributor POJO Class.
@@ -90,7 +96,7 @@ public class DatabaseContext {
 		return clients().get(ClientRole.SAMPLESTACK_CONTRIBUTOR)
 				.newPojoRepository(Contributor.class, String.class);
 	}
-	
+
 	@Bean
 	/**
 	 * Initializes a singleton ObjectMapper.

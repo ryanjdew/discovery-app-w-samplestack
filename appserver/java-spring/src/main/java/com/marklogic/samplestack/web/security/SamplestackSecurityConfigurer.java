@@ -28,10 +28,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 
 /**
- * Wraps configuration of Spring security in once place.
- * Wires up the various handlers in this package, and provides
- * implementations for both the mocked application (see tests)
- * and an embedded LDAP configuration.
+ * Wraps configuration of Spring security in once place. Wires up the various
+ * handlers in this package, and provides implementations for both the mocked
+ * application (see tests) and an embedded LDAP configuration.
  */
 @Component
 public class SamplestackSecurityConfigurer {
@@ -44,23 +43,23 @@ public class SamplestackSecurityConfigurer {
 
 	@Autowired
 	private LogoutSuccessHandler logoutSuccessHandler;
-	
+
 	@Autowired
 	private AuthenticationEntryPoint entryPoint;
 
 	@Autowired
 	private AccessDeniedHandler samplestackAccessDeniedHandler;
-	
 
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers(HttpMethod.GET, "/**")
-				.permitAll().and().authorizeRequests()
-				.antMatchers(HttpMethod.POST, "/v1/search", "/v1/suggest", "/v1/values/**")
-				.permitAll().and().authorizeRequests()
-				.antMatchers("/server/**")
-				.authenticated().and().authorizeRequests().anyRequest()
-				.denyAll();
+				.permitAll()
+				.and()
+				.authorizeRequests()
+				.antMatchers(HttpMethod.POST, "/v1/search", "/v1/suggest",
+						"/v1/values/**").permitAll().and().authorizeRequests()
+				.antMatchers("/server/**").authenticated().and()
+				.authorizeRequests().anyRequest().denyAll();
 		http.formLogin()
 				.loginProcessingUrl("/v1/session")
 				.failureHandler(failureHandler)
@@ -77,8 +76,8 @@ public class SamplestackSecurityConfigurer {
 
 	}
 
-
-	public void ldapConfiguation(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
+	public void ldapConfiguation(AuthenticationManagerBuilder authManagerBuilder)
+			throws Exception {
 		authManagerBuilder.ldapAuthentication()
 
 		.userDnPatterns("uid={0},ou=people", "uid={0},ou=apps")

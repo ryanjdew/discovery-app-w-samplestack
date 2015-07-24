@@ -51,11 +51,8 @@ import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.QueryManager.QueryView;
 import com.marklogic.client.query.RawCombinedQueryDefinition;
 import com.marklogic.client.query.RawQueryDefinition;
-import com.marklogic.client.query.RawStructuredQueryDefinition;
 import com.marklogic.client.query.SuggestDefinition;
-import com.marklogic.client.query.ValueQueryDefinition;
 import com.marklogic.client.query.ValuesDefinition;
-import com.marklogic.client.query.ValuesListDefinition;
 import com.marklogic.samplestack.exception.SamplestackIOException;
 import com.marklogic.samplestack.exception.SamplestackSearchException;
 import com.marklogic.samplestack.security.ClientRole;
@@ -63,18 +60,29 @@ import com.marklogic.samplestack.service.ContributorService;
 import com.marklogic.samplestack.service.DocumentService;
 
 /**
- * Implementation of the QnAService interface that uses the MarkLogic Java Client API
- * to implement searches and document updates.  In this class you'll find examples
- * of how to use MarkLogic's multistatement transactions, server-side transforms,
- * and modifications to document permissions.
+ * Implementation of the QnAService interface that uses the MarkLogic Java
+ * Client API to implement searches and document updates. In this class you'll
+ * find examples of how to use MarkLogic's multistatement transactions,
+ * server-side transforms, and modifications to document permissions.
  * 
- * @see <a href="http://docs.marklogic.com/REST/client/transaction-management">REST API /v1/transactions</a>
- * @see <a href="http://docs.marklogic.com/REST/client/transaction-management">REST API /v1/documents</a>
- * @see <a href="http://docs.marklogic.com/REST/client/transaction-management">REST API /v1/search</a>
- * @see <a href="http://docs.marklogic.com/REST/client/transaction-management">REST API /v1/values</a>
- * @see <a href="http://docs.marklogic.com/guide/java/transactions">Java Client API Transactions</a>
- * @see <a href="http://docs.marklogic.com/guide/java/document-operations/">Java Client API Document operations</a>
- * @see <a href="http://docs.marklogic.com/guide/java/searches">Java Client API Searches</a>
+ * @see <a
+ *      href="http://docs.marklogic.com/REST/client/transaction-management">REST
+ *      API /v1/transactions</a>
+ * @see <a
+ *      href="http://docs.marklogic.com/REST/client/transaction-management">REST
+ *      API /v1/documents</a>
+ * @see <a
+ *      href="http://docs.marklogic.com/REST/client/transaction-management">REST
+ *      API /v1/search</a>
+ * @see <a
+ *      href="http://docs.marklogic.com/REST/client/transaction-management">REST
+ *      API /v1/values</a>
+ * @see <a href="http://docs.marklogic.com/guide/java/transactions">Java Client
+ *      API Transactions</a>
+ * @see <a href="http://docs.marklogic.com/guide/java/document-operations/">Java
+ *      Client API Document operations</a>
+ * @see <a href="http://docs.marklogic.com/guide/java/searches">Java Client API
+ *      Searches</a>
  */
 @Component
 public class MarkLogicDocumentService extends MarkLogicBaseService implements
@@ -87,27 +95,28 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 			.getLogger(MarkLogicDocumentService.class);
 
 	/**
-	 * This method simply runs a search against MarkLogic so that its
-	 * cache warms up while the Java tier is also warming up.
+	 * This method simply runs a search against MarkLogic so that its cache
+	 * warms up while the Java tier is also warming up.
+	 * 
 	 * @throws Exception
 	 */
 	@PostConstruct
 	public void warmupSearchCache() throws Exception {
 		logger.info("Warming up MarkLogic Search Caches");
-		ObjectNode query = (ObjectNode) mapper
-				.readValue("{\"search\":{\"qtext\":\"\"}}",
-						JsonNode.class);
+		ObjectNode query = (ObjectNode) mapper.readValue(
+				"{\"search\":{\"qtext\":\"\"}}", JsonNode.class);
 		this.rawSearch(SAMPLESTACK_CONTRIBUTOR, query, "all", 1, 1);
 	}
 
 	@Override
-	public JsonNode rawCoocurrence(ClientRole role, ObjectNode structuredQuery, String constraint) {
+	public JsonNode rawCoocurrence(ClientRole role, ObjectNode structuredQuery,
+			String constraint) {
 		DatabaseClient dbClient = clients.get(SAMPLESTACK_GUEST);
-		logger.warn(dbClient.toString());
 		QueryManager queryManager = dbClient.newQueryManager();
 
-		RawCombinedQueryDefinition qdef = queryManager.newRawCombinedQueryDefinition(
-				new JacksonHandle(structuredQuery), DOCUMENTS_OPTIONS);
+		RawCombinedQueryDefinition qdef = queryManager
+				.newRawCombinedQueryDefinition(new JacksonHandle(
+						structuredQuery), DOCUMENTS_OPTIONS);
 		ValuesDefinition vdef = queryManager.newValuesDefinition(constraint);
 		vdef.setQueryDefinition(qdef);
 		JacksonHandle responseHandle = new JacksonHandle();
@@ -118,10 +127,10 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 		}
 		return responseHandle.get();
 	}
-	
+
 	@Override
-	public JsonNode rawSearch(ClientRole role, ObjectNode structuredQuery, String options,
-			long start, long pageLength) {
+	public JsonNode rawSearch(ClientRole role, ObjectNode structuredQuery,
+			String options, long start, long pageLength) {
 		ObjectNode docNode = mapper.createObjectNode();
 		if (structuredQuery != null) {
 			if (structuredQuery.get("query") != null) {
@@ -132,7 +141,8 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 				searchNode.setAll((ObjectNode) structuredQuery.get("search"));
 			}
 		}
-		QueryManager queryManager = clients.get(SAMPLESTACK_GUEST).newQueryManager();
+		QueryManager queryManager = clients.get(SAMPLESTACK_GUEST)
+				.newQueryManager();
 		queryManager.setView(QueryView.ALL);
 		GenericDocumentManager docMgr = genericDocumentManager(SAMPLESTACK_GUEST);
 
@@ -154,19 +164,17 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 
 	@Override
 	public JsonNode rawOptions(ClientRole role, String optionsName) {
-		QueryOptionsManager queryOptManager = clients.get(SAMPLESTACK_GUEST).newServerConfigManager().newQueryOptionsManager();
+		QueryOptionsManager queryOptManager = clients.get(SAMPLESTACK_GUEST)
+				.newServerConfigManager().newQueryOptionsManager();
 		JacksonHandle responseHandle = new JacksonHandle();
 		queryOptManager.readOptions(optionsName, responseHandle);
 		return responseHandle.get();
 	}
-	
+
 	@Override
 	public byte[] get(String uri, ServerTransform transform) {
 		GenericDocumentManager docMgr = genericDocumentManager(SAMPLESTACK_CONTRIBUTOR);
 		BytesHandle responseHandle = new BytesHandle();
-		if (transform != null) {
-			logger.warn("[docService.get] Transform: " + transform.getName());
-		}
 		docMgr.read(uri, null, responseHandle, transform);
 		return responseHandle.get();
 	}
@@ -183,57 +191,59 @@ public class MarkLogicDocumentService extends MarkLogicBaseService implements
 
 	@PostConstruct
 	public void storeNeccesaryConfig() {
-	  Map<String, String> records = new HashMap<String, String>();
-	  records.put("Charts Config", "config/charts.json");
-	  records.put("UI Config", "config/ui_config.json");
-	  records.put("Server Config", "config/server_config.json");
-	  
-	  for (Entry<String, String> entry : records.entrySet()) {
-	    storeNeccesaryConfig(entry.getKey(), entry.getValue());
-	  }
+		Map<String, String> records = new HashMap<String, String>();
+		records.put("Charts Config", "config/charts.json");
+		records.put("UI Config", "config/ui_config.json");
+		records.put("Server Config", "config/server_config.json");
+
+		for (Entry<String, String> entry : records.entrySet()) {
+			storeNeccesaryConfig(entry.getKey(), entry.getValue());
+		}
 	}
-	
+
 	private void storeNeccesaryConfig(String name, String path) {
-	  JSONDocumentManager docMgr = jsonDocumentManager(SAMPLESTACK_ADMIN);
-	  try {
-	    // leave them alone if already in db.
-	    JacksonHandle responseHandle = new JacksonHandle();
-	    docMgr.read("/discovery-app/" + path, responseHandle);
-	    logger.info("charts config already in the database");
-	  } catch (ResourceNotFoundException e) {
-	    ClassPathResource chartsResource = new ClassPathResource(
-	        path);
-	    ObjectNode charts = null;
-	    try {
-	      charts = mapper.readValue(chartsResource.getInputStream(),
-	          ObjectNode.class);
-	    } catch (JsonParseException e1) {
-	      throw new SamplestackIOException(
-	          "Setup of " + name + " Failed.  Check/clean/clear db", e1);
-	    } catch (JsonMappingException e1) {
-	      throw new SamplestackIOException(
-	          "Setup of " + name + " Failed.  Check/clean/clear db", e1);
-	    } catch (IOException e1) {
-	      throw new SamplestackIOException(
-	          "Setup of " + name + " Failed.  Check/clean/clear db", e1);
-	    }
-	    docMgr.write("/discovery-app/" + path, new JacksonHandle(charts));;
-	  }
+		JSONDocumentManager docMgr = jsonDocumentManager(SAMPLESTACK_ADMIN);
+		try {
+			// leave them alone if already in db.
+			JacksonHandle responseHandle = new JacksonHandle();
+			docMgr.read("/discovery-app/" + path, responseHandle);
+			logger.info("charts config already in the database");
+		} catch (ResourceNotFoundException e) {
+			ClassPathResource chartsResource = new ClassPathResource(path);
+			ObjectNode charts = null;
+			try {
+				charts = mapper.readValue(chartsResource.getInputStream(),
+						ObjectNode.class);
+			} catch (JsonParseException e1) {
+				throw new SamplestackIOException("Setup of " + name
+						+ " Failed.  Check/clean/clear db", e1);
+			} catch (JsonMappingException e1) {
+				throw new SamplestackIOException("Setup of " + name
+						+ " Failed.  Check/clean/clear db", e1);
+			} catch (IOException e1) {
+				throw new SamplestackIOException("Setup of " + name
+						+ " Failed.  Check/clean/clear db", e1);
+			}
+			docMgr.write("/discovery-app/" + path, new JacksonHandle(charts));
+			;
+		}
 	}
 
 	@Override
 	public ObjectNode suggest(String qtext, String options) {
-		QueryManager queryManager = clients.get(SAMPLESTACK_CONTRIBUTOR).newQueryManager();	
-		SuggestDefinition suggestionDef = queryManager.newSuggestDefinition(qtext, options);
+		QueryManager queryManager = clients.get(SAMPLESTACK_CONTRIBUTOR)
+				.newQueryManager();
+		SuggestDefinition suggestionDef = queryManager.newSuggestDefinition(
+				qtext, options);
 		String[] suggestions = queryManager.suggest(suggestionDef);
 		ObjectNode docNode = mapper.createObjectNode();
 		ArrayNode suggestionsArray = docNode.putArray("suggestions");
-		for (String val:suggestions) {
+		for (String val : suggestions) {
 			suggestionsArray.add(val);
 		}
 		return docNode;
 	}
-	
+
 	@Override
 	public void deleteLoadedCollection(String collection) {
 		deleteCollection(SAMPLESTACK_CONTRIBUTOR, collection);

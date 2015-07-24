@@ -17,24 +17,28 @@ public class MarkLogicUtilities {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory
 			.getLogger(DocumentController.class);
-	
+
 	private ServerConfigurationManager serverConfig = null;
-	
+
 	public MarkLogicUtilities(Clients clients) {
-		serverConfig = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR).newServerConfigManager();
+		serverConfig = clients.get(ClientRole.SAMPLESTACK_CONTRIBUTOR)
+				.newServerConfigManager();
 	}
-	
+
 	/**
 	 * Gets server config manager.
+	 * 
 	 * @return ServerConfigurationManager.
 	 */
 	public ServerConfigurationManager getServerConfigurationManager() {
 		return serverConfig;
 	}
-	
+
 	/**
 	 * Gets tags from the server that are related to the provided one.
-	 * @param name for search options.
+	 * 
+	 * @param name
+	 *            for search options.
 	 * @return search options as ObjectNode.
 	 */
 	public ObjectNode getSearchOptions(String name) {

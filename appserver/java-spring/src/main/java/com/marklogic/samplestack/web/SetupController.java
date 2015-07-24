@@ -28,8 +28,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.samplestack.service.SetupService;
 
 /**
- * Controller to provide initial session information to the browser,
- * for CSRF protection and Login session.
+ * Controller to provide initial session information to the browser, for CSRF
+ * protection and Login session.
  */
 @RestController
 public class SetupController {
@@ -37,7 +37,7 @@ public class SetupController {
 	@Autowired
 	private JsonHttpResponse errors;
 
-	@Autowired 
+	@Autowired
 	private ObjectMapper mapper;
 
 	@Autowired
@@ -45,6 +45,7 @@ public class SetupController {
 
 	/**
 	 * Exposes endpoint that returns the application's chart data
+	 * 
 	 * @return An ObjectNode with with the chart information
 	 */
 	@RequestMapping(value = "server/charts", method = RequestMethod.GET)
@@ -54,7 +55,9 @@ public class SetupController {
 
 	/**
 	 * Exposes endpoint that sets the application's chart data
-	 * @param charts The object .
+	 * 
+	 * @param charts
+	 *            The object .
 	 * @return An ObjectNode with with the chart information
 	 */
 	@RequestMapping(value = "server/charts", method = RequestMethod.PUT)
@@ -62,49 +65,61 @@ public class SetupController {
 		return setupService.setChartData(charts);
 	}
 
-	
 	/**
 	 * Exposes endpoint that sets the database used.
-	 * @param indexes ObjectNode containing a list of range indexes.
+	 * 
+	 * @param indexes
+	 *            ObjectNode containing a list of range indexes.
 	 * @return An ObjectNode with the list of range indexes.
 	 */
 	@RequestMapping(value = "server/database", method = RequestMethod.PUT)
-	public @ResponseBody ObjectNode setDatabase(@RequestBody ObjectNode databaseProps) {
+	public @ResponseBody ObjectNode setDatabase(
+			@RequestBody ObjectNode databaseProps) {
 		return setupService.setDatabase(databaseProps);
 	}
 
 	/**
 	 * Exposes endpoint that returns the database properties.
+	 * 
 	 * @return A JsonNode with the database properties.
 	 */
 	@RequestMapping(value = "server/database/properties", method = RequestMethod.GET)
 	public @ResponseBody ObjectNode getDatabaseProperties() {
 		return setupService.getDatabaseProperties();
 	}
-	
+
 	/**
 	 * Exposes endpoint that sets the range indexes in the database properties.
-	 * @param indexes ObjectNode containing a list of range indexes.
+	 * 
+	 * @param indexes
+	 *            ObjectNode containing a list of range indexes.
 	 * @return An ObjectNode with the list of range indexes.
 	 */
 	@RequestMapping(value = "server/database/range-indexes", method = RequestMethod.PUT)
-	public @ResponseBody ObjectNode setRangeIndexes(@RequestBody ObjectNode indexes) {
+	public @ResponseBody ObjectNode setRangeIndexes(
+			@RequestBody ObjectNode indexes) {
 		return setupService.setIndexes(indexes);
 	}
-	
+
 	/**
-	 * Exposes endpoint that sets the geospatial indexes in the database properties.
-	 * @param indexes ObjectNode containing a list of geospatial indexes.
+	 * Exposes endpoint that sets the geospatial indexes in the database
+	 * properties.
+	 * 
+	 * @param indexes
+	 *            ObjectNode containing a list of geospatial indexes.
 	 * @return An ObjectNode with the list of range indexes.
 	 */
 	@RequestMapping(value = "server/database/geospatial-indexes", method = RequestMethod.PUT)
-	public @ResponseBody ObjectNode setGeospatialIndexes(@RequestBody ObjectNode indexes) {
+	public @ResponseBody ObjectNode setGeospatialIndexes(
+			@RequestBody ObjectNode indexes) {
 		return setupService.setGeospatialIndexes(indexes);
 	}
-	
+
 	/**
 	 * Exposes endpoint that sets the fields in the database properties.
-	 * @param indexes ObjectNode containing a list of fields.
+	 * 
+	 * @param indexes
+	 *            ObjectNode containing a list of fields.
 	 * @return An ObjectNode with the list of range indexes.
 	 */
 	@RequestMapping(value = "server/database/fields", method = RequestMethod.PUT)
@@ -114,6 +129,7 @@ public class SetupController {
 
 	/**
 	 * Exposes endpoint that returns the default search options.
+	 * 
 	 * @return An ObjectNode with the search options.
 	 */
 	@RequestMapping(value = "server/search-options", method = RequestMethod.GET)
@@ -123,69 +139,88 @@ public class SetupController {
 
 	/**
 	 * Exposes endpoint that sets the default search options.
-	 * @param searchOptions an ObjectNode to set the search options
+	 * 
+	 * @param searchOptions
+	 *            an ObjectNode to set the search options
 	 * @return An ObjectNode with the search options.
 	 */
 	@RequestMapping(value = "server/search-options", method = RequestMethod.PUT)
-	public @ResponseBody ObjectNode setSearchOptions(@RequestBody ObjectNode searchOptions) {
+	public @ResponseBody ObjectNode setSearchOptions(
+			@RequestBody ObjectNode searchOptions) {
 		return setupService.setSearchOptions(searchOptions);
 	}
 
 	/**
 	 * Exposes endpoint that returns a list of matching element types.
-	 * @param localname String specifying the content structure to search for
-	 * @param type String specifying the type of content structure to search for
+	 * 
+	 * @param localname
+	 *            String specifying the content structure to search for
+	 * @param type
+	 *            String specifying the type of content structure to search for
 	 * @return An ObjectNode with the search options.
 	 */
 	@RequestMapping(value = "server/databases", method = RequestMethod.GET)
 	public @ResponseBody ObjectNode getDatabases() {
 		return setupService.getDatabases();
 	}
-	
+
 	/**
 	 * Exposes endpoint that returns a list of matching element types.
-	 * @param localname String specifying the content structure to search for
-	 * @param type String specifying the type of content structure to search for
+	 * 
+	 * @param localname
+	 *            String specifying the content structure to search for
+	 * @param type
+	 *            String specifying the type of content structure to search for
 	 * @return An ObjectNode with the search options.
 	 */
 	@RequestMapping(value = "server/database/content-metadata", method = RequestMethod.GET)
-	public @ResponseBody ObjectNode getContentMetadata(@RequestParam(required = true) String localname,
+	public @ResponseBody ObjectNode getContentMetadata(
+			@RequestParam(required = true) String localname,
 			@RequestParam(required = false) String type) {
 		return setupService.findContentMetadata(localname, type);
 	}
-	
+
 	/**
 	 * Exposes endpoint that loads data from the specified local directory.
-	 * @param directory String specifying the directory to load
+	 * 
+	 * @param directory
+	 *            String specifying the directory to load
 	 * @return An ObjectNode with the search options.
 	 */
 	@RequestMapping(value = "server/database/load-data", method = RequestMethod.GET)
-	public @ResponseBody ObjectNode loadData(@RequestParam(required = true) String directory) {
+	public @ResponseBody ObjectNode loadData(
+			@RequestParam(required = true) String directory) {
 		return setupService.loadData(directory);
 	}
-	
+
 	/**
 	 * Exposes endpoint that sets the suggestion default source.
-	 * @param indexes ObjectNode containing a list of range indexes.
+	 * 
+	 * @param indexes
+	 *            ObjectNode containing a list of range indexes.
 	 * @return An ObjectNode with the list of range indexes.
 	 */
 	@RequestMapping(value = "server/database/defaultsource", method = RequestMethod.PUT)
-	public @ResponseBody ObjectNode setSuggestionOption(@RequestBody ObjectNode indexes) {
+	public @ResponseBody ObjectNode setSuggestionOption(
+			@RequestBody ObjectNode indexes) {
 		return setupService.setSuggestionOption(indexes);
 	}
-	
+
 	/**
 	 * Exposes endpoint that gets the suggestion default source.
-	 * @param indexes ObjectNode containing a list of range indexes.
+	 * 
+	 * @param indexes
+	 *            ObjectNode containing a list of range indexes.
 	 * @return An ObjectNode with the list of range indexes.
 	 */
 	@RequestMapping(value = "server/database/defaultsource", method = RequestMethod.GET)
 	public @ResponseBody ObjectNode getSuggestionOption() {
 		return setupService.getSuggestionOption();
 	}
-	
+
 	/**
 	 * Exposes endpoint that returns the application's ui config data
+	 * 
 	 * @return An ObjectNode with with the ui config information
 	 */
 	@RequestMapping(value = "server/ui_config", method = RequestMethod.GET)
@@ -195,7 +230,9 @@ public class SetupController {
 
 	/**
 	 * Exposes endpoint that sets the application's ui config data
-	 * @param charts The object .
+	 * 
+	 * @param charts
+	 *            The object .
 	 * @return An ObjectNode with with the ui config information
 	 */
 	@RequestMapping(value = "server/ui_config", method = RequestMethod.PUT)

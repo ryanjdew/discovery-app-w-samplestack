@@ -35,8 +35,8 @@ import com.marklogic.samplestack.security.ClientRole;
 import com.marklogic.samplestack.service.ContributorService;
 
 /**
- * Controller to provide initial session information to the browser,
- * for CSRF protection and Login session.
+ * Controller to provide initial session information to the browser, for CSRF
+ * protection and Login session.
  */
 @RestController
 public class SessionController {
@@ -44,16 +44,20 @@ public class SessionController {
 	@Autowired
 	private JsonHttpResponse errors;
 
-	@Autowired 
+	@Autowired
 	private ObjectMapper mapper;
 
-	@Autowired 
+	@Autowired
 	private ContributorService contributorService;
 
 	/**
-	 * Exposes endpoint that returns CSRF token information and a session for use in login.
-	 * @param request The Http Request.
-	 * @param response The Http response.
+	 * Exposes endpoint that returns CSRF token information and a session for
+	 * use in login.
+	 * 
+	 * @param request
+	 *            The Http Request.
+	 * @param response
+	 *            The Http response.
 	 * @return A JsonNode with bare-bones acknowledgement.
 	 */
 	@RequestMapping(value = "v1/session", method = RequestMethod.GET)
@@ -61,13 +65,14 @@ public class SessionController {
 			HttpServletResponse response) {
 
 		// not logged in
-		if (ClientRole.securityContextRole() == ClientRole.SAMPLESTACK_GUEST)  {
+		if (ClientRole.securityContextRole() == ClientRole.SAMPLESTACK_GUEST) {
 			CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
 
 			if (csrfToken == null) {
-				return errors.makeJsonResponse(400, "Getting unauthenticated session requires _csrf attribute");
-			}
-			else {
+				return errors
+						.makeJsonResponse(400,
+								"Getting unauthenticated session requires _csrf attribute");
+			} else {
 				String headerName = csrfToken.getHeaderName();
 				String token = csrfToken.getToken();
 				HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(
@@ -76,11 +81,11 @@ public class SessionController {
 				responseWrapper.addHeader(headerName, token);
 				return errors.makeJsonResponse(200, "New Session");
 			}
-		}
-		else {
+		} else {
 			ObjectNode userNode;
 			String userName = ClientRole.securityContextUserName();
-			Contributor contributor = contributorService.getByUserName(userName);
+			Contributor contributor = contributorService
+					.getByUserName(userName);
 			if (contributor != null) {
 				userNode = mapper.convertValue(contributor, ObjectNode.class);
 			} else {

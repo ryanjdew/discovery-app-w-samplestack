@@ -15,7 +15,6 @@
  */
 package com.marklogic.samplestack.exception;
 
-
 /**
  * Wraps security violations for Samplestack.
  */

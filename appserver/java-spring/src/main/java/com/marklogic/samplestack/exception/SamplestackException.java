@@ -15,14 +15,12 @@
  */
 package com.marklogic.samplestack.exception;
 
-
 /**
  * Root of SamplestackException runtime exception hierarchy.
  */
 @SuppressWarnings("serial")
 public class SamplestackException extends RuntimeException {
 
-	
 	public SamplestackException(Exception e) {
 		super(e);
 	}
@@ -30,7 +28,7 @@ public class SamplestackException extends RuntimeException {
 	public SamplestackException(String message) {
 		super(message);
 	}
-	
+
 	public SamplestackException(String message, Exception e) {
 		super(message, e);
 	}

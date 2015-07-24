@@ -31,9 +31,9 @@ import org.springframework.stereotype.Component;
 import com.marklogic.samplestack.web.JsonHttpResponse;
 
 /**
- * Class to customize the default Login handling.  Rather than redirection
- * to a login form, Samplestack simply denies access
- * (where authentication is required)
+ * Class to customize the default Login handling. Rather than redirection to a
+ * login form, Samplestack simply denies access (where authentication is
+ * required)
  */
 @Component
 public class SamplestackAuthenticationEntryPoint implements
@@ -53,9 +53,10 @@ public class SamplestackAuthenticationEntryPoint implements
 		HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(
 				response);
 		responseWrapper.setStatus(HttpStatus.SC_UNAUTHORIZED);
-		
+
 		Writer out = responseWrapper.getWriter();
-		errors.writeJsonResponse(out, HttpStatus.SC_UNAUTHORIZED, "Unauthorized");
+		errors.writeJsonResponse(out, HttpStatus.SC_UNAUTHORIZED,
+				"Unauthorized");
 		out.close();
 	}
 }

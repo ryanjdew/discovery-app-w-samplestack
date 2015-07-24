@@ -35,18 +35,20 @@ public interface DocumentService {
 	 *            A JSON structured query payload, as a JSONNode.
 	 * @param start
 	 *            Index of the first result in the result set.
-	 * @param pageLength 
+	 * @param pageLength
 	 * @return A QuestionResults object containing results/snippets for the
 	 *         search.
 	 */
-	public JsonNode rawSearch(ClientRole role, ObjectNode structuredQuery, 
+	public JsonNode rawSearch(ClientRole role, ObjectNode structuredQuery,
 			String options, long start, long pageLength);
 
 	/**
 	 * Retrieves a Document by uri.
 	 * 
-	 * @param uri  of the document
-	 * @param transform of document
+	 * @param uri
+	 *            of the document
+	 * @param transform
+	 *            of document
 	 * @return The Document identified by uri
 	 */
 	public byte[] get(String uri, ServerTransform transform);
@@ -54,8 +56,10 @@ public interface DocumentService {
 	/**
 	 * Suggests text for search
 	 * 
-	 * @param qtext query text for suggestion
-	 * @param options for suggestion
+	 * @param qtext
+	 *            query text for suggestion
+	 * @param options
+	 *            for suggestion
 	 */
 	public ObjectNode suggest(String qtext, String options);
 
