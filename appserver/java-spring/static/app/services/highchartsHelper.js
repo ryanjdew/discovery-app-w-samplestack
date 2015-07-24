@@ -3,36 +3,36 @@ define(['app/module'], function(module) {
   module
     .factory('HighchartsHelper', ['MLRest', function(MLRest) {
       var highchartsHelper = {};
-      highchartsHelper.seriesData = function(facets, chartType, categories) {
+      highchartsHelper.seriesData = function(data, chartType, categories) {
         var seriesData = [];
-        var facetKeys = Object.keys(facets);
-        if (facetKeys.length > 1 || chartType === 'pie') {
-          seriesData = _.map(facets, function(facet) {
+        if (categories.length) {
+          seriesData = _.map(data, function(dp) {
+            var sData = [];
+            var dpCategoryIndex = categories.indexOf(dp.xCategory);
+            angular.forEach(categories, function(cat, index){
+              if (index === dpCategoryIndex) {
+                sData[index] = [cat, dp.y];
+              } else {
+                sData[index] = [cat, 0];
+              }
+            });
             return {
               type: chartType,
-              name: facet.name,
-              data: _.map(facet.facetValues, function(val, index) {
-                if (val) {
-                  return [
-                    val.name,
-                    val.count
-                  ];
-                } else {
-                  return [
-                    (categories) ? categories[index] : null,
-                    0
-                  ];
-                }
-              })
+              name: dp.x,
+              data: sData
             };
           });
-        } else if (facetKeys.length) {
-          var firstKey = facetKeys[0];
-          seriesData = _.map(facets[firstKey].facetValues, function(val) {
+        } else if (chartType === 'pie') {
+          seriesData = [{
+            type: chartType,
+            data: data
+          }];
+        } else {
+          seriesData = _.map(data, function(dp){
             return {
               type: chartType,
-              name: val.name,
-              data: [val.count]
+              name: dp.x,
+              data: [dp.y]
             };
           });
         }
@@ -48,7 +48,7 @@ define(['app/module'], function(module) {
               var value = con.range || con.collection;
               return (value && value.facet);
             });
-            highchartsHelper.getChartData(mlSearch, availableConstraints, highchartConfig.facets, highchartConfig.facetLimit).then(function(values) {
+            highchartsHelper.getChartData(mlSearch, availableConstraints, highchartConfig, highchartConfig.facetLimit).then(function(values) {
               chart.series = highchartsHelper.seriesData(values.data, chartType, values.categories);
               if (values.categories && values.categories.length) {
                 chart.xAxis.categories = values.categories;
@@ -84,19 +84,42 @@ define(['app/module'], function(module) {
         return chart;
       };
 
-      highchartsHelper.getChartData = function(mlSearch, constraints, facetNames, limit) {
+      highchartsHelper.getChartData = function(mlSearch, constraints, highchartConfig, limit) {
+        var facetNames = [highchartConfig.xAxisCategoriesMapping[0],highchartConfig.xAxisMapping[0], highchartConfig.yAxisMapping[0]];
+        var dataConfig = {
+          xCategoryAxis: highchartConfig.xAxisCategoriesMapping[0],
+          xAxis: highchartConfig.xAxisMapping[0],
+          yAxis: highchartConfig.yAxisMapping[0]
+        };
+
+        var valueIndexes = [];
+
+        if (highchartConfig.xAxisCategoriesMapping[0] === '$frequency') {
+          dataConfig.frequecy = 'xCategory';
+        } else if (highchartConfig.xAxisMapping[0] === '$frequency') {
+          dataConfig.frequecy = 'x';
+        } else if (highchartConfig.yAxisMapping[0] === '$frequency') {
+          dataConfig.frequecy = 'y';
+        }
+
         if (constraints && constraints.length) {
           var filteredConstraints = _.filter(constraints, function(constraint) {
-            return constraint && facetNames.indexOf(constraint.name) > -1 && constraint.range;
+            return constraint && constraint.name && facetNames.indexOf(constraint.name) > -1 && constraint.range;
           }).sort(function(a, b) {
             return facetNames.indexOf(a.name) - facetNames.indexOf(b.name);
           });
-          filteredConstraints = _.map(filteredConstraints, function(constraint) {
+          var filteredConstraintRanges = _.map(filteredConstraints, function(constraint) {
             return constraint.range;
           });
+          var filteredConstraintNames = _.map(filteredConstraints, function(constraint) {
+            return constraint.name;
+          });
+          dataConfig.xCategoryAxisIndex = filteredConstraintNames.indexOf(dataConfig.xCategoryAxis);
+          dataConfig.xAxisIndex = filteredConstraintNames.indexOf(dataConfig.xAxis);
+          dataConfig.yAxisIndex = filteredConstraintNames.indexOf(dataConfig.yAxis);
           var tuples = [{
             'name': 'cooccurrence',
-            'range': filteredConstraints,
+            'range': filteredConstraintRanges,
             'values-option': ['frequency-order', 'limit=' + ((limit) ? limit : '20')]
           }];
           var constaintOptions = {
@@ -104,7 +127,7 @@ define(['app/module'], function(module) {
               'options': {
                 'constraint': constraints
               },
-              'query': (mlSearch) ? mlSearch.getQuery().query : null
+              'query': (mlSearch) ? mlSearch.getQuery().query : {'queries': []}
             }
           };
           if (filteredConstraints.length > 1) {
@@ -116,53 +139,39 @@ define(['app/module'], function(module) {
             format: 'json'
           }, constaintOptions).then(
             function(response) {
-              var data = {};
-              var valueIndexes = {};
+              var data = [];
               if (response.data['values-response']) {
                 var values;
                 if (filteredConstraints.length > 1) {
                   angular.forEach(response.data['values-response'].tuple, function(tup) {
-                    var valueGroupName = tup['distinct-value'][1]._value;
-                    var valueGroup = data[valueGroupName];
-                    if (!valueGroup) {
-                      valueGroup = {
-                        name: valueGroupName,
-                        facetValues: []
-                      };
-                      data[valueGroupName] = valueGroup;
-                    }
-                    var valueName = tup['distinct-value'][0]._value;
-                    var valueIndex = valueIndexes[valueName];
-                    if (valueIndex === undefined) {
-                      valueIndex = Object.keys(valueIndexes).length;
-                      valueIndexes[valueName] = valueIndex;
-                    }
-                    valueGroup.facetValues[valueIndex] = {
-                      name: valueName,
-                      count: tup.frequency
+                    var vals = tup['distinct-value'];
+                    var dataPoint = {
+                      xCategory: vals[dataConfig.xCategoryAxisIndex] ? vals[dataConfig.xCategoryAxisIndex]._value : null,
+                      x: vals[dataConfig.xAxisIndex] ? vals[dataConfig.xAxisIndex]._value : null,
+                      y: vals[dataConfig.yAxisIndex] ? vals[dataConfig.yAxisIndex]._value : null
                     };
+                    if (dataPoint.xCategory && valueIndexes.indexOf(dataPoint.xCategory) < 0) {
+                      valueIndexes.push(dataPoint.xCategory);
+                    }
+                    dataPoint.name = dataPoint.xCategory || dataPoint.x || dataPoint.y;
+                    dataPoint[dataConfig.frequecy] = tup.frequency;
+                    data.push(dataPoint);
                   });
                 } else {
                   angular.forEach(response.data['values-response']['distinct-value'], function(valueObj) {
-                    var valueGroupName = valueObj._value;
-                    var valueGroup = data[valueGroupName];
-                    if (!valueGroup) {
-                      valueGroup = {
-                        name: valueGroupName,
-                        facetValues: []
-                      };
-                      data[valueGroupName] = valueGroup;
-                    }
-                    valueGroup.facetValues.push({
-                      name: valueGroupName,
-                      count: valueObj.frequency
-                    });
+                    var dataPoint = {
+                      x: dataConfig.xAxisIndex > -1 ? valueObj._value : null,
+                      y: dataConfig.yAxisIndex > -1 ? valueObj._value : null
+                    };
+                    dataPoint.name = dataPoint.x || dataPoint.y;
+                    dataPoint[dataConfig.frequecy] = valueObj.frequency;
+                    data.push(dataPoint);
                   });
                 }
               }
               return {
                 data: data,
-                categories: Object.keys(valueIndexes)
+                categories: valueIndexes
               };
             });
         } else {

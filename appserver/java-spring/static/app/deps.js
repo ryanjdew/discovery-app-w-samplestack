@@ -29,6 +29,7 @@ require.config({
     'ml-common-ng': 'deps/ml-common-ng/dist/ml-common-ng.min',
     'ml-search-ng': 'deps/ml-search-ng/dist/ml-search-ng',
     'ml-search-ng-tpls': 'deps/ml-search-ng/dist/ml-search-ng-tpls.min',
+    'ng-sortable': 'deps/ng-sortable/dist/ng-sortable.min',
     'stacktrace-js':'deps/stacktrace-js/dist/stacktrace',
     'jstzdetect': 'deps/jstzdetect/jstz'
     /* jshint ignore: end */
@@ -51,6 +52,7 @@ require.config({
     'ml-common-ng': { deps: ['angular','ml-utils'] },
     'ml-search-ng': { deps: ['angular','ml-common-ng'] },
     'ml-search-ng-tpls': { deps: ['angular','ml-search-ng'] },
+    'ng-sortable': { deps: ['angular','ui-bootstrap'] },
     'jstzdetect': { exports: 'jstz' }
   }
 });
@@ -76,6 +78,7 @@ define(
     'angular-marked',
     'angular-sanitize',
     'ng-markdown',
+    'ng-sortable',
     'ng-tags-input',
     'ml-utils',
     'ml-common-ng',
@@ -104,6 +107,7 @@ define(
       'ui.router',
       'ui.router.stateHelper',
       'ui.bootstrap',
+      'ui.sortable',
       'highcharts-ng',
       'hc.marked',
       'ngSanitize',

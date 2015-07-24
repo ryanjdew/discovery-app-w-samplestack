@@ -23,7 +23,15 @@ define(['app/module'], function (module) {
    * @property {string} $scope.session.password The password input.
    */
   module.controller('AddChartWidgetCtrl', ['$modalInstance', '$scope', 'HighchartsHelper', 'facets', 'MLSearchFactory', function ($modalInstance, $scope, HighchartsHelper, facets, searchFactory) {
-      var facetName = Object.keys(facets)[0];
+      $scope.facetSortOptions = {};
+      $scope.xSortOptions = {
+        accept: function (sourceItemHandleScope, destSortableScope) {
+          return destSortableScope.modelValue.length < 1;
+        }
+      };
+      $scope.chartFacetOptions = Object.keys(facets);
+      var facetName = $scope.chartFacetOptions[0];
+      $scope.chartFacetOptions.splice(0,1);
       var mlSearch = searchFactory.newContext();
       $scope.facets = facets;
       $scope.highChart = {
@@ -46,23 +54,24 @@ define(['app/module'], function (module) {
         xAxis: {
           title: {text: facetName}
         },
+        xAxisMapping: [facetName],
+        xAxisCategoriesMapping: [],
         yAxis: {
           title: {text: null}
         },
+        yAxisMapping: ['$frequency'],
         zAxis: {
           title: {text: null}
         },
         size: {
           height: 250
         },
-        facets: [facetName],
-        facetLimit: 10
+        facetLimit: 15
       };
 
       var reloadSeriesData = function() {
-        $scope.highChart.xAxis.title.text = $scope.highChart.facets[0];
-        $scope.highChart.yAxis.title.text = $scope.highChart.facets[1];
-        $scope.highChart.zAxis.title.text = $scope.highChart.facets[2];
+        $scope.highChart.xAxis.title.text = $scope.highChart.xAxisMapping[0];
+        $scope.highChart.yAxis.title.text = $scope.highChart.yAxisMapping[0];
         $scope.previewHighChart = HighchartsHelper.chartFromConfig(
           $scope.highChart, 
           mlSearch
@@ -73,7 +82,7 @@ define(['app/module'], function (module) {
       reloadSeriesData();
 
       $scope.$watch(function() { 
-        return $scope.highChart.facets.join('') + $scope.highChart.options.chart.type + $scope.highChart.title.text + $scope.highChart.facetLimit;
+        return $scope.chartFacetOptions.join('') + $scope.highChart.options.chart.type + $scope.highChart.title.text + $scope.highChart.facetLimit;
       }, function() {
         reloadSeriesData();
       });

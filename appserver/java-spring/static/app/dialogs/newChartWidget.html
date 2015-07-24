@@ -9,14 +9,6 @@
   <div class="modal-body">
     <form name="form">
       <div class="form-group">
-        <label class="control-label">Index(es)</label>
-        <div ng-repeat="facet in highChart.facets track by $index">
-          <select class="form-control" name="index" ng-model="highChart.facets[$index]" ng-options="key as key for (key, val) in facets">
-          </select><a ng-show="highChart.facets.length > 1" ng-click="highChart.facets.splice($index, 1)"><span class="glyphicon glyphicon-trash"></span></a>
-        </div>
-        <a ng-show="highChart.facets.length < 3" ng-click="highChart.facets.push('')"><span class="glyphicon glyphicon-plus"></span></a>
-      </div>
-      <div class="form-group">
         <label class="control-label">Result Limit</label>
         <input class="form-control" ng-model="highChart.facetLimit" type="number" />
       </div>
@@ -28,6 +20,54 @@
       <div class="form-group">
         <label class="control-label">Title</label>
         <input class="form-control" name="collation" type="text" ng-model="highChart.title.text">
+      </div>
+      <div id="chart-mapping" class="col-sm-12">
+        <div class="col-sm-6">
+          <div class="col-sm-12">
+            <div class="col-sm-6">
+              <label>xAxis Categories</label>
+            </div>
+            <div class="col-sm-6">
+              <ul style="min-height:20px;" as-sortable="xSortOptions" ng-model="highChart.xAxisCategoriesMapping">
+                <li class="card" ng-repeat="key in highChart.xAxisCategoriesMapping" as-sortable-item as-sortable-item-handle>
+                  <div class="col-sm-12">{{key}}</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="col-sm-6">
+              <label>xAxis</label>
+            </div>
+            <div class="col-sm-6" as-sortable="xSortOptions" ng-model="highChart.xAxisMapping">
+              <ul style="min-height:20px;">
+                <li class="card" ng-repeat="key in highChart.xAxisMapping" as-sortable-item as-sortable-item-handle>
+                  <div class="col-sm-12">{{key}}</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="col-sm-6">
+              <label>yAxis</label>
+            </div>
+            <div class="col-sm-6" as-sortable="xSortOptions" ng-model="highChart.yAxisMapping">
+              <ul style="min-heigth:20px;">
+                <li class="card" ng-repeat="key in highChart.yAxisMapping" as-sortable-item as-sortable-item-handle>
+                  <div class="col-sm-12">{{key}}</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6" as-sortable="facetSortOptions" ng-model="chartFacetOptions" style="min-heigth:20px;">
+          <label>Values</label>
+          <ul>
+            <li class="card" ng-repeat="key in chartFacetOptions" as-sortable-item as-sortable-item-handle>
+              <div class="col-sm-12">{{key}}</div>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="clearfix">
         <highchart id="chartPreview" config="previewHighChart"></highchart>
