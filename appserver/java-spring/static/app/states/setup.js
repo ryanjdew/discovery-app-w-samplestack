@@ -81,6 +81,15 @@ define(['app/module'], function (module) {
       angular.extend($scope, {
         model: model,
         state: 'indexes',
+        addConstraint: function() {
+          model.constraints.push({
+            'name': 'collection',
+            'collection': { 
+              'facet': true,
+              'prefix': null
+            }
+          });
+        },
         loadData: function() {
           ServerConfig.loadData($scope.loadDirectory).then(function(data) {
             $scope.loadDataInfo = data;
