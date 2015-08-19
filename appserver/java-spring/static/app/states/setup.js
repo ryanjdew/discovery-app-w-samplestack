@@ -133,6 +133,15 @@ define(['app/module'], function (module) {
             model.databaseName = dbName;
           });
         },
+        addConstraint: function() {
+          model.constraints.push({
+            'name': 'collection',
+            'collection': { 
+              'facet': true,
+              'prefix': null
+            }
+          });
+        },
         loadData: function() {
           ServerConfig.loadData($scope.loadDirectory).then(function(data) {
             $scope.loadDataInfo = data;

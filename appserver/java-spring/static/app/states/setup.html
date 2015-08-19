@@ -112,7 +112,7 @@
     </div>
     <div ng-show="state === 'constraints'">
       <div class="panel panel-default">
-        <div class="clearfix panel-heading">Constraints <button ng-click="resampleConstraints()" class="btn btn-primary pull-right">Resample</button></div>
+        <div class="clearfix panel-heading">Constraints <button ng-click="resampleConstraints()" class="btn btn-primary pull-right">Resample</button><button ng-click="addConstraint()" class="btn btn-primary pull-right">Add</button></div>
         <div class="panel-body">
           <table>
           <thead>
@@ -121,8 +121,8 @@
           <tbody>
             <tr ng-repeat="constraint in model.constraints track by $index">
             <td class="col-sm-3"><input type="text" ng-model="constraint.name"/></td>
-            <td class="col-sm-4" ng-init="details = (constraint.range || constraint.word)"><span ng-if="constraint.range">Range:</span><span ng-if="constraint.word">Word:</span> {{(constraint.range || constraint.word).field.name || (constraint.range || constraint.word).attribute.name || (constraint.range || constraint.word).element.name}} (<span ng-if="(constraint.range || constraint.word).attribute">attribute</span><span ng-if="(constraint.range || constraint.word).element && !(constraint.range || constraint.word).attribute">element</span><span ng-if="(constraint.range || constraint.word).field">field</span>)</td>
-            <td class="col-sm-1"><input type="checkbox" ng-model="(constraint.range || constraint.word).facet"/></td>
+            <td class="col-sm-4" ng-init="details = (constraint.range || constraint.word)"><span ng-if="constraint.range">Range</span><span ng-if="constraint.word">Word</span><span ng-if="constraint.collection">Collection</span>: {{(constraint.range || constraint.word).field.name || (constraint.range || constraint.word).attribute.name || (constraint.range || constraint.word).element.name || constraint.collection.prefix}} (<span ng-if="(constraint.range || constraint.word).attribute">attribute</span><span ng-if="(constraint.range || constraint.word).element && !(constraint.range || constraint.word).attribute">element</span><span ng-if="(constraint.range || constraint.word).field">field</span><span ng-if="constraint.collection">prefix</span>)</td>
+            <td class="col-sm-1"><input type="checkbox" ng-model="(constraint.range || constraint.word || constraint.collection).facet"/></td>
             <td class="col-sm-1"><a class="pull-right" ng-click="removeConstraint($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
           </tbody>
