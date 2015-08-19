@@ -22,7 +22,7 @@ To start, clone this repository. For example, run the following command:
 git clone https://github.com/ryanjdew/discovery-app-w-samplestack
 ```
 
-Ensure the [gradle.properties](appserver/java-spring/gradle.properties) configuration matches what you desire. You'll need to be sure that 'marklogic.admin.user' and 'marklogic.admin.password' match a MarkLogic user that has the admin role. The default ports to run on are 8006 (MarkLogic) and 9080 (Java Spring). These can also be adjusted appropriately in the gradle.properties.
+Ensure the [gradle.properties](appserver/java-spring/gradle.properties) configuration matches what you desire. You'll need to be sure that 'marklogic.admin.user' and 'marklogic.admin.password' match a MarkLogic user that has the admin role. The default ports to run on are 8006 (MarkLogic) and 8090 (Java Spring). These can also be adjusted appropriately in the gradle.properties.
 
 ```
 cd discovery-app-w-samplestack
@@ -31,7 +31,7 @@ sh startup.sh
 
 This will configure your MarkLogic install as necessary and then start a Java Spring application server. It will stop prior to hitting 100%, but you should see a message about a Tomcat instance starting.
 
-From here, you can open your browser to http://localhost:9080/. Login with the credentials admin/admin (Note: This is a user setup provided with an included [ldif file](appserver/java-spring/src/main/resources/samplestack-ds.ldif), not a MarkLogic user.). Once you're logged the setup link in the top right corner will be available to take you to the Setup section where your application can be configured.
+From here, you can open your browser to http://localhost:8090/. Login with the credentials admin/admin (Note: This is a user setup provided with an included [ldif file](appserver/java-spring/src/main/resources/samplestack-ds.ldif), not a MarkLogic user.). Once you're logged the setup link in the top right corner will be available to take you to the Setup section where your application can be configured.
 
 ## Additional Information
 For more information, see the following:
