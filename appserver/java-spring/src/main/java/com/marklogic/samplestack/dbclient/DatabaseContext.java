@@ -70,6 +70,7 @@ public class DatabaseContext {
 			database = serverConfig.get("server-config").get("database")
 					.asText("Documents");
 		} catch (ResourceNotFoundException e) {
+			logger.info("/discovery-app/config/server_config.json not found");
 		}
 		clients.setDatabase(database);
 		return clients;

@@ -61,6 +61,7 @@ public class Clients extends HashMap<ClientRole, DatabaseClient> {
 				ClientRole.SAMPLESTACK_GUEST, this.database);
 		put(ClientRole.SAMPLESTACK_CONTRIBUTOR, writerClient);
 		put(ClientRole.SAMPLESTACK_GUEST, guestClient);
+		logger.info("setting Java Client database to {}", database);
 	}
 
 	/**

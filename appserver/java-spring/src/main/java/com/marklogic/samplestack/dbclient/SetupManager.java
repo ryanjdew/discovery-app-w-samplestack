@@ -62,7 +62,6 @@ public class SetupManager extends ResourceManager implements SetupService {
 	@Autowired
 	protected ObjectMapper mapper;
 
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(SetupManager.class);
 
 	/**

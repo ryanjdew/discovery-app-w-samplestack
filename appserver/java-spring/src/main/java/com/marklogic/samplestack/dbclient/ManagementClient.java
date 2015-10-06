@@ -33,7 +33,6 @@ import com.marklogic.samplestack.security.ClientRole;
 
 public class ManagementClient {
 
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory
 			.getLogger(ManagementClient.class);
 
@@ -102,10 +101,10 @@ public class ManagementClient {
 			EntityUtils.consume(entity);
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		}
 	}
 
@@ -130,10 +129,10 @@ public class ManagementClient {
 			EntityUtils.consume(entity);
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		}
 	}
 
@@ -152,10 +151,10 @@ public class ManagementClient {
 			EntityUtils.consume(entity);
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		}
 	}
 
@@ -236,10 +235,10 @@ public class ManagementClient {
 			exists = statusCode >= 200 && statusCode < 300;
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		}
 		return exists;
 	}
@@ -259,10 +258,10 @@ public class ManagementClient {
 			EntityUtils.consume(entity);
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		}
 		return resp;
 	}

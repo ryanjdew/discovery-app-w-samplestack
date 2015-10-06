@@ -48,7 +48,6 @@ import com.marklogic.samplestack.service.DocumentService;
 @RestController
 public class DocumentController {
 
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory
 			.getLogger(DocumentController.class);
 
@@ -148,13 +147,13 @@ public class DocumentController {
 			combinedQuery = mapper.readValue(structuredQuery, ObjectNode.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		} catch (JsonMappingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.toString());
 		}
 		ObjectNode combinedSearchObject = (ObjectNode) combinedQuery
 				.get("search");
