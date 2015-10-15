@@ -1,4 +1,6 @@
 # most of the ignored files are platform-specific
+local.json
+node_modules/
 /scripts/
 /build/
 /bin/

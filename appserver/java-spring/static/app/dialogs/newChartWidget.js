@@ -22,7 +22,7 @@ define(['app/module'], function (module) {
    * @property {string} $scope.session.username The username input.
    * @property {string} $scope.session.password The password input.
    */
-  module.controller('AddChartWidgetCtrl', ['$modalInstance', '$scope', 'HighchartsHelper', 'facets', 'MLSearchFactory', function ($modalInstance, $scope, HighchartsHelper, facets, searchFactory) {
+  module.controller('AddChartWidgetCtrl', ['$modalInstance', '$scope', 'HighchartsHelper', 'facets', 'highchartConfig', 'MLSearchFactory', function ($modalInstance, $scope, HighchartsHelper, facets, highchartConfig, searchFactory) {
       $scope.facetSortOptions = {};
       $scope.xSortOptions = {
         accept: function (sourceItemHandleScope, destSortableScope) {
@@ -32,9 +32,8 @@ define(['app/module'], function (module) {
       $scope.chartFacetOptions = Object.keys(facets);
       var facetName = $scope.chartFacetOptions[0];
       $scope.chartFacetOptions.splice(0,1);
-      var mlSearch = searchFactory.newContext();
       $scope.facets = facets;
-      $scope.highChart = {
+      $scope.highchartConfig = highchartConfig || {
         options: {
             //This is the Main Highcharts chart config. Any Highchart options are valid here.
             //will be overriden by values specified below.
@@ -54,41 +53,63 @@ define(['app/module'], function (module) {
         xAxis: {
           title: {text: facetName}
         },
-        xAxisMapping: [facetName],
-        xAxisCategoriesMapping: [],
+        xAxisMLConstraint: facetName,
+        xAxisCategoriesMLConstraint: null,
         yAxis: {
           title: {text: null}
         },
-        yAxisMapping: ['$frequency'],
+        yAxisMLConstraint: '$frequency',
         zAxis: {
           title: {text: null}
         },
+        zAxisMLConstraint: null,
         size: {
           height: 250
         },
-        facetLimit: 15
+        resultLimit: 15
       };
 
+      if (!$scope.highchartConfig.xAxis) {
+        $scope.highchartConfig.xAxis = {
+          title: {text: null}
+        };
+      }
+      if (!$scope.highchartConfig.yAxis) {
+        $scope.highchartConfig.yAxis = {
+          title: {text: null}
+        };
+      }
+
+      $scope.xAxisMLConstraint = _.without([$scope.highchartConfig.xAxisMLConstraint], null, undefined);
+      $scope.xAxisCategoriesMLConstraint = _.without([$scope.highchartConfig.xAxisCategoriesMLConstraint], null, undefined);
+      $scope.yAxisMLConstraint = _.without([$scope.highchartConfig.yAxisMLConstraint], null, undefined);
+      $scope.zAxisMLConstraint = _.without([$scope.highchartConfig.zAxisMLConstraint], null, undefined);
+
       var reloadSeriesData = function() {
-        $scope.highChart.xAxis.title.text = $scope.highChart.xAxisMapping[0];
-        $scope.highChart.yAxis.title.text = $scope.highChart.yAxisMapping[0];
-        $scope.previewHighChart = HighchartsHelper.chartFromConfig(
-          $scope.highChart, 
-          mlSearch
-        );
+        $scope.previewHighChart = HighchartsHelper.chartFromConfig($scope.highchartConfig);
       };
 
       $scope.chartTypes = HighchartsHelper.chartTypes();
       reloadSeriesData();
 
       $scope.$watch(function() { 
-        return $scope.chartFacetOptions.join('') + $scope.highChart.options.chart.type + $scope.highChart.title.text + $scope.highChart.facetLimit;
+        return $scope.highchartConfig.options.chart.type + $scope.highchartConfig.xAxis.title.text + $scope.highchartConfig.yAxis.title.text + $scope.highchartConfig.title.text + $scope.highchartConfig.resultLimit;
       }, function() {
         reloadSeriesData();
       });
-
-      $scope.add = function () {
-        $modalInstance.close($scope.highChart);
+      
+      $scope.$watch(function() { 
+        return $scope.xAxisMLConstraint.length + '' + $scope.yAxisMLConstraint.length + '' + $scope.xAxisCategoriesMLConstraint.length;
+      }, function() {
+        $scope.highchartConfig.xAxisMLConstraint = $scope.xAxisMLConstraint[0];
+        $scope.highchartConfig.yAxisMLConstraint = $scope.yAxisMLConstraint[0];
+        $scope.highchartConfig.zAxisMLConstraint = $scope.zAxisMLConstraint[0];
+        $scope.highchartConfig.xAxisCategoriesMLConstraint = $scope.xAxisCategoriesMLConstraint[0];
+        reloadSeriesData();
+      });
+      
+      $scope.save = function () {
+        $modalInstance.close($scope.highchartConfig);
       };
     }]);
 
@@ -102,7 +123,7 @@ define(['app/module'], function (module) {
   module.factory('newChartWidgetDialog', [
     '$modal',
     function ($modal) {
-      return function (facets) {
+      return function (facets, highchartConfig) {
         return $modal.open({
           templateUrl : '/app/dialogs/newChartWidget.html',
           controller : 'AddChartWidgetCtrl',
@@ -110,6 +131,9 @@ define(['app/module'], function (module) {
           resolve: {
             facets: function() {
               return facets;
+            },
+            highchartConfig: function() {
+              return highchartConfig;
             }
           }
         }).result;

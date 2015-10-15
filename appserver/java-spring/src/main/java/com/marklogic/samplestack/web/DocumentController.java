@@ -110,9 +110,9 @@ public class DocumentController {
 		ObjectNode combinedQueryObject = (ObjectNode) combinedQuery
 				.get("query");
 		if (combinedSearchObject == null && combinedQueryObject == null) {
-			throw new SamplestackSearchException(
-					"A Samplestack search must have payload with root key \"search\" or \"query\"");
-		} else if (combinedSearchObject != null
+			combinedSearchObject = mapper.createObjectNode();
+		} 
+		if (combinedSearchObject != null
 				&& combinedSearchObject.get("qtext") == null) {
 			combinedSearchObject.put("qtext", qtext);
 		}
@@ -160,8 +160,8 @@ public class DocumentController {
 		ObjectNode combinedQueryObject = (ObjectNode) combinedQuery
 				.get("query");
 		if (combinedSearchObject == null && combinedQueryObject == null) {
-			throw new SamplestackSearchException(
-					"A Samplestack search must have payload with root key \"search\" or \"query\"");
+			combinedQueryObject = mapper.createObjectNode();
+			combinedQuery.put("query", combinedQueryObject);
 		} else if (combinedSearchObject != null
 				&& combinedSearchObject.get("qtext") == null) {
 			combinedSearchObject.put("qtext", qtext);

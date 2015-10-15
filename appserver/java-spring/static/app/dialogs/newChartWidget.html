@@ -4,34 +4,32 @@
       <span aria-hidden="true">&times;</span>
       <span class="sr-only">Close</span>
     </button>
-    <h4 class="modal-title">Add Chart Widget</h4>
+    <h4 class="modal-title">Add/Edit Chart Widget</h4>
   </div>
   <div class="modal-body">
     <form name="form">
       <div class="form-group">
         <label class="control-label">Result Limit</label>
-        <input class="form-control" ng-model="highChart.facetLimit" type="number" />
+        <input class="form-control" ng-model="highchartConfig.resultLimit" type="number" />
       </div>
       <div class="form-group">
         <label class="control-label">Type</label>
-        <select class="form-control" name="chartType" ng-model="highChart.options.chart.type" ng-options="chartType for chartType in chartTypes">
+        <select class="form-control" name="chartType" ng-model="highchartConfig.options.chart.type" ng-options="chartType for chartType in chartTypes">
         </select>
       </div>
       <div class="form-group">
         <label class="control-label">Title</label>
-        <input class="form-control" name="collation" type="text" ng-model="highChart.title.text">
+        <input class="form-control" name="collation" type="text" ng-model="highchartConfig.title.text">
       </div>
-      <div id="chart-mapping" class="col-sm-12">
+      <div class="col-sm-12">
         <div class="col-sm-6">
           <div class="col-sm-12">
             <div class="col-sm-6">
               <label>xAxis Categories</label>
             </div>
             <div class="col-sm-6">
-              <ul style="min-height:20px;" as-sortable="xSortOptions" ng-model="highChart.xAxisCategoriesMapping">
-                <li class="card" ng-repeat="key in highChart.xAxisCategoriesMapping" as-sortable-item as-sortable-item-handle>
-                  <div class="col-sm-12">{{key}}</div>
-                </li>
+              <ul style="min-height:20px;border:1px dotted black;" as-sortable="xSortOptions" ng-model="xAxisCategoriesMLConstraint">
+                <li class="btn btn-default" ng-repeat="key in xAxisCategoriesMLConstraint" as-sortable-item as-sortable-item-handle>{{key}}</li>
               </ul>
             </div>
           </div>
@@ -39,11 +37,9 @@
             <div class="col-sm-6">
               <label>xAxis</label>
             </div>
-            <div class="col-sm-6" as-sortable="xSortOptions" ng-model="highChart.xAxisMapping">
-              <ul style="min-height:20px;">
-                <li class="card" ng-repeat="key in highChart.xAxisMapping" as-sortable-item as-sortable-item-handle>
-                  <div class="col-sm-12">{{key}}</div>
-                </li>
+            <div class="col-sm-6" as-sortable="xSortOptions" ng-model="xAxisMLConstraint">
+              <ul style="min-height:20px;border:1px dotted black;">
+                <li class="btn btn-default" ng-repeat="key in xAxisMLConstraint" as-sortable-item as-sortable-item-handle>{{key}}</li>
               </ul>
             </div>
           </div>
@@ -51,21 +47,51 @@
             <div class="col-sm-6">
               <label>yAxis</label>
             </div>
-            <div class="col-sm-6" as-sortable="xSortOptions" ng-model="highChart.yAxisMapping">
-              <ul style="min-heigth:20px;">
-                <li class="card" ng-repeat="key in highChart.yAxisMapping" as-sortable-item as-sortable-item-handle>
-                  <div class="col-sm-12">{{key}}</div>
-                </li>
+            <div class="col-sm-6" as-sortable="xSortOptions" ng-model="yAxisMLConstraint">
+              <ul style="min-heigth:20px;border:1px dotted black;">
+                <li class="btn btn-default" ng-repeat="key in yAxisMLConstraint" as-sortable-item as-sortable-item-handle>{{key}}</li>
               </ul>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="col-sm-6">
+              <label>zAxis</label>
+            </div>
+            <div class="col-sm-6" as-sortable="xSortOptions" ng-model="zAxisMLConstraint">
+              <ul style="min-heigth:20px;border:1px dotted black;">
+                <li class="btn btn-default" ng-repeat="key in zAxisMLConstraint" as-sortable-item as-sortable-item-handle>{{key}}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="col-sm-6">
+              <label>xAxis Label</label>
+            </div>
+            <div class="col-sm-6">
+               <input type="text" ng-model="highchartConfig.xAxis.title.text" />
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="col-sm-6">
+              <label>yAxis Label</label>
+            </div>
+            <div class="col-sm-6">
+               <input type="text" ng-model="highchartConfig.yAxis.title.text" />              
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="col-sm-6">
+              <label>zAxis Label</label>
+            </div>
+            <div class="col-sm-6">
+               <input type="text" ng-model="highchartConfig.zAxis.title.text" />              
             </div>
           </div>
         </div>
         <div class="col-sm-6" as-sortable="facetSortOptions" ng-model="chartFacetOptions" style="min-heigth:20px;">
           <label>Values</label>
-          <ul>
-            <li class="card" ng-repeat="key in chartFacetOptions" as-sortable-item as-sortable-item-handle>
-              <div class="col-sm-12">{{key}}</div>
-            </li>
+          <ul style="border:1px dotted black;">
+            <li class="btn btn-default" ng-repeat="key in chartFacetOptions" as-sortable-item as-sortable-item-handle>{{key}}</li>
           </ul>
         </div>
       </div>
@@ -73,7 +99,7 @@
         <highchart id="chartPreview" config="previewHighChart"></highchart>
       </div>
       <div class="clearfix">
-        <button type="button" class="btn btn-primary pull-right" ng-click="add()">Add</button>
+        <button type="button" class="btn btn-primary pull-right" ng-click="save()">Save</button>
       </div>
     </form>
   </div>
