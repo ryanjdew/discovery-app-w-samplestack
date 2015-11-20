@@ -31,7 +31,8 @@ require.config({
     'ml-search-ng-tpls': 'deps/ml-search-ng/dist/ml-search-ng-tpls.min',
     'ng-sortable': 'deps/ng-sortable/dist/ng-sortable.min',
     'stacktrace-js':'deps/stacktrace-js/dist/stacktrace',
-    'jstzdetect': 'deps/jstzdetect/jstz'
+    'jstzdetect': 'deps/jstzdetect/jstz',
+    'ng-json-explorer': 'deps/ng-json-explorer/dist/angular-json-explorer.min'
     /* jshint ignore: end */
   },
 
@@ -53,7 +54,8 @@ require.config({
     'ml-search-ng': { deps: ['angular','ml-common-ng'] },
     'ml-search-ng-tpls': { deps: ['angular','ml-search-ng'] },
     'ng-sortable': { deps: ['angular','ui-bootstrap'] },
-    'jstzdetect': { exports: 'jstz' }
+    'jstzdetect': { exports: 'jstz' },
+    'ng-json-explorer': { deps: ['angular'] }
   }
 });
 
@@ -117,6 +119,7 @@ define(
       'ml.search',
       'ml.search.tpls',
       'ml.utils',
+      'ngJsonExplorer',
 
       '_marklogic'
     ];
