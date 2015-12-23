@@ -53,6 +53,7 @@ public final class SamplestackSecurityFilters extends OncePerRequestFilter {
 		response.setHeader("Access-Control-Max-Age", "3600");
 		response.setHeader("Access-Control-Allow-Headers",
 				"x-requested-with, content-type");
+		response.setHeader("X-Frame-Options", "SAMEORIGIN");
 		filterChain.doFilter(request, response);
 
 	}
