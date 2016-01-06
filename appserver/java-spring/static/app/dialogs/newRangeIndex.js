@@ -42,7 +42,8 @@ define(['app/module'], function (module) {
               objProperty = indexTypeToObjProperty[$scope.indexType];
           index[objProperty] = {
             'range-value-positions': false,
-            'invalid-values': 'ignore'
+            'invalid-values': 'ignore',
+            'collation': ''
           };
           var subPart = index[objProperty];
           if ($scope.indexType === 'element' || $scope.indexType === 'attribute') {
