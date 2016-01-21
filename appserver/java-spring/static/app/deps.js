@@ -79,6 +79,7 @@ define(
     'highcharts-ng',
     'angular-marked',
     'angular-sanitize',
+    'ng-json-explorer',
     'ng-markdown',
     'ng-sortable',
     'ng-tags-input',
