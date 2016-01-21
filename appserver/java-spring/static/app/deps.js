@@ -77,6 +77,7 @@ define(
     'highcharts-ng',
     'angular-marked',
     'angular-sanitize',
+    'ng-json-explorer',
     'ng-markdown',
     'ng-tags-input',
     'ml-utils',
